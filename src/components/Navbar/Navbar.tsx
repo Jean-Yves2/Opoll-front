@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -5,24 +8,28 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
-import { Link as RouterLink } from 'react-router-dom';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
 
-function Navbar() {
+import DarkModeToggle from './DarkModeToggle';
+
+interface DarkModeToggleProps {
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+}
+
+function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   const theme = useTheme();
-  const MinMdSize = useMediaQuery(theme.breakpoints.up('md'));
-  const MaxMdSize = useMediaQuery(theme.breakpoints.down('md'));
+  const isMinMdScreen = useMediaQuery(theme.breakpoints.up('md'));
+  const isMaxMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -50,7 +57,6 @@ function Navbar() {
       sx={{ width: '100%', height: '100%' }}
       role="presentation"
       onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
     >
       <List
         sx={{
@@ -68,7 +74,10 @@ function Navbar() {
             key={item.name}
             component={RouterLink}
             to={item.path}
-            sx={{ padding: '40px' }}
+            sx={{
+              padding: '40px',
+              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+            }}
           >
             <ListItemText>
               <Typography
@@ -106,13 +115,12 @@ function Navbar() {
                   color="inherit"
                   aria-label="menu"
                   sx={{ ml: 0.3 }}
-                  onClick={toggleDrawer(true)}
                 >
                   <PollIcon sx={{ fontSize: 30 }} />
                 </IconButton>
               </Typography>
             </Grid>
-            {MinMdSize && (
+            {isMinMdScreen && (
               <Grid item>
                 <Button
                   color="primary"
@@ -123,8 +131,12 @@ function Navbar() {
                 </Button>
               </Grid>
             )}
-            {MinMdSize && (
+            {isMinMdScreen && (
               <Grid item>
+                <DarkModeToggle
+                  darkMode={darkMode}
+                  toggleDarkMode={toggleDarkMode}
+                />
                 <Button color="primary" sx={{ mr: 3 }}>
                   Se connecter
                 </Button>
@@ -133,7 +145,7 @@ function Navbar() {
                 </Button>
               </Grid>
             )}
-            {MaxMdSize && (
+            {isMaxMdScreen && (
               <>
                 <IconButton
                   size="large"
