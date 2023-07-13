@@ -20,6 +20,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
 
 import DarkModeToggle from './DarkModeToggle';
+import LoginModal from '../Login/LoginModal';
 
 interface DarkModeToggleProps {
   darkMode: boolean;
@@ -52,8 +53,8 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   const menuItems = [
     { name: 'Créer un sondage', path: '/surveys/create' }, // Si pas connecté, rediriger vers la page de connexion
-    { name: "S'inscrire", path: '/signup' },
-    { name: 'Se connecter', path: '/login' },
+    { name: "S'inscrire", path: '/' },
+    { name: 'Se connecter', path: '/' },
   ];
 
   const list = () => (
@@ -141,9 +142,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   darkMode={darkMode}
                   toggleDarkMode={toggleDarkMode}
                 />
-                <Button color="secondary" sx={{ mr: 3 }}>
-                  Se connecter
-                </Button>
+                <LoginModal />{' '}
                 <Button color="primary" variant="contained" sx={{ mr: 3 }}>
                   S'inscrire
                 </Button>
