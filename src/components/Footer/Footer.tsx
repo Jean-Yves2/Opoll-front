@@ -8,6 +8,15 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ShareIcon from '@mui/icons-material/Share';
 import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const StyledLink = styled(RouterLink)(({ theme }) => ({
+  color: theme.palette.secondary.main,
+  textDecoration: 'none',
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+}));
 
 const styles = {
   footer: {
@@ -47,13 +56,13 @@ function Footer() {
         <Toolbar>
           <Grid container justifyContent="space-around">
             <Grid item>
-              <RouterLink to="/contact">Contactez nous</RouterLink>
+              <StyledLink to="/contact">Contactez nous</StyledLink>
             </Grid>
             <Grid item>
-              <RouterLink to="/À-propos">A propos de nous</RouterLink>
+              <StyledLink to="/À-propos">A propos de nous</StyledLink>
             </Grid>
             <Grid item>
-              <RouterLink to="/mentions-legales">Mentions légales</RouterLink>
+              <StyledLink to="/mentions-legales">Mentions légales</StyledLink>
             </Grid>
           </Grid>
         </Toolbar>
