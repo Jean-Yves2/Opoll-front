@@ -3,6 +3,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
+import Home from '../Home/Home';
 
 function App() {
   const lightTheme = createTheme({
@@ -46,7 +47,7 @@ function App() {
         main: '#e3051e', // Rouge : Couleur pour indiquer une erreur
       },
       background: {
-        default: '#5a48a7', // Ici mettre variante du background par ex
+        default: '#120e21', // Ici mettre variante du background par ex
         paper: '#5a48a7', // Violet : Couleur du fond de la navbar par ex
       },
     },
@@ -66,7 +67,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        <Routes></Routes>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
         <Footer />
       </Router>
     </ThemeProvider>
