@@ -14,6 +14,7 @@ interface LoginState {
   isLogged?: boolean;
   loggedMessage?: string;
   error: string | null;
+  open: boolean;
 }
 
 const initialValue: LoginState = {
@@ -25,9 +26,12 @@ const initialValue: LoginState = {
   isLogged: false,
   loggedMessage: 'Vous n"êtes pas connecté',
   error: null,
+  open: false,
 };
 
 export type KeysOfCredentials = keyof LoginState['credentials'];
+
+export const toggleModal = createAction<boolean>('login/TOGGLE_MODAL');
 
 export const handleLogout = createAction('login/HANDLE_LOGOUT');
 
@@ -54,6 +58,9 @@ export const handleLogin = createAsyncThunk(
 
 const loginReducer = createReducer(initialValue, (builder) => {
   builder
+    .addCase(toggleModal, (state, action) => {
+      state.open = action.payload;
+    })
     .addCase(changeField, (state, action) => {
       const { name, value } = action.payload;
       state.credentials[name] = value;

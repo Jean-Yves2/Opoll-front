@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { FormEvent } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,23 +9,24 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleLogin, changeField } from '../../store/reducers/login';
+import { toggleModal } from '../../store/reducers/login';
 
 function LoginModal() {
   const dispatch = useAppDispatch();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [open, setOpen] = useState(false);
 
   const password = useAppSelector((state) => state.login.credentials.password);
   const email = useAppSelector((state) => state.login.credentials.email);
+  const open = useAppSelector((state) => state.login.open);
 
   const handleOpen = () => {
-    setOpen(true);
+    dispatch(toggleModal(true));
   };
 
   const handleClose = () => {
-    setOpen(false);
+    dispatch(toggleModal(false));
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
