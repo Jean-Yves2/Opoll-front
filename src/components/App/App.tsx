@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import Navbar from '../Navbar/Navbar';
+import Footer from '../Footer/Footer';
+import Home from '../Home/Home';
 
 function App() {
   const lightTheme = createTheme({
@@ -65,7 +67,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <Home />
         <Routes></Routes>
+        <Footer />
       </Router>
     </ThemeProvider>
   );

@@ -7,6 +7,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ShareIcon from '@mui/icons-material/Share';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTheme } from '@mui/material';
 
 const styles = {
   footer: {
@@ -15,9 +16,16 @@ const styles = {
 };
 
 function Footer() {
+  const theme = useTheme();
+  const backgroundColor = theme.palette.background.paper;
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="sticky" color="primary" style={styles.footer}>
+      <AppBar
+        position="sticky"
+        color="primary"
+        style={{ ...styles.footer, backgroundColor }}
+      >
         <Toolbar>
           <Grid container justifyContent="center" alignItems="center">
             <Grid item>
@@ -35,8 +43,7 @@ function Footer() {
             </Grid>
           </Grid>
         </Toolbar>
-      </AppBar>
-      <Box sx={{ backgroundColor: '#212121', color: '#ffffff' }}>
+
         <Toolbar>
           <Grid container justifyContent="space-around">
             <Grid item>
@@ -50,7 +57,7 @@ function Footer() {
             </Grid>
           </Grid>
         </Toolbar>
-      </Box>
+      </AppBar>
     </Box>
   );
 }
