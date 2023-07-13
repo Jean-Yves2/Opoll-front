@@ -33,6 +33,10 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const backgroundColor = darkMode
+    ? theme.palette.background.paper
+    : theme.palette.background.paper;
+
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -48,7 +52,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   const menuItems = [
     { name: 'Créer un sondage', path: '/surveys/create' }, // Si pas connecté, rediriger vers la page de connexion
-    { name: 'S"inscrire', path: '/signup' },
+    { name: "S'inscrire", path: '/signup' },
     { name: 'Se connecter', path: '/login' },
   ];
 
@@ -96,7 +100,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   return (
     <Box sx={{ flexGrow: 3 }}>
-      <AppBar position="sticky" color="secondary">
+      <AppBar position="sticky" sx={{ backgroundColor }}>
         <Toolbar>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
@@ -123,7 +127,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
             {isMinMdScreen && (
               <Grid item>
                 <Button
-                  color="primary"
+                  color="info"
                   component={RouterLink}
                   to="/surveys/create"
                 >
@@ -137,10 +141,10 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   darkMode={darkMode}
                   toggleDarkMode={toggleDarkMode}
                 />
-                <Button color="primary" sx={{ mr: 3 }}>
+                <Button color="secondary" sx={{ mr: 3 }}>
                   Se connecter
                 </Button>
-                <Button color="primary" variant="outlined" sx={{ mr: 3 }}>
+                <Button color="primary" variant="contained" sx={{ mr: 3 }}>
                   S'inscrire
                 </Button>
               </Grid>
