@@ -18,6 +18,8 @@ import ListItemText from '@mui/material/ListItemText';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux';
+import { handleLogout } from '../../store/reducers/login';
 
 import DarkModeToggle from './DarkModeToggle';
 import LoginModal from '../Login/LoginModal';
@@ -29,10 +31,16 @@ interface DarkModeToggleProps {
 
 function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
   const isMinMdScreen = useMediaQuery(theme.breakpoints.up('md'));
   const isMaxMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const isLogged = useAppSelector((state) => state.login.isLogged);
+
+  const handleLogoutClick = () => {
+    dispatch(handleLogout());
+  };
 
   const backgroundColor = darkMode
     ? theme.palette.background.paper
@@ -142,10 +150,27 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   darkMode={darkMode}
                   toggleDarkMode={toggleDarkMode}
                 />
-                <LoginModal />{' '}
-                <Button color="primary" variant="contained" sx={{ mr: 3 }}>
-                  S'inscrire
-                </Button>
+                {isLogged ? (
+                  // SI l'utilisateur est connecté alors icone user (page profil par ex)
+                  <>
+                    <Button
+                      color="error"
+                      variant="contained"
+                      sx={{ ml: 2 }}
+                      onClick={handleLogoutClick}
+                    >
+                      Déconnexion
+                    </Button>
+                  </>
+                ) : (
+                  // Sinon on l'invite à se créer un compte ou se connecter
+                  <>
+                    <LoginModal />
+                    <Button color="primary" variant="contained" sx={{ mr: 3 }}>
+                      S'inscrire
+                    </Button>
+                  </>
+                )}
               </Grid>
             )}
             {isMaxMdScreen && (

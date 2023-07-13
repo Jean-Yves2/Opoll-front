@@ -11,10 +11,11 @@ interface LoginState {
     password: string;
   };
   pseudo: string;
-  isLogged?: boolean;
+  isLogged: boolean;
   loggedMessage?: string;
   error: string | null;
   open: boolean;
+  isLoading: boolean;
 }
 
 const initialValue: LoginState = {
@@ -27,6 +28,7 @@ const initialValue: LoginState = {
   loggedMessage: 'Vous n"êtes pas connecté',
   error: null,
   open: false,
+  isLoading: false,
 };
 
 export type KeysOfCredentials = keyof LoginState['credentials'];
@@ -65,6 +67,13 @@ const loginReducer = createReducer(initialValue, (builder) => {
       const { name, value } = action.payload;
       state.credentials[name] = value;
     })
+    .addCase(handleLogin.pending, (state) => {
+      // Lorsque mon appel API se lance
+      // Je dis que je suis en train de charger
+      state.isLoading = true;
+      // Si j'avais eu une erreur précédente, je la supprime
+      state.error = null;
+    })
     .addCase(handleLogin.rejected, (state) => {
       state.error = 'Email ou mot de passe incorrect';
       state.isLogged = false;
@@ -75,6 +84,8 @@ const loginReducer = createReducer(initialValue, (builder) => {
       state.loggedMessage = 'Vous êtes connecté';
       state.credentials.email = '';
       state.credentials.password = '';
+      state.open = false;
+      state.isLoading = false;
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;

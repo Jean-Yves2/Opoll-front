@@ -10,6 +10,7 @@ import { useTheme } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleLogin, changeField } from '../../store/reducers/login';
 import { toggleModal } from '../../store/reducers/login';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function LoginModal() {
   const dispatch = useAppDispatch();
@@ -20,6 +21,7 @@ function LoginModal() {
   const password = useAppSelector((state) => state.login.credentials.password);
   const email = useAppSelector((state) => state.login.credentials.email);
   const open = useAppSelector((state) => state.login.open);
+  const isLoading = useAppSelector((state) => state.login.isLoading);
 
   const handleOpen = () => {
     dispatch(toggleModal(true));
@@ -40,7 +42,12 @@ function LoginModal() {
 
   return (
     <>
-      <Button variant="text" color="secondary" onClick={handleOpen}>
+      <Button
+        variant="text"
+        color="secondary"
+        onClick={handleOpen}
+        sx={{ mr: 1 }}
+      >
         Se connecter
       </Button>
 
@@ -78,13 +85,19 @@ function LoginModal() {
           <Button color="secondary" onClick={handleClose}>
             Annuler
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit as () => void}
-          >
-            Se connecter
-          </Button>
+          {isLoading ? (
+            <Button variant="contained" color="primary" disabled>
+              <CircularProgress size={24} color="inherit" />
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit as () => void}
+            >
+              Se connecter
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>
