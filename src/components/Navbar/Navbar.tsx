@@ -55,7 +55,6 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
       ) {
         return;
       }
-
       setDrawerOpen(open);
     };
 
@@ -109,7 +108,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   return (
     <Box sx={{ flexGrow: 3 }}>
-      <AppBar position="sticky" sx={{ backgroundColor }}>
+      <AppBar position="fixed" sx={{ backgroundColor, top: 0 }}>
         <Toolbar>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
