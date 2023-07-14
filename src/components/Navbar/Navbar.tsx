@@ -23,6 +23,7 @@ import { handleLogout } from '../../store/reducers/login';
 
 import DarkModeToggle from './DarkModeToggle';
 import LoginModal from '../Login/LoginModal';
+import SignUpModal from '../Signup/SignupModal';
 
 interface DarkModeToggleProps {
   darkMode: boolean;
@@ -165,9 +166,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   // Sinon on l'invite à se créer un compte ou se connecter
                   <>
                     <LoginModal />
-                    <Button color="primary" variant="contained" sx={{ mr: 3 }}>
-                      S'inscrire
-                    </Button>
+                    <SignUpModal />
                   </>
                 )}
               </Grid>
