@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleLogin, changeField } from '../../store/reducers/login';
 import { toggleModal } from '../../store/reducers/login';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Typography } from '@mui/material';
 
 function LoginModal() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,7 @@ function LoginModal() {
   const email = useAppSelector((state) => state.login.credentials.email);
   const open = useAppSelector((state) => state.login.open);
   const isLoading = useAppSelector((state) => state.login.isLoading);
+  const error = useAppSelector((state) => state.login.error);
 
   const handleOpen = () => {
     dispatch(toggleModal(true));
@@ -81,6 +83,9 @@ function LoginModal() {
           />
         </DialogContent>
 
+        <Typography sx={{ ml: 4 }} color="error">
+          {error}
+        </Typography>
         <DialogActions>
           <Button color="secondary" onClick={handleClose}>
             Annuler

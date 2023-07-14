@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { toggleModal } from '../../store/reducers/signup';
 import CircularProgress from '@mui/material/CircularProgress';
 import { handleSignup, changeField } from '../../store/reducers/signup';
+import { Typography } from '@mui/material';
 
 function SignUpModal() {
   const dispatch = useAppDispatch();
@@ -21,11 +22,12 @@ function SignUpModal() {
   const email = useAppSelector((state) => state.signup.credentials.email);
   const username = useAppSelector((state) => state.signup.credentials.username);
   const password = useAppSelector((state) => state.signup.credentials.password);
-  const confirmPassword = useAppSelector(
-    (state) => state.signup.credentials.confirmPassword
+  const passwordConfirm = useAppSelector(
+    (state) => state.signup.credentials.passwordConfirm
   );
   const open = useAppSelector((state) => state.signup.open);
   const isLoading = useAppSelector((state) => state.signup.isLoading);
+  const error = useAppSelector((state) => state.signup.error);
 
   const handleOpen = () => {
     dispatch(toggleModal(true));
@@ -37,11 +39,11 @@ function SignUpModal() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    void dispatch(handleSignup({ email, password, confirmPassword, username }));
+    void dispatch(handleSignup({ email, password, passwordConfirm, username }));
   };
 
   const handleChangeField =
-    (name: 'email' | 'password' | 'username' | 'confirmPassword') =>
+    (name: 'email' | 'password' | 'username' | 'passwordConfirm') =>
     (value: string) => {
       dispatch(changeField({ value, name }));
     };
@@ -99,9 +101,9 @@ function SignUpModal() {
 
           <TextField
             label="Confirmer le mot de passe"
-            value={confirmPassword}
+            value={passwordConfirm}
             onChange={(e) =>
-              handleChangeField('confirmPassword')(e.target.value)
+              handleChangeField('passwordConfirm')(e.target.value)
             }
             fullWidth
             margin="normal"
@@ -109,6 +111,10 @@ function SignUpModal() {
             type="password"
           />
         </DialogContent>
+
+        <Typography sx={{ ml: 4 }} color="error">
+          {error}
+        </Typography>
 
         <DialogActions>
           <Button color="secondary" onClick={handleClose}>

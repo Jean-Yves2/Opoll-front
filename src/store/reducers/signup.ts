@@ -7,10 +7,10 @@ import axios from 'axios';
 
 interface SignUpState {
   credentials: {
-    email: string;
     username: string;
+    email: string;
     password: string;
-    confirmPassword?: string;
+    passwordConfirm?: string;
   };
   loggedMessage?: string;
   isLogged: boolean;
@@ -21,10 +21,10 @@ interface SignUpState {
 
 const initialValue: SignUpState = {
   credentials: {
+    username: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    username: '',
+    passwordConfirm: '',
   },
   loggedMessage: 'Vous n"êtes pas connecté',
   isLogged: false,
@@ -46,7 +46,10 @@ export const handleSignup = createAsyncThunk(
   'settings/SIGNUP',
   async (credentials: SignUpState['credentials']) => {
     try {
-      const data = await axios.post('localhost:3000/auth/signup', credentials);
+      const data = await axios.post(
+        'http://localhost:3000/auth/register',
+        credentials
+      );
       return data;
     } catch (error) {
       console.error("Une erreur s'est produite lors de l'inscription':", error);
@@ -72,8 +75,9 @@ const signupReducer = createReducer(initialValue, (builder) => {
       state.error = null;
     })
     .addCase(handleSignup.rejected, (state) => {
-      state.error = 'Email ou mot de passe incorrect';
+      state.error = 'Un des champs de saisis est incorrect';
       state.isLogged = false;
+      state.isLoading = false;
     })
     .addCase(handleSignup.fulfilled, (state) => {
       state.isLogged = true;
@@ -81,6 +85,7 @@ const signupReducer = createReducer(initialValue, (builder) => {
       state.credentials.email = '';
       state.credentials.username = '';
       state.credentials.password = '';
+      state.credentials.passwordConfirm = '';
       state.open = false;
       state.isLoading = false;
     });

@@ -10,7 +10,7 @@ interface LoginState {
     email: string;
     password: string;
   };
-  pseudo: string;
+  username: string;
   isLogged: boolean;
   loggedMessage?: string;
   error: string | null;
@@ -23,7 +23,7 @@ const initialValue: LoginState = {
     email: '',
     password: '',
   },
-  pseudo: '',
+  username: '',
   isLogged: false,
   loggedMessage: 'Vous n"êtes pas connecté',
   error: null,
@@ -46,8 +46,8 @@ export const handleLogin = createAsyncThunk(
   'settings/LOGIN',
   async (credentials: LoginState['credentials']) => {
     try {
-      const { data } = await axios.post<{ pseudo: string }>(
-        'https://orecipes-api.onrender.com/api/login',
+      const { data } = await axios.post<{ username: string }>(
+        'http://localhost:3000/auth/login',
         credentials
       );
       return data;
@@ -77,9 +77,10 @@ const loginReducer = createReducer(initialValue, (builder) => {
     .addCase(handleLogin.rejected, (state) => {
       state.error = 'Email ou mot de passe incorrect';
       state.isLogged = false;
+      state.isLoading = false;
     })
     .addCase(handleLogin.fulfilled, (state, action) => {
-      state.pseudo = action.payload.pseudo;
+      state.username = action.payload.username;
       state.isLogged = true;
       state.loggedMessage = 'Vous êtes connecté';
       state.credentials.email = '';
@@ -89,7 +90,7 @@ const loginReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;
-      state.pseudo = '';
+      state.username = '';
       state.loggedMessage = 'Vous n"êtes pas connecté';
     });
 });

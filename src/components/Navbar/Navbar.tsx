@@ -38,6 +38,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isLogged = useAppSelector((state) => state.login.isLogged);
+  const username = useAppSelector((state) => state.login.username);
 
   const handleLogoutClick = () => {
     dispatch(handleLogout());
@@ -89,14 +90,14 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
             to={item.path}
             sx={{
               padding: '40px',
-              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
             }}
           >
             <ListItemText>
               <Typography
                 variant="h4"
                 sx={{ textAlign: 'center' }}
-                color="black"
+                color="white"
               >
                 {item.name}
               </Typography>
@@ -153,6 +154,9 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                 {isLogged ? (
                   // SI l'utilisateur est connecté alors icone user (page profil par ex)
                   <>
+                    <Typography variant="h6" sx={{ mr: 2 }}>
+                      Bienvenue {username}
+                    </Typography>
                     <Button
                       color="error"
                       variant="contained"
