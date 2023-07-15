@@ -90,7 +90,6 @@ const loginReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;
-      state.username = '';
       state.loggedMessage = 'Vous n"êtes pas connecté';
     });
 });

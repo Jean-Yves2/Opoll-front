@@ -12,6 +12,7 @@ import { toggleModal } from '../../store/reducers/signup';
 import CircularProgress from '@mui/material/CircularProgress';
 import { handleSignup, changeField } from '../../store/reducers/signup';
 import { Typography } from '@mui/material';
+import { useState } from 'react';
 
 function SignUpModal() {
   const dispatch = useAppDispatch();
@@ -29,6 +30,13 @@ function SignUpModal() {
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
 
+  const [errors, setErrors] = useState({
+    email: '',
+    username: '',
+    password: '',
+    passwordConfirm: '',
+  });
+
   const handleOpen = () => {
     dispatch(toggleModal(true));
   };
@@ -39,7 +47,48 @@ function SignUpModal() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    void dispatch(handleSignup({ email, password, passwordConfirm, username }));
+
+    const validationErrors = {
+      email: '',
+      username: '',
+      password: '',
+      passwordConfirm: '',
+    };
+
+    if (!email) {
+      validationErrors.email = 'Champ obligatoire';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      validationErrors.email = 'Email non valide';
+    }
+
+    if (!username) {
+      validationErrors.username = 'Champ obligatoire';
+    } else if (username.length > 15) {
+      validationErrors.username =
+        'Votre username doit faire moins de 15 caractères';
+    }
+
+    if (!password) {
+      validationErrors.password = 'Champ obligatoire';
+    } else if (password.length < 6 || password.length > 20) {
+      validationErrors.password =
+        'Votre mot de passe doit être entre 6 et 20 caractères';
+    }
+
+    if (passwordConfirm !== password) {
+      validationErrors.passwordConfirm =
+        'Les mots de passe ne correspondent pas';
+    }
+
+    setErrors(validationErrors);
+
+    const isValid = Object.values(validationErrors).every((error) => !error);
+
+    if (isValid) {
+      void dispatch(
+        handleSignup({ email, password, passwordConfirm, username })
+      );
+    }
   };
 
   const handleChangeField =
@@ -70,6 +119,8 @@ function SignUpModal() {
 
         <DialogContent>
           <TextField
+            error={!!errors.email}
+            helperText={errors.email}
             label="Email"
             value={email}
             onChange={(e) => handleChangeField('email')(e.target.value)}
@@ -80,6 +131,8 @@ function SignUpModal() {
           />
 
           <TextField
+            error={!!errors.username}
+            helperText={errors.username}
             label="Username"
             value={username}
             onChange={(e) => handleChangeField('username')(e.target.value)}
@@ -90,6 +143,8 @@ function SignUpModal() {
           />
 
           <TextField
+            error={!!errors.password}
+            helperText={errors.password}
             label="Mot de passe"
             value={password}
             onChange={(e) => handleChangeField('password')(e.target.value)}
@@ -100,6 +155,8 @@ function SignUpModal() {
           />
 
           <TextField
+            error={!!errors.passwordConfirm}
+            helperText={errors.passwordConfirm}
             label="Confirmer le mot de passe"
             value={passwordConfirm}
             onChange={(e) =>

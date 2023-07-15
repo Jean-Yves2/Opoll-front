@@ -1,4 +1,4 @@
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -25,6 +25,11 @@ function LoginModal() {
   const isLoading = useAppSelector((state) => state.login.isLoading);
   const error = useAppSelector((state) => state.login.error);
 
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
+
   const handleOpen = () => {
     dispatch(toggleModal(true));
   };
@@ -35,7 +40,31 @@ function LoginModal() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    void dispatch(handleLogin({ email, password }));
+    const validationErrors = {
+      email: '',
+      password: '',
+    };
+
+    if (!email) {
+      validationErrors.email = 'Champ obligatoire';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      validationErrors.email = 'Email non valide';
+    }
+
+    if (!password) {
+      validationErrors.password = 'Champ obligatoire';
+    } else if (password.length < 6 || password.length > 20) {
+      validationErrors.password =
+        'Votre mot de passe doit être entre 6 et 20 caractères';
+    }
+
+    setErrors(validationErrors);
+
+    const isValid = Object.values(validationErrors).every((error) => !error);
+
+    if (isValid) {
+      void dispatch(handleLogin({ email, password }));
+    }
   };
 
   const handleChangeField = (name: 'email' | 'password') => (value: string) => {
@@ -64,6 +93,8 @@ function LoginModal() {
 
         <DialogContent>
           <TextField
+            error={!!errors.email}
+            helperText={errors.email}
             label="Email"
             value={email}
             onChange={(e) => handleChangeField('email')(e.target.value)}
@@ -73,6 +104,8 @@ function LoginModal() {
           />
 
           <TextField
+            error={!!errors.password}
+            helperText={errors.password}
             label="Mot de passe"
             value={password}
             onChange={(e) => handleChangeField('password')(e.target.value)}

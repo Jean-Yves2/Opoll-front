@@ -12,11 +12,10 @@ interface SignUpState {
     password: string;
     passwordConfirm?: string;
   };
-  loggedMessage?: string;
-  isLogged: boolean;
   error: string | null;
   open: boolean;
   isLoading: boolean;
+  isSucess: boolean;
 }
 
 const initialValue: SignUpState = {
@@ -26,11 +25,10 @@ const initialValue: SignUpState = {
     password: '',
     passwordConfirm: '',
   },
-  loggedMessage: 'Vous n"êtes pas connecté',
-  isLogged: false,
   error: null,
   open: false,
   isLoading: false,
+  isSucess: false,
 };
 
 export type KeysOfCredentials = keyof SignUpState['credentials'];
@@ -75,19 +73,19 @@ const signupReducer = createReducer(initialValue, (builder) => {
       state.error = null;
     })
     .addCase(handleSignup.rejected, (state) => {
-      state.error = 'Un des champs de saisis est incorrect';
-      state.isLogged = false;
+      state.error =
+        'Cette email ou cette utilisateur existe déjà en base de données';
       state.isLoading = false;
     })
     .addCase(handleSignup.fulfilled, (state) => {
-      state.isLogged = true;
-      state.loggedMessage = 'Vous êtes connecté';
+      state.error = null;
       state.credentials.email = '';
       state.credentials.username = '';
       state.credentials.password = '';
       state.credentials.passwordConfirm = '';
       state.open = false;
       state.isLoading = false;
+      state.isSucess = true;
     });
 });
 

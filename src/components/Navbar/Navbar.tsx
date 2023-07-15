@@ -38,7 +38,6 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isLogged = useAppSelector((state) => state.login.isLogged);
-  const username = useAppSelector((state) => state.login.username);
 
   const handleLogoutClick = () => {
     dispatch(handleLogout());
@@ -154,9 +153,6 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                 {isLogged ? (
                   // SI l'utilisateur est connecté alors icone user (page profil par ex)
                   <>
-                    <Typography variant="h6" sx={{ mr: 2 }}>
-                      Bienvenue {username}
-                    </Typography>
                     <Button
                       color="error"
                       variant="contained"

@@ -73,7 +73,7 @@ const Title = styled(Typography)({
   zIndex: 2,
 });
 
-function App() {
+function Home() {
   return (
     <>
       <ImageContainer>
@@ -132,4 +132,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
