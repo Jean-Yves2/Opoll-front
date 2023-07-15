@@ -4,6 +4,20 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
+interface CookieAttributes {
+  expires?: number | Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: 'strict' | 'lax' | 'none';
+}
+
+interface CookiesType {
+  set: (name: string, value: string, options?: CookieAttributes) => void;
+  remove: (name: string, options?: CookieAttributes) => void;
+}
 
 interface LoginState {
   credentials: {
@@ -31,11 +45,16 @@ const initialValue: LoginState = {
   isLoading: false,
 };
 
+const TypedCookies: CookiesType = Cookies;
+
 export type KeysOfCredentials = keyof LoginState['credentials'];
 
 export const toggleModal = createAction<boolean>('login/TOGGLE_MODAL');
 
-export const handleLogout = createAction('login/HANDLE_LOGOUT');
+export const handleLogout = createAction('login/HANDLE_LOGOUT', () => {
+  TypedCookies.remove('token');
+  return { payload: undefined };
+});
 
 export const changeField = createAction<{
   name: KeysOfCredentials;
@@ -44,15 +63,17 @@ export const changeField = createAction<{
 
 export const handleLogin = createAsyncThunk(
   'settings/LOGIN',
-  async (credentials: LoginState['credentials']) => {
+  async (credentials: LoginState['credentials'], { rejectWithValue }) => {
     try {
-      const { data } = await axios.post<{ username: string }>(
+      const { data } = await axios.post<{ token: string; username: string }>(
         'http://localhost:3000/auth/login',
         credentials
       );
-      return data;
+      TypedCookies.set('token', data.token);
+      return { username: data.username };
     } catch (error) {
       console.error("Une erreur s'est produite lors de la connexion:", error);
+      return rejectWithValue('Email ou mot de passe incorrect');
       throw error;
     }
   }
@@ -79,8 +100,7 @@ const loginReducer = createReducer(initialValue, (builder) => {
       state.isLogged = false;
       state.isLoading = false;
     })
-    .addCase(handleLogin.fulfilled, (state, action) => {
-      state.username = action.payload.username;
+    .addCase(handleLogin.fulfilled, (state) => {
       state.isLogged = true;
       state.loggedMessage = 'Vous êtes connecté';
       state.credentials.email = '';
