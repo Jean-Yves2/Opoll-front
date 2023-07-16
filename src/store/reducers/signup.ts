@@ -5,6 +5,12 @@ import {
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+}
+
 interface SignUpState {
   credentials: {
     username: string;
@@ -34,6 +40,7 @@ const initialValue: SignUpState = {
 export type KeysOfCredentials = keyof SignUpState['credentials'];
 
 export const toggleModal = createAction<boolean>('signup/TOGGLE_MODAL');
+export const resetSignupState = createAction('signup/RESET_STATE');
 
 export const changeField = createAction<{
   name: KeysOfCredentials;
@@ -44,11 +51,11 @@ export const handleSignup = createAsyncThunk(
   'settings/SIGNUP',
   async (credentials: SignUpState['credentials']) => {
     try {
-      const data = await axios.post(
+      const response = await axios.post<User>(
         'http://localhost:3000/auth/register',
         credentials
       );
-      return data;
+      return response.data;
     } catch (error) {
       console.error("Une erreur s'est produite lors de l'inscription':", error);
       throw error;
@@ -78,14 +85,11 @@ const signupReducer = createReducer(initialValue, (builder) => {
       state.isLoading = false;
     })
     .addCase(handleSignup.fulfilled, (state) => {
-      state.error = null;
-      state.credentials.email = '';
-      state.credentials.username = '';
-      state.credentials.password = '';
-      state.credentials.passwordConfirm = '';
-      state.open = false;
       state.isLoading = false;
       state.isSucess = true;
+    })
+    .addCase(resetSignupState, () => {
+      return initialValue;
     });
 });
 

@@ -2,6 +2,9 @@ import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { useAppSelector } from '../../hooks/redux';
+import Snackbar from '@mui/material/Snackbar';
+import { useEffect, useState } from 'react';
 
 const ImageContainer = styled('div')({
   height: '100vh',
@@ -74,8 +77,26 @@ const Title = styled(Typography)({
 });
 
 function Home() {
+  const snackbarLogged = useAppSelector((state) => state.snackbar.isLogged);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
+  useEffect(() => {
+    if (!snackbarLogged) {
+      setOpenSnackbar(true);
+    }
+  }, [snackbarLogged]);
   return (
     <>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="Vous devez être connecté pour accéder à cette page."
+      />
       <ImageContainer>
         <Title variant="h1">O'Poll</Title>
       </ImageContainer>

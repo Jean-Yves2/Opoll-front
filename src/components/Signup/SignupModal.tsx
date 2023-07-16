@@ -10,9 +10,16 @@ import { useTheme } from '@mui/material/styles';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { toggleModal } from '../../store/reducers/signup';
 import CircularProgress from '@mui/material/CircularProgress';
-import { handleSignup, changeField } from '../../store/reducers/signup';
+import {
+  handleSignup,
+  changeField,
+  resetSignupState,
+} from '../../store/reducers/signup';
 import { Typography } from '@mui/material';
 import { useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import { useEffect } from 'react';
+import Alert from '@mui/material/Alert';
 
 function SignUpModal() {
   const dispatch = useAppDispatch();
@@ -29,6 +36,7 @@ function SignUpModal() {
   const open = useAppSelector((state) => state.signup.open);
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
+  const isSucess = useAppSelector((state) => state.signup.isSucess);
 
   const [errors, setErrors] = useState({
     email: '',
@@ -36,6 +44,13 @@ function SignUpModal() {
     password: '',
     passwordConfirm: '',
   });
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    if (isSucess) {
+      setOpenSnackbar(true);
+    }
+  }, [isSucess, openSnackbar]);
 
   const handleOpen = () => {
     dispatch(toggleModal(true));
@@ -43,6 +58,7 @@ function SignUpModal() {
 
   const handleClose = () => {
     dispatch(toggleModal(false));
+    dispatch(resetSignupState());
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -91,6 +107,11 @@ function SignUpModal() {
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+    dispatch(resetSignupState());
+  };
+
   const handleChangeField =
     (name: 'email' | 'password' | 'username' | 'passwordConfirm') =>
     (value: string) => {
@@ -117,80 +138,102 @@ function SignUpModal() {
       >
         <DialogTitle>Inscription</DialogTitle>
 
-        <DialogContent>
-          <TextField
-            error={!!errors.email}
-            helperText={errors.email}
-            label="Email"
-            value={email}
-            onChange={(e) => handleChangeField('email')(e.target.value)}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            type="email"
-          />
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <TextField
+              error={!!errors.email}
+              helperText={errors.email}
+              label="Email"
+              value={email}
+              onChange={(e) => handleChangeField('email')(e.target.value)}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              type="email"
+            />
 
-          <TextField
-            error={!!errors.username}
-            helperText={errors.username}
-            label="Username"
-            value={username}
-            onChange={(e) => handleChangeField('username')(e.target.value)}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            type="text"
-          />
+            <TextField
+              error={!!errors.username}
+              helperText={
+                errors.username ||
+                'Votre username doit faire moins de 15 caractères'
+              }
+              label="Username"
+              value={username}
+              onChange={(e) => handleChangeField('username')(e.target.value)}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              type="text"
+            />
 
-          <TextField
-            error={!!errors.password}
-            helperText={errors.password}
-            label="Mot de passe"
-            value={password}
-            onChange={(e) => handleChangeField('password')(e.target.value)}
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            type="password"
-          />
+            <TextField
+              error={!!errors.password}
+              helperText={
+                errors.password ||
+                'Votre mot de passe doit être entre 6 et 20 caractères'
+              }
+              label="Mot de passe"
+              value={password}
+              onChange={(e) => handleChangeField('password')(e.target.value)}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              type="password"
+            />
 
-          <TextField
-            error={!!errors.passwordConfirm}
-            helperText={errors.passwordConfirm}
-            label="Confirmer le mot de passe"
-            value={passwordConfirm}
-            onChange={(e) =>
-              handleChangeField('passwordConfirm')(e.target.value)
-            }
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            type="password"
-          />
-        </DialogContent>
+            <TextField
+              error={!!errors.passwordConfirm}
+              helperText={errors.passwordConfirm}
+              label="Confirmer le mot de passe"
+              value={passwordConfirm}
+              onChange={(e) =>
+                handleChangeField('passwordConfirm')(e.target.value)
+              }
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              type="password"
+            />
+          </DialogContent>
 
-        <Typography sx={{ ml: 4 }} color="error">
-          {error}
-        </Typography>
+          <Typography sx={{ ml: 4 }} color="error">
+            {error}
+          </Typography>
 
-        <DialogActions>
-          <Button color="secondary" onClick={handleClose}>
-            Annuler
-          </Button>
-          {isLoading ? (
-            <Button variant="contained" color="primary" disabled>
-              <CircularProgress size={24} color="inherit" />
+          <DialogActions>
+            <Button color="secondary" onClick={handleClose}>
+              Annuler
             </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit as () => void}
-            >
-              S'inscrire
-            </Button>
-          )}
-        </DialogActions>
+            {isLoading ? (
+              <Button variant="contained" color="primary" disabled>
+                <CircularProgress size={24} color="inherit" />
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit as () => void}
+                type="submit"
+              >
+                S'inscrire
+              </Button>
+            )}
+          </DialogActions>
+        </form>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={handleCloseSnackbar}
+        >
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            Inscription réussie !
+          </Alert>
+        </Snackbar>
       </Dialog>
     </>
   );

@@ -19,7 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { handleLogout } from '../../store/reducers/login';
+import { handleLogout, resetLoginState } from '../../store/reducers/login';
 
 import DarkModeToggle from './DarkModeToggle';
 import LoginModal from '../Login/LoginModal';
@@ -40,6 +40,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   const isLogged = useAppSelector((state) => state.login.isLogged);
 
   const handleLogoutClick = () => {
+    dispatch(resetLoginState());
     dispatch(handleLogout());
   };
 

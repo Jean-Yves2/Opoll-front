@@ -26,7 +26,6 @@ interface LoginState {
   };
   username: string;
   isLogged: boolean;
-  loggedMessage?: string;
   error: string | null;
   open: boolean;
   isLoading: boolean;
@@ -39,7 +38,6 @@ const initialValue: LoginState = {
   },
   username: '',
   isLogged: false,
-  loggedMessage: 'Vous n"êtes pas connecté',
   error: null,
   open: false,
   isLoading: false,
@@ -50,6 +48,7 @@ const TypedCookies: CookiesType = Cookies;
 export type KeysOfCredentials = keyof LoginState['credentials'];
 
 export const toggleModal = createAction<boolean>('login/TOGGLE_MODAL');
+export const resetLoginState = createAction('login/RESET_STATE');
 
 export const handleLogout = createAction('login/HANDLE_LOGOUT', () => {
   TypedCookies.remove('token');
@@ -102,15 +101,13 @@ const loginReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(handleLogin.fulfilled, (state) => {
       state.isLogged = true;
-      state.loggedMessage = 'Vous êtes connecté';
-      state.credentials.email = '';
-      state.credentials.password = '';
-      state.open = false;
       state.isLoading = false;
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;
-      state.loggedMessage = 'Vous n"êtes pas connecté';
+    })
+    .addCase(resetLoginState, () => {
+      return initialValue;
     });
 });
 
