@@ -89,6 +89,7 @@ function Home() {
       setOpenSnackbar(true);
     }
   }, [snackbarLogged]);
+
   return (
     <>
       <Snackbar

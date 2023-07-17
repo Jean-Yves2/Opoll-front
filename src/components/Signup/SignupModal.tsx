@@ -223,7 +223,7 @@ function SignUpModal() {
         </form>
         <Snackbar
           open={openSnackbar}
-          autoHideDuration={3000}
+          autoHideDuration={1500}
           onClose={handleCloseSnackbar}
         >
           <Alert

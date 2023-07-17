@@ -5,7 +5,7 @@ interface SnackbarState {
 }
 
 const initialValue: SnackbarState = {
-  isLogged: false,
+  isLogged: true,
 };
 
 export const setSnackbarLogged = createAction<boolean>('snackbar/setLogged');

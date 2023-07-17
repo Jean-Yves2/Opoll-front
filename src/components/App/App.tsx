@@ -5,7 +5,7 @@ import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import Home from '../Home/Home';
 import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes';
-import Protege from '../Protege/Protege';
+import CreateSurveys from '../CreateSurveys/CreateSurveys';
 
 function App() {
   const lightTheme = createTheme({
@@ -73,7 +73,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/surveys/create"
-            element={<ProtectedRoutes element={Protege} />}
+            element={<ProtectedRoutes element={CreateSurveys} />}
           />
         </Routes>
         <Footer />

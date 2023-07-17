@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -38,6 +38,10 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isLogged = useAppSelector((state) => state.login.isLogged);
+
+  const MainContent = styled('div')({
+    marginTop: '60px',
+  });
 
   const handleLogoutClick = () => {
     dispatch(resetLoginState());
@@ -109,109 +113,111 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   );
 
   return (
-    <Box sx={{ flexGrow: 3 }}>
-      <AppBar position="fixed" sx={{ backgroundColor, top: 0 }}>
-        <Toolbar>
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Typography variant="h5" sx={{ ml: 3 }}>
-                <Link
-                  component={RouterLink}
-                  to="/"
-                  color="inherit"
-                  underline="none"
-                >
-                  O'POLL
-                </Link>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ ml: 0.3 }}
-                >
-                  <PollIcon sx={{ fontSize: 30 }} />
-                </IconButton>
-              </Typography>
-            </Grid>
-            {isMinMdScreen && (
+    <MainContent>
+      <Box sx={{ flexGrow: 3 }}>
+        <AppBar position="fixed" sx={{ backgroundColor, top: 0 }}>
+          <Toolbar>
+            <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
-                <Button
-                  color="info"
-                  component={RouterLink}
-                  to="/surveys/create"
-                >
-                  Créer un sondage
-                </Button>
+                <Typography variant="h5" sx={{ ml: 3 }}>
+                  <Link
+                    component={RouterLink}
+                    to="/"
+                    color="inherit"
+                    underline="none"
+                  >
+                    O'POLL
+                  </Link>
+                  <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{ ml: 0.3 }}
+                  >
+                    <PollIcon sx={{ fontSize: 30 }} />
+                  </IconButton>
+                </Typography>
               </Grid>
-            )}
-            {isMinMdScreen && (
-              <Grid item>
-                <DarkModeToggle
-                  darkMode={darkMode}
-                  toggleDarkMode={toggleDarkMode}
-                />
-                {isLogged ? (
-                  // SI l'utilisateur est connecté alors icone user (page profil par ex)
-                  <>
-                    <Button
-                      color="error"
-                      variant="contained"
-                      sx={{ ml: 2 }}
-                      onClick={handleLogoutClick}
-                    >
-                      Déconnexion
-                    </Button>
-                  </>
-                ) : (
-                  // Sinon on l'invite à se créer un compte ou se connecter
-                  <>
-                    <LoginModal />
-                    <SignUpModal />
-                  </>
-                )}
-              </Grid>
-            )}
-            {isMaxMdScreen && (
-              <>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                  onClick={toggleDrawer(true)}
-                >
-                  {drawerOpen ? (
-                    <CloseIcon sx={{ fontSize: 50 }} />
+              {isMinMdScreen && (
+                <Grid item>
+                  <Button
+                    color="info"
+                    component={RouterLink}
+                    to="/surveys/create"
+                  >
+                    Créer un sondage
+                  </Button>
+                </Grid>
+              )}
+              {isMinMdScreen && (
+                <Grid item>
+                  <DarkModeToggle
+                    darkMode={darkMode}
+                    toggleDarkMode={toggleDarkMode}
+                  />
+                  {isLogged ? (
+                    // SI l'utilisateur est connecté alors icone user (page profil par ex)
+                    <>
+                      <Button
+                        color="error"
+                        variant="contained"
+                        sx={{ ml: 2 }}
+                        onClick={handleLogoutClick}
+                      >
+                        Déconnexion
+                      </Button>
+                    </>
                   ) : (
-                    <MenuIcon sx={{ fontSize: 50 }} />
+                    // Sinon on l'invite à se créer un compte ou se connecter
+                    <>
+                      <LoginModal />
+                      <SignUpModal />
+                    </>
                   )}
-                </IconButton>
-                <Drawer
-                  anchor="top"
-                  transitionDuration={{
-                    enter: 500,
-                    exit: 200,
-                  }}
-                  open={drawerOpen}
-                  onClose={toggleDrawer(false)}
-                  sx={{
-                    '& .MuiDrawer-paper': {
-                      width: '100%',
-                      height: '100%',
-                      background: 'transparent',
-                    },
-                  }}
-                >
-                  {list()}
-                </Drawer>
-              </>
-            )}
-          </Grid>
-        </Toolbar>
-      </AppBar>
-    </Box>
+                </Grid>
+              )}
+              {isMaxMdScreen && (
+                <>
+                  <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    sx={{ mr: 2 }}
+                    onClick={toggleDrawer(true)}
+                  >
+                    {drawerOpen ? (
+                      <CloseIcon sx={{ fontSize: 50 }} />
+                    ) : (
+                      <MenuIcon sx={{ fontSize: 50 }} />
+                    )}
+                  </IconButton>
+                  <Drawer
+                    anchor="top"
+                    transitionDuration={{
+                      enter: 500,
+                      exit: 200,
+                    }}
+                    open={drawerOpen}
+                    onClose={toggleDrawer(false)}
+                    sx={{
+                      '& .MuiDrawer-paper': {
+                        width: '100%',
+                        height: '100%',
+                        background: 'transparent',
+                      },
+                    }}
+                  >
+                    {list()}
+                  </Drawer>
+                </>
+              )}
+            </Grid>
+          </Toolbar>
+        </AppBar>
+      </Box>
+    </MainContent>
   );
 }
 
