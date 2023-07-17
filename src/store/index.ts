@@ -1,29 +1,31 @@
-import { configureStore, AnyAction } from '@reduxjs/toolkit';
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import { configureStore } from '@reduxjs/toolkit';
 import loginReducer from './reducers/login';
 import signupReducer from './reducers/signup';
-import storage from 'redux-persist/lib/storage';
 import snackbarReducer from './reducers/snackbar';
 
+// Configuration de la persistance pour le state isLogged uniquement
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['isLogged'], // Inclure seulement le state isLogged pour des raisons de sécurité
 };
 
-const persistedReducer = persistReducer(persistConfig, loginReducer);
+// Création des reducers persistants
+const persistedLoginReducer = persistReducer(persistConfig, loginReducer);
 
+// Configuration du store avec les reducers persistants
 export const store = configureStore({
   reducer: {
-    login: persistedReducer,
+    login: persistedLoginReducer,
     signup: signupReducer,
     snackbar: snackbarReducer,
   },
 });
 
-export default store;
-
+// Création du persistor pour la persistance
 export const persistor = persistStore(store);
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export const dispatch = (action: AnyAction) => store.dispatch(action);

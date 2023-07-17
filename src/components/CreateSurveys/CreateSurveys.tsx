@@ -17,7 +17,7 @@ const Container = styled('div')({
 });
 
 const Title = styled(Typography)({
-  margin: '0.5rem',
+  margin: '1.5rem',
 });
 
 const Form = styled('form')({

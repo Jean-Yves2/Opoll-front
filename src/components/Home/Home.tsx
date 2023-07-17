@@ -1,10 +1,15 @@
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { resetSnackbar } from '../../store/reducers/snackbar';
+import { resetSignupState } from '../../store/reducers/signup';
+import { resetLoginState } from '../../store/reducers/login';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { useAppSelector } from '../../hooks/redux';
 import Snackbar from '@mui/material/Snackbar';
-import { useEffect, useState } from 'react';
+import Alert from '@mui/material/Alert';
+import { AlertColor } from '@mui/material/Alert';
 
 const ImageContainer = styled('div')({
   height: '100vh',
@@ -77,8 +82,17 @@ const Title = styled(Typography)({
 });
 
 function Home() {
+  const dispatch = useAppDispatch();
   const snackbarLogged = useAppSelector((state) => state.snackbar.isLogged);
+  const snackbarSuccessfullLogin = useAppSelector(
+    (state) => state.login.snackbarSucess
+  );
+  const snackbarSucessSignup = useAppSelector(
+    (state) => state.signup.snackbarSucess
+  );
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>();
 
   const handleSnackbarClose = () => {
     setOpenSnackbar(false);
@@ -87,17 +101,37 @@ function Home() {
   useEffect(() => {
     if (!snackbarLogged) {
       setOpenSnackbar(true);
+      setSnackbarMessage('Vous devez être connecté pour accéder à cette page.');
+      setSnackbarSeverity('error');
+      dispatch(resetSnackbar());
+    } else if (snackbarSuccessfullLogin) {
+      setOpenSnackbar(true);
+      setSnackbarMessage('Connexion réussie !');
+      setSnackbarSeverity('success');
+      dispatch(resetLoginState);
+    } else if (snackbarSucessSignup) {
+      setOpenSnackbar(true);
+      setSnackbarMessage('Inscription réussie !');
+      setSnackbarSeverity('success');
+      dispatch(resetSignupState);
     }
-  }, [snackbarLogged]);
+  }, [
+    snackbarLogged,
+    snackbarSuccessfullLogin,
+    snackbarSucessSignup,
+    dispatch,
+  ]);
 
   return (
     <>
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        message="Vous devez être connecté pour accéder à cette page."
-      />
+      >
+        <Alert severity={snackbarSeverity}>{snackbarMessage}</Alert>
+      </Snackbar>
+
       <ImageContainer>
         <Title variant="h1">O'Poll</Title>
       </ImageContainer>

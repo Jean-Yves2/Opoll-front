@@ -20,10 +20,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { handleLogout, resetLoginState } from '../../store/reducers/login';
-
 import DarkModeToggle from './DarkModeToggle';
-import LoginModal from '../Login/LoginModal';
-import SignUpModal from '../Signup/SignupModal';
 
 interface DarkModeToggleProps {
   darkMode: boolean;
@@ -65,9 +62,9 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
     };
 
   const menuItems = [
-    { name: 'Créer un sondage', path: '/surveys/create' }, // Si pas connecté, rediriger vers la page de connexion
-    { name: "S'inscrire", path: '/' },
-    { name: 'Se connecter', path: '/' },
+    { name: 'Créer un sondage', path: '/surveys/create' },
+    { name: "S'inscrire", path: '/signup' },
+    { name: 'Se connecter', path: '/login' },
   ];
 
   const list = () => (
@@ -157,7 +154,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                     toggleDarkMode={toggleDarkMode}
                   />
                   {isLogged ? (
-                    // SI l'utilisateur est connecté alors icone user (page profil par ex)
+                    // SI l'utilisateur est connecté alors bouton déconnexion affiché
                     <>
                       <Button
                         color="error"
@@ -171,8 +168,22 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   ) : (
                     // Sinon on l'invite à se créer un compte ou se connecter
                     <>
-                      <LoginModal />
-                      <SignUpModal />
+                      <Button
+                        color="info"
+                        component={RouterLink}
+                        to="/login"
+                        sx={{ marginRight: '0.5rem' }}
+                      >
+                        Se connecter
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        component={RouterLink}
+                        to="/signup"
+                      >
+                        S'inscrire
+                      </Button>
                     </>
                   )}
                 </Grid>

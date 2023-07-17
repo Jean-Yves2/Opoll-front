@@ -10,10 +10,16 @@ const initialValue: SnackbarState = {
 
 export const setSnackbarLogged = createAction<boolean>('snackbar/setLogged');
 
+export const resetSnackbar = createAction('snackbar/reset');
+
 const snackbarReducer = createReducer(initialValue, (builder) => {
-  builder.addCase(setSnackbarLogged, (state, action) => {
-    state.isLogged = action.payload;
-  });
+  builder
+    .addCase(setSnackbarLogged, (state, action) => {
+      state.isLogged = action.payload;
+    })
+    .addCase(resetSnackbar, (state) => {
+      state.isLogged = true;
+    });
 });
 
 export default snackbarReducer;

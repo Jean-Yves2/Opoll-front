@@ -3,6 +3,7 @@ import {
   createAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 interface User {
@@ -19,9 +20,8 @@ interface SignUpState {
     passwordConfirm?: string;
   };
   error: string | null;
-  open: boolean;
   isLoading: boolean;
-  isSucess: boolean;
+  snackbarSucess: boolean;
 }
 
 const initialValue: SignUpState = {
@@ -32,14 +32,12 @@ const initialValue: SignUpState = {
     passwordConfirm: '',
   },
   error: null,
-  open: false,
   isLoading: false,
-  isSucess: false,
+  snackbarSucess: false,
 };
 
 export type KeysOfCredentials = keyof SignUpState['credentials'];
 
-export const toggleModal = createAction<boolean>('signup/TOGGLE_MODAL');
 export const resetSignupState = createAction('signup/RESET_STATE');
 
 export const changeField = createAction<{
@@ -65,13 +63,16 @@ export const handleSignup = createAsyncThunk(
 
 const signupReducer = createReducer(initialValue, (builder) => {
   builder
-    .addCase(toggleModal, (state, action) => {
-      state.open = action.payload;
-    })
-    .addCase(changeField, (state, action) => {
-      const { name, value } = action.payload;
-      state.credentials[name] = value;
-    })
+    .addCase(
+      changeField,
+      (
+        state,
+        action: PayloadAction<{ name: KeysOfCredentials; value: string }>
+      ) => {
+        const { name, value } = action.payload;
+        state.credentials = { ...state.credentials, [name]: value };
+      }
+    )
     .addCase(handleSignup.pending, (state) => {
       // Lorsque mon appel API se lance
       // Je dis que je suis en train de charger
@@ -86,10 +87,20 @@ const signupReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(handleSignup.fulfilled, (state) => {
       state.isLoading = false;
-      state.isSucess = true;
+      state.snackbarSucess = true;
+      state.credentials.email = '';
+      state.credentials.username = '';
+      state.credentials.password = '';
+      state.credentials.passwordConfirm = '';
+      state.error = null;
     })
-    .addCase(resetSignupState, () => {
-      return initialValue;
+    .addCase(resetSignupState, (state) => {
+      state.credentials.email = '';
+      state.credentials.username = '';
+      state.credentials.password = '';
+      state.credentials.passwordConfirm = '';
+      state.snackbarSucess = false;
+      state.error = null;
     });
 });
 

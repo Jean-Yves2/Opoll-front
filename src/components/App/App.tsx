@@ -6,6 +6,8 @@ import Footer from '../Footer/Footer';
 import Home from '../Home/Home';
 import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes';
 import CreateSurveys from '../CreateSurveys/CreateSurveys';
+import Login from '../Login/Login';
+import Signup from '../Signup/Signup';
 
 function App() {
   const lightTheme = createTheme({
@@ -60,17 +62,19 @@ function App() {
 
   const [darkMode, setDarkMode] = useState(true);
 
-  const theme = darkMode ? darkTheme : lightTheme;
+  const themeProviderTheme = darkMode ? darkTheme : lightTheme;
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeProviderTheme}>
       <Router>
         <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/surveys/create"
             element={<ProtectedRoutes element={CreateSurveys} />}

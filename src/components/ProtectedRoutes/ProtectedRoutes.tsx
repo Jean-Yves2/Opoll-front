@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useAppDispatch } from '../../hooks/redux';
 import { setSnackbarLogged } from '../../store/reducers/snackbar';
+import { handleLogout } from '../../store/reducers/login';
 
 interface Props {
   element: ComponentType<any>;
@@ -32,11 +33,13 @@ const ProtectedRoutes = ({ element: Element, ...rest }: Props) => {
           console.log('Une erreur à été détectée, le token est invalide');
           console.error(error);
           dispatch(setSnackbarLogged(false));
+          dispatch(handleLogout());
           navigate('/');
         });
     } else {
       console.log('Token non existant');
       dispatch(setSnackbarLogged(false));
+      dispatch(handleLogout());
       navigate('/');
     }
   }, [dispatch, navigate]);

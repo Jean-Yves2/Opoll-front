@@ -27,8 +27,8 @@ interface LoginState {
   username: string;
   isLogged: boolean;
   error: string | null;
-  open: boolean;
   isLoading: boolean;
+  snackbarSucess?: boolean;
 }
 
 const initialValue: LoginState = {
@@ -39,15 +39,14 @@ const initialValue: LoginState = {
   username: '',
   isLogged: false,
   error: null,
-  open: false,
   isLoading: false,
+  snackbarSucess: false,
 };
 
 const TypedCookies: CookiesType = Cookies;
 
 export type KeysOfCredentials = keyof LoginState['credentials'];
 
-export const toggleModal = createAction<boolean>('login/TOGGLE_MODAL');
 export const resetLoginState = createAction('login/RESET_STATE');
 
 export const handleLogout = createAction('login/HANDLE_LOGOUT', () => {
@@ -80,34 +79,35 @@ export const handleLogin = createAsyncThunk(
 
 const loginReducer = createReducer(initialValue, (builder) => {
   builder
-    .addCase(toggleModal, (state, action) => {
-      state.open = action.payload;
-    })
     .addCase(changeField, (state, action) => {
       const { name, value } = action.payload;
       state.credentials[name] = value;
     })
     .addCase(handleLogin.pending, (state) => {
-      // Lorsque mon appel API se lance
-      // Je dis que je suis en train de charger
       state.isLoading = true;
-      // Si j'avais eu une erreur précédente, je la supprime
       state.error = null;
     })
-    .addCase(handleLogin.rejected, (state) => {
-      state.error = 'Email ou mot de passe incorrect';
+    .addCase(handleLogin.rejected, (state, action) => {
+      state.error = action.payload as string;
       state.isLogged = false;
       state.isLoading = false;
     })
     .addCase(handleLogin.fulfilled, (state) => {
       state.isLogged = true;
+      state.snackbarSucess = true;
       state.isLoading = false;
+      state.credentials.email = '';
+      state.credentials.password = '';
+      state.error = null;
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;
     })
-    .addCase(resetLoginState, () => {
-      return initialValue;
+    .addCase(resetLoginState, (state) => {
+      state.credentials.email = '';
+      state.credentials.password = '';
+      state.snackbarSucess = false;
+      state.error = null;
     });
 });
 
