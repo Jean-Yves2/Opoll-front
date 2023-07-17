@@ -14,6 +14,7 @@ interface Props {
 const ProtectedRoutes = ({ element: Element, ...rest }: Props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -35,14 +36,22 @@ const ProtectedRoutes = ({ element: Element, ...rest }: Props) => {
           dispatch(setSnackbarLogged(false));
           dispatch(handleLogout());
           navigate('/');
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
       console.log('Token non existant');
       dispatch(setSnackbarLogged(false));
       dispatch(handleLogout());
       navigate('/');
+      setIsLoading(false);
     }
   }, [dispatch, navigate]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>

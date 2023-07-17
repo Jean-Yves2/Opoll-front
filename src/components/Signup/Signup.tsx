@@ -43,6 +43,24 @@ function Signup() {
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
   const snackbarSucess = useAppSelector((state) => state.signup.snackbarSucess);
+  const isLogged = useAppSelector((state) => state.login.isLogged);
+  const isSignupSuccess = useAppSelector(
+    (state) => state.signup.isSignupSuccess
+  );
+
+  useEffect(() => {
+    if (isSignupSuccess) {
+      navigate('/'); // Redirigez l'utilisateur vers la page d'accueil après une inscription réussie
+    }
+  }, [isSignupSuccess, navigate]);
+
+  useEffect(() => {
+    if (isLogged) {
+      // Rediriger l'utilisateur connecté vers une autre page
+      // Pour l'empécher d'accéder à la page d'inscription
+      navigate('/');
+    }
+  }, [isLogged, navigate]);
 
   const [errors, setErrors] = useState({
     email: '',
