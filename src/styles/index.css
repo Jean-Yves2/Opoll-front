@@ -7,3 +7,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: #1b1532;
+  height: 80vh;
+  border-radius: 0.5rem;
+  margin: 1rem;
+}
+
+.container.small-screen {
+  width: 100%;
+}
+
+.container.large-screen {
+  width: 55%;
+}

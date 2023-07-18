@@ -16,6 +16,10 @@ const Wrapper = styled('div')({
   justifyContent: 'center',
 });
 
+const Title = styled(Typography)({
+  margin: '1.5rem',
+});
+
 const Form = styled('form')({
   display: 'flex',
   flexDirection: 'column',
@@ -55,25 +59,9 @@ function CreateSurvey() {
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Gestion du responsive ci dessous :
-  const Title = styled(Typography)({
-    margin: '2rem',
-    fontSize: isSmallScreen
-      ? theme.typography.h6.fontSize
-      : theme.typography.h4.fontSize,
-  });
-
-  const Container = styled('div')({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: '1rem',
-    padding: '1rem',
-    backgroundColor: '#1b1532',
-    height: '120vh',
-    width: isSmallScreen ? '85%' : '65%',
-    borderRadius: '0.5rem',
-  });
+  const containerClass = isSmallScreen
+    ? 'container small-screen'
+    : 'container large-screen';
 
   const handleOptionChange = (index: number, value: string) => {
     const newOptions = [...options];
@@ -102,7 +90,7 @@ function CreateSurvey() {
 
   return (
     <Wrapper>
-      <Container>
+      <div className={containerClass}>
         <Title color="secondary">Création d'un sondage</Title>
         <Form onSubmit={handleSubmit}>
           <QuestionTextField label="Question" required />
@@ -179,7 +167,7 @@ function CreateSurvey() {
             Créer
           </Button>
         </Form>
-      </Container>
+      </div>
     </Wrapper>
   );
 }

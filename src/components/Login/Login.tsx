@@ -44,18 +44,9 @@ function Login() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Reponsive :
-  const Container = styled('div')({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '2rem',
-    backgroundColor: '#1b1532',
-    height: '80vh',
-    width: isSmallScreen ? '100%' : '45%',
-    borderRadius: '0.5rem',
-    margin: '1rem',
-  });
+  const containerClass = isSmallScreen
+    ? 'container small-screen'
+    : 'container large-screen';
 
   const [errors, setErrors] = useState<{
     email: string;
@@ -115,7 +106,7 @@ function Login() {
 
   return (
     <Wrapper>
-      <Container>
+      <div className={containerClass}>
         <Title color="secondary" variant="h4">
           Connexion
         </Title>
@@ -165,7 +156,7 @@ function Login() {
             </Button>
           )}
         </Form>
-      </Container>
+      </div>
     </Wrapper>
   );
 }

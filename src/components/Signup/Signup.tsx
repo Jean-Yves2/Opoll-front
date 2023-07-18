@@ -35,18 +35,9 @@ function Signup() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Reponsive :
-  const Container = styled('div')({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '2rem',
-    backgroundColor: '#1b1532',
-    width: isSmallScreen ? '100%' : '45%',
-    height: '100vh',
-    borderRadius: '0.5rem',
-    margin: '1rem',
-  });
+  const containerClass = isSmallScreen
+    ? 'container small-screen'
+    : 'container large-screen';
 
   const email = useAppSelector((state) => state.signup.credentials.email);
   const username = useAppSelector((state) => state.signup.credentials.username);
@@ -148,7 +139,7 @@ function Signup() {
 
   return (
     <Wrapper>
-      <Container>
+      <div className={containerClass}>
         <Title color="secondary" variant="h4">
           Inscription
         </Title>
@@ -230,7 +221,7 @@ function Signup() {
             </Button>
           )}
         </Form>
-      </Container>
+      </div>
     </Wrapper>
   );
 }
