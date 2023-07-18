@@ -8,6 +8,7 @@ import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes';
 import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
 import CreateSurveys from '../CreateSurveys/CreateSurveys';
+import Contact from '../Contact/Contact';
 
 function App() {
   const lightTheme = createTheme({
@@ -79,6 +80,7 @@ function App() {
             path="/surveys/create"
             element={<ProtectedRoutes element={CreateSurveys} />}
           />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
         <Footer />
       </Router>
