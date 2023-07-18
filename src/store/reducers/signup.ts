@@ -3,7 +3,6 @@ import {
   createAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { handleLogin } from './login';
 
@@ -39,14 +38,8 @@ const initialValue: SignUpState = {
   isSignupSuccess: false,
 };
 
-export type KeysOfCredentials = keyof SignUpState['credentials'];
-
-export const resetSignupState = createAction('signup/RESET_STATE');
-
-export const changeField = createAction<{
-  name: KeysOfCredentials;
-  value: string;
-}>('signup/CHANGE_FIELD');
+export const resetSnackbarStatusSignup = createAction('signup/RESET_SNACKBAR');
+export const resetSignupSuccess = createAction('signup/RESET_SUCCESS');
 
 export const handleSignup = createAsyncThunk(
   'signup/HANDLE_SIGNUP',
@@ -68,16 +61,6 @@ export const handleSignup = createAsyncThunk(
 
 const signupReducer = createReducer(initialValue, (builder) => {
   builder
-    .addCase(
-      changeField,
-      (
-        state,
-        action: PayloadAction<{ name: KeysOfCredentials; value: string }>
-      ) => {
-        const { name, value } = action.payload;
-        state.credentials = { ...state.credentials, [name]: value };
-      }
-    )
     .addCase(handleSignup.pending, (state) => {
       // Lorsque mon appel API se lance
       // Je dis que je suis en train de charger
@@ -93,20 +76,14 @@ const signupReducer = createReducer(initialValue, (builder) => {
     .addCase(handleSignup.fulfilled, (state) => {
       state.isLoading = false;
       state.snackbarSucess = true;
-      state.credentials.email = '';
-      state.credentials.username = '';
-      state.credentials.password = '';
-      state.credentials.passwordConfirm = '';
       state.isSignupSuccess = true;
       state.error = null;
     })
-    .addCase(resetSignupState, (state) => {
-      state.credentials.email = '';
-      state.credentials.username = '';
-      state.credentials.password = '';
-      state.credentials.passwordConfirm = '';
+    .addCase(resetSnackbarStatusSignup, (state) => {
       state.snackbarSucess = false;
-      state.error = null;
+    })
+    .addCase(resetSignupSuccess, (state) => {
+      state.isSignupSuccess = false;
     });
 });
 

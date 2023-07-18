@@ -51,8 +51,23 @@ const QuestionTextField = styled(TextField)({
   },
 });
 
-function CreateSurvey() {
+type SurveyData = {
+  question: string;
+  options: string[];
+  isPublic: boolean;
+  multipleChoice: boolean;
+  endDate?: string;
+};
+
+type CreateSurveyProps = {
+  onSubmit: (data: SurveyData) => void;
+};
+
+function CreateSurvey({ onSubmit }: CreateSurveyProps) {
+  const [question, setQuestion] = useState('');
   const [options, setOptions] = useState<string[]>(['', '']);
+  const [isPublic, setIsPublic] = useState(true);
+  const [multipleChoice, setMultipleChoice] = useState(true);
   const [endDateEnabled, setEndDateEnabled] = useState(false);
   const [endDate, setEndDate] = useState('');
   const theme = useTheme();
@@ -83,17 +98,33 @@ function CreateSurvey() {
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSurveySubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Logique de soumission du formulaire
+
+    const surveyData = {
+      question,
+      options,
+      isPublic,
+      multipleChoice,
+      endDate: endDateEnabled ? endDate : undefined,
+    };
+
+    onSubmit(surveyData);
   };
 
   return (
     <Wrapper>
       <div className={containerClass}>
-        <Title color="secondary">Création d'un sondage</Title>
-        <Form onSubmit={handleSubmit}>
-          <QuestionTextField label="Question" required />
+        <Title color="secondary" variant="h4">
+          Création d'un sondage
+        </Title>
+        <Form onSubmit={handleSurveySubmit}>
+          <QuestionTextField
+            label="Question"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            required
+          />
           {options.map((option, index) => (
             <TextField
               key={index}
@@ -123,7 +154,12 @@ function CreateSurvey() {
           )}
           <FormGroup>
             <CustomFormControlLabel
-              control={<Checkbox defaultChecked />}
+              control={
+                <Checkbox
+                  checked={isPublic}
+                  onChange={(e) => setIsPublic(e.target.checked)}
+                />
+              }
               label={
                 <Typography variant="body1" color="inherit">
                   Rendre le sondage publique
@@ -131,7 +167,12 @@ function CreateSurvey() {
               }
             />
             <CustomFormControlLabel
-              control={<Checkbox defaultChecked />}
+              control={
+                <Checkbox
+                  checked={multipleChoice}
+                  onChange={(e) => setMultipleChoice(e.target.checked)}
+                />
+              }
               label={
                 <Typography variant="body1" color="inherit">
                   Choix multiples autorisés

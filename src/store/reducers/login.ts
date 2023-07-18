@@ -47,6 +47,7 @@ const TypedCookies: CookiesType = Cookies;
 
 export type KeysOfCredentials = keyof LoginState['credentials'];
 
+export const resetSnackbarStatusLogin = createAction('signup/RESET_SNACKBAR');
 export const resetLoginState = createAction('login/RESET_STATE');
 
 export const handleLogout = createAction('login/HANDLE_LOGOUT', () => {
@@ -106,8 +107,10 @@ const loginReducer = createReducer(initialValue, (builder) => {
     .addCase(resetLoginState, (state) => {
       state.credentials.email = '';
       state.credentials.password = '';
-      state.snackbarSucess = false;
       state.error = null;
+    })
+    .addCase(resetSnackbarStatusLogin, (state) => {
+      state.snackbarSucess = false;
     });
 });
 

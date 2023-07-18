@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { resetSnackbar } from '../../store/reducers/snackbar';
-import { resetSignupState } from '../../store/reducers/signup';
-import { resetLoginState } from '../../store/reducers/login';
+import { resetSnackbarStatusSignup } from '../../store/reducers/signup';
+import { resetSnackbarStatusLogin } from '../../store/reducers/login';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -83,10 +83,13 @@ const Title = styled(Typography)({
 
 function Home() {
   const dispatch = useAppDispatch();
+  // Snackbar pour les utilisateurs non connectés
   const snackbarLogged = useAppSelector((state) => state.snackbar.isLogged);
-  const snackbarSuccessfullLogin = useAppSelector(
+  // Snackbar pour connexion réussie
+  const snackbarSuccessLogin = useAppSelector(
     (state) => state.login.snackbarSucess
   );
+  // Snackbar pour inscription réussie
   const snackbarSucessSignup = useAppSelector(
     (state) => state.signup.snackbarSucess
   );
@@ -100,27 +103,28 @@ function Home() {
 
   useEffect(() => {
     if (!snackbarLogged) {
+      // Si je ne suis pas connecté, je veux que mon snackbar s'affiche
       setOpenSnackbar(true);
       setSnackbarMessage('Vous devez être connecté pour accéder à cette page.');
       setSnackbarSeverity('error');
       dispatch(resetSnackbar());
-    } else if (snackbarSuccessfullLogin) {
+      // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page d'accueil
+    } else if (snackbarSuccessLogin) {
+      // Si ma connexion est réussie, je veux que mon snackbar s'affiche
       setOpenSnackbar(true);
       setSnackbarMessage('Connexion réussie !');
       setSnackbarSeverity('success');
-      dispatch(resetLoginState);
+      dispatch(resetSnackbarStatusLogin());
+      // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page de connexion
     } else if (snackbarSucessSignup) {
+      // Si mon inscription est réussie, je veux que mon snackbar s'affiche
       setOpenSnackbar(true);
       setSnackbarMessage('Inscription réussie !');
       setSnackbarSeverity('success');
-      dispatch(resetSignupState);
+      dispatch(resetSnackbarStatusSignup);
+      // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page d'inscription
     }
-  }, [
-    snackbarLogged,
-    snackbarSuccessfullLogin,
-    snackbarSucessSignup,
-    dispatch,
-  ]);
+  }, [snackbarLogged, snackbarSuccessLogin, snackbarSucessSignup, dispatch]);
 
   return (
     <>

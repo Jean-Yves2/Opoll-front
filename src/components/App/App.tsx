@@ -5,7 +5,7 @@ import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import Home from '../Home/Home';
 import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes';
-import CreateSurveys from '../CreateSurveys/CreateSurveys';
+import SurveyApp from '../CreateSurveys/SurveyApp';
 import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
 
@@ -77,7 +77,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/surveys/create"
-            element={<ProtectedRoutes element={CreateSurveys} />}
+            element={<ProtectedRoutes element={SurveyApp} />}
           />
         </Routes>
         <Footer />

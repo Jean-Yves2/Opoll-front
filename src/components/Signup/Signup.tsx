@@ -1,13 +1,12 @@
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { changeField, handleSignup } from '../../store/reducers/signup';
+import { handleSignup } from '../../store/reducers/signup';
 import { styled, useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { resetSignupState } from '../../store/reducers/signup';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Wrapper = styled('div')({
@@ -39,12 +38,6 @@ function Signup() {
     ? 'container small-screen'
     : 'container large-screen';
 
-  const email = useAppSelector((state) => state.signup.credentials.email);
-  const username = useAppSelector((state) => state.signup.credentials.username);
-  const password = useAppSelector((state) => state.signup.credentials.password);
-  const passwordConfirm = useAppSelector(
-    (state) => state.signup.credentials.passwordConfirm
-  );
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
   const snackbarSucess = useAppSelector((state) => state.signup.snackbarSucess);
@@ -74,9 +67,15 @@ function Signup() {
     passwordConfirm: '',
   });
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const [userInput, setUserInput] = useState({
+    email: '',
+    username: '',
+    password: '',
+    passwordConfirm: '',
+  });
 
+  const validateInput = () => {
+    const { email, username, password, passwordConfirm } = userInput;
     const validationErrors = {
       email: '',
       username: '',
@@ -103,23 +102,32 @@ function Signup() {
         'Les mots de passe ne correspondent pas';
     }
 
+    return validationErrors;
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const validationErrors = validateInput();
+
     setErrors(validationErrors);
 
     const isValid = Object.values(validationErrors).every((error) => !error);
 
     if (isValid) {
-      void dispatch(
-        handleSignup({ email, password, passwordConfirm, username })
-      );
+      void dispatch(handleSignup(userInput));
     }
   };
 
-  useEffect(() => {
-    return () => {
-      // Réinitialisez l'état lorsque le composant est démonté
-      dispatch(resetSignupState());
-    };
-  }, [dispatch]);
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+    setUserInput((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   useEffect(() => {
     // Vérifiez si l'utilisateur est connecté avec succès
@@ -131,12 +139,6 @@ function Signup() {
     }
   }, [snackbarSucess, dispatch, navigate]);
 
-  const handleChangeField =
-    (name: 'email' | 'password' | 'username' | 'passwordConfirm') =>
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      dispatch(changeField({ value: event.target.value, name }));
-    };
-
   return (
     <Wrapper>
       <div className={containerClass}>
@@ -145,12 +147,13 @@ function Signup() {
         </Title>
         <Form onSubmit={handleSubmit}>
           <TextField
+            name="email"
             error={!!errors.email}
             helperText={errors.email}
             label="Email"
             required
-            value={email}
-            onChange={(e) => handleChangeField('email')(e)}
+            value={userInput.email}
+            onChange={handleChange}
             fullWidth
             margin="normal"
             variant="outlined"
@@ -158,6 +161,7 @@ function Signup() {
           />
 
           <TextField
+            name="username"
             error={!!errors.username}
             helperText={
               errors.username ||
@@ -165,8 +169,8 @@ function Signup() {
             }
             label="Pseudo"
             required
-            value={username}
-            onChange={(e) => handleChangeField('username')(e)}
+            value={userInput.username}
+            onChange={handleChange}
             fullWidth
             margin="normal"
             variant="outlined"
@@ -174,6 +178,7 @@ function Signup() {
           />
 
           <TextField
+            name="password"
             error={!!errors.password}
             helperText={
               errors.password ||
@@ -181,8 +186,8 @@ function Signup() {
             }
             label="Mot de passe"
             required
-            value={password}
-            onChange={(e) => handleChangeField('password')(e)}
+            value={userInput.password}
+            onChange={handleChange}
             fullWidth
             margin="normal"
             variant="outlined"
@@ -190,12 +195,13 @@ function Signup() {
           />
 
           <TextField
+            name="passwordConfirm"
             error={!!errors.passwordConfirm}
             helperText={errors.passwordConfirm}
             label="Confirmer le mot de passe"
             required
-            value={passwordConfirm}
-            onChange={(e) => handleChangeField('passwordConfirm')(e)}
+            value={userInput.passwordConfirm}
+            onChange={handleChange}
             fullWidth
             margin="normal"
             variant="outlined"

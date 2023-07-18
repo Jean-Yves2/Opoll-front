@@ -20,6 +20,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { handleLogout, resetLoginState } from '../../store/reducers/login';
+import { resetSignupSuccess } from '../../store/reducers/signup';
 import DarkModeToggle from './DarkModeToggle';
 
 interface DarkModeToggleProps {
@@ -43,6 +44,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   const handleLogoutClick = () => {
     dispatch(resetLoginState());
     dispatch(handleLogout());
+    dispatch(resetSignupSuccess());
   };
 
   const backgroundColor = darkMode
