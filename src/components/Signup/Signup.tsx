@@ -1,21 +1,20 @@
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { changeField, handleSignup } from '../../store/reducers/signup';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { resetSignupState } from '../../store/reducers/signup';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
-const Container = styled('div')({
+const Wrapper = styled('div')({
+  backgroundColor: '#3e3274',
+  padding: '1rem',
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '2rem',
-  backgroundColor: '#1b1532',
-  height: '100vh',
+  justifyContent: 'center',
 });
 
 const Title = styled(Typography)({
@@ -33,6 +32,21 @@ const Form = styled('form')({
 function Signup() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Reponsive :
+  const Container = styled('div')({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '2rem',
+    backgroundColor: '#1b1532',
+    width: isSmallScreen ? '100%' : '45%',
+    height: '100vh',
+    borderRadius: '0.5rem',
+    margin: '1rem',
+  });
 
   const email = useAppSelector((state) => state.signup.credentials.email);
   const username = useAppSelector((state) => state.signup.credentials.username);
@@ -133,88 +147,91 @@ function Signup() {
     };
 
   return (
-    <Container>
-      <Title color="secondary" variant="h4">
-        Inscription
-      </Title>
-      <Form onSubmit={handleSubmit}>
-        <TextField
-          error={!!errors.email}
-          helperText={errors.email}
-          label="Email"
-          required
-          value={email}
-          onChange={(e) => handleChangeField('email')(e)}
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          type="email"
-        />
+    <Wrapper>
+      <Container>
+        <Title color="secondary" variant="h4">
+          Inscription
+        </Title>
+        <Form onSubmit={handleSubmit}>
+          <TextField
+            error={!!errors.email}
+            helperText={errors.email}
+            label="Email"
+            required
+            value={email}
+            onChange={(e) => handleChangeField('email')(e)}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            type="email"
+          />
 
-        <TextField
-          error={!!errors.username}
-          helperText={
-            errors.username || 'Votre pseudo doit faire moins de 15 caractères'
-          }
-          label="Pseudo"
-          required
-          value={username}
-          onChange={(e) => handleChangeField('username')(e)}
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          type="text"
-        />
+          <TextField
+            error={!!errors.username}
+            helperText={
+              errors.username ||
+              'Votre pseudo doit faire moins de 15 caractères'
+            }
+            label="Pseudo"
+            required
+            value={username}
+            onChange={(e) => handleChangeField('username')(e)}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            type="text"
+          />
 
-        <TextField
-          error={!!errors.password}
-          helperText={
-            errors.password ||
-            'Votre mot de passe doit être entre 6 et 20 caractères'
-          }
-          label="Mot de passe"
-          required
-          value={password}
-          onChange={(e) => handleChangeField('password')(e)}
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          type="password"
-        />
+          <TextField
+            error={!!errors.password}
+            helperText={
+              errors.password ||
+              'Votre mot de passe doit être entre 6 et 20 caractères'
+            }
+            label="Mot de passe"
+            required
+            value={password}
+            onChange={(e) => handleChangeField('password')(e)}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            type="password"
+          />
 
-        <TextField
-          error={!!errors.passwordConfirm}
-          helperText={errors.passwordConfirm}
-          label="Confirmer le mot de passe"
-          required
-          value={passwordConfirm}
-          onChange={(e) => handleChangeField('passwordConfirm')(e)}
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          type="password"
-        />
+          <TextField
+            error={!!errors.passwordConfirm}
+            helperText={errors.passwordConfirm}
+            label="Confirmer le mot de passe"
+            required
+            value={passwordConfirm}
+            onChange={(e) => handleChangeField('passwordConfirm')(e)}
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            type="password"
+          />
 
-        <Typography sx={{ ml: 4 }} color="error">
-          {error}
-        </Typography>
+          <Typography sx={{ ml: 4 }} color="error">
+            {error}
+          </Typography>
 
-        {isLoading ? (
-          <Button variant="contained" color="primary" disabled>
-            <CircularProgress size={24} color="inherit" />
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            size="large"
-          >
-            S'inscrire
-          </Button>
-        )}
-      </Form>
-    </Container>
+          {isLoading ? (
+            <Button variant="contained" color="primary" disabled>
+              <CircularProgress size={24} color="inherit" />
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              size="large"
+            >
+              S'inscrire
+            </Button>
+          )}
+        </Form>
+      </Container>
+    </Wrapper>
   );
 }
 

@@ -142,6 +142,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                     color="info"
                     component={RouterLink}
                     to="/surveys/create"
+                    sx={{ ml: '6rem' }}
                   >
                     Créer un sondage
                   </Button>
