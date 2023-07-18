@@ -84,7 +84,7 @@ const Title = styled(Typography)({
 function Home() {
   const dispatch = useAppDispatch();
   // Snackbar pour les utilisateurs non connectés
-  const snackbarLogged = useAppSelector((state) => state.snackbar.isLogged);
+  const snackbarIsLogged = useAppSelector((state) => state.snackbar.isLogged);
   // Snackbar pour connexion réussie
   const snackbarSuccessLogin = useAppSelector(
     (state) => state.login.snackbarSucess
@@ -102,7 +102,7 @@ function Home() {
   };
 
   useEffect(() => {
-    if (!snackbarLogged) {
+    if (!snackbarIsLogged) {
       // Si je ne suis pas connecté, je veux que mon snackbar s'affiche
       setOpenSnackbar(true);
       setSnackbarMessage('Vous devez être connecté pour accéder à cette page.');
@@ -121,16 +121,16 @@ function Home() {
       setOpenSnackbar(true);
       setSnackbarMessage('Inscription réussie !');
       setSnackbarSeverity('success');
-      dispatch(resetSnackbarStatusSignup);
+      dispatch(resetSnackbarStatusSignup());
       // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page d'inscription
     }
-  }, [snackbarLogged, snackbarSuccessLogin, snackbarSucessSignup, dispatch]);
+  }, [snackbarIsLogged, snackbarSuccessLogin, snackbarSucessSignup, dispatch]);
 
   return (
     <>
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         onClose={handleSnackbarClose}
       >
         <Alert severity={snackbarSeverity}>{snackbarMessage}</Alert>

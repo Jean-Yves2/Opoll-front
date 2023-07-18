@@ -5,17 +5,16 @@ interface SnackbarState {
 }
 
 const initialValue: SnackbarState = {
-  isLogged: false,
+  isLogged: true,
 };
 
-export const setSnackbarLogged = createAction<boolean>('snackbar/setLogged');
-
+export const showSnackbar = createAction('snackbar/show');
 export const resetSnackbar = createAction('snackbar/reset');
 
 const snackbarReducer = createReducer(initialValue, (builder) => {
   builder
-    .addCase(setSnackbarLogged, (state, action) => {
-      state.isLogged = action.payload;
+    .addCase(showSnackbar, (state) => {
+      state.isLogged = false;
     })
     .addCase(resetSnackbar, (state) => {
       state.isLogged = true;

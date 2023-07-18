@@ -5,9 +5,9 @@ import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import Home from '../Home/Home';
 import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes';
-import SurveyApp from '../CreateSurveys/SurveyApp';
 import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
+import CreateSurveys from '../CreateSurveys/CreateSurveys';
 
 function App() {
   const lightTheme = createTheme({
@@ -77,7 +77,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/surveys/create"
-            element={<ProtectedRoutes element={SurveyApp} />}
+            element={<ProtectedRoutes element={CreateSurveys} />}
           />
         </Routes>
         <Footer />
