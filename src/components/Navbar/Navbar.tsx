@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -19,7 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import PollIcon from '@mui/icons-material/Poll';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { handleLogout, resetLoginState } from '../../store/reducers/login';
+import { handleLogout } from '../../store/reducers/login';
 import { resetSignupSuccess } from '../../store/reducers/signup';
 import DarkModeToggle from './DarkModeToggle';
 
@@ -31,6 +31,7 @@ interface DarkModeToggleProps {
 function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const isMinMdScreen = useMediaQuery(theme.breakpoints.up('md'));
   const isMaxMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -42,9 +43,9 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   });
 
   const handleLogoutClick = () => {
-    dispatch(resetLoginState());
     dispatch(handleLogout());
     dispatch(resetSignupSuccess());
+    navigate('/');
   };
 
   const backgroundColor = darkMode
@@ -63,11 +64,15 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
       setDrawerOpen(open);
     };
 
-  const menuItems = [
-    { name: 'Créer un sondage', path: '/surveys/create' },
-    { name: "S'inscrire", path: '/signup' },
-    { name: 'Se connecter', path: '/login' },
-  ];
+  const menuItems = isLogged
+    ? [
+        { name: 'Créer un sondage', path: '/surveys/create' },
+        { name: 'Déconnexion', path: '/logout' },
+      ]
+    : [
+        { name: "S'inscrire", path: '/signup' },
+        { name: 'Se connecter', path: '/login' },
+      ];
 
   const list = () => (
     <Box
@@ -86,27 +91,68 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
         }}
       >
         <PersonIcon sx={{ fontSize: '5em' }} />
-        {menuItems.map((item) => (
-          <ListItem
-            key={item.name}
-            component={RouterLink}
-            to={item.path}
-            sx={{
-              padding: '40px',
-              '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
-            }}
-          >
-            <ListItemText>
-              <Typography
-                variant="h4"
-                sx={{ textAlign: 'center' }}
-                color="white"
-              >
-                {item.name}
-              </Typography>
-            </ListItemText>
-          </ListItem>
-        ))}
+        {isLogged ? (
+          <>
+            <ListItem
+              component={RouterLink}
+              to="/surveys/create"
+              sx={{
+                padding: '40px',
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
+              }}
+            >
+              <ListItemText>
+                <Typography
+                  variant="h4"
+                  sx={{ textAlign: 'center' }}
+                  color="white"
+                >
+                  Créer un sondage
+                </Typography>
+              </ListItemText>
+            </ListItem>
+            <ListItem
+              key="Déconnexion"
+              onClick={handleLogoutClick}
+              sx={{
+                padding: '40px',
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
+              }}
+            >
+              <ListItemText>
+                <Typography
+                  variant="h4"
+                  sx={{ textAlign: 'center' }}
+                  color="white"
+                >
+                  Déconnexion
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          </>
+        ) : (
+          menuItems.map((item) => (
+            <ListItem
+              key={item.name}
+              component={RouterLink}
+              to={item.path}
+              sx={{
+                padding: '40px',
+                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
+              }}
+            >
+              <ListItemText>
+                <Typography
+                  variant="h4"
+                  sx={{ textAlign: 'center' }}
+                  color="white"
+                >
+                  {item.name}
+                </Typography>
+              </ListItemText>
+            </ListItem>
+          ))
+        )}
       </List>
     </Box>
   );

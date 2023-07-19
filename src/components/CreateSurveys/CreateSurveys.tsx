@@ -8,6 +8,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import axios from 'axios';
 
 const Wrapper = styled('div')({
   backgroundColor: '#3e3274',
@@ -59,11 +60,7 @@ type SurveyData = {
   endDate?: string;
 };
 
-type CreateSurveyProps = {
-  onSubmit: (data: SurveyData) => void;
-};
-
-function CreateSurvey({ onSubmit }: CreateSurveyProps) {
+function CreateSurvey() {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState<string[]>(['', '']);
   const [isPublic, setIsPublic] = useState(true);
@@ -101,7 +98,7 @@ function CreateSurvey({ onSubmit }: CreateSurveyProps) {
   const handleSurveySubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const surveyData = {
+    const surveyData: SurveyData = {
       question,
       options,
       isPublic,
@@ -109,7 +106,15 @@ function CreateSurvey({ onSubmit }: CreateSurveyProps) {
       endDate: endDateEnabled ? endDate : undefined,
     };
 
-    onSubmit(surveyData);
+    axios
+      .post('/@me/survey', surveyData)
+      // Envoie du sondage au serveur
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -162,7 +167,7 @@ function CreateSurvey({ onSubmit }: CreateSurveyProps) {
               }
               label={
                 <Typography variant="body1" color="inherit">
-                  Rendre le sondage publique
+                  Rendre le sondage public
                 </Typography>
               }
             />

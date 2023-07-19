@@ -6,10 +6,29 @@ import { resetSnackbarStatusLogin } from '../../store/reducers/login';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import { PieChart } from '@mui/x-charts/PieChart';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { AlertColor } from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import { PieChart } from '@mui/x-charts/PieChart';
+import { Link as RouterLink } from 'react-router-dom';
+
+const Wrapper = styled('div')({
+  backgroundColor: '#3e3274',
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  height: 'auto',
+});
+
+const Title = styled(Typography)({
+  color: '#F2BE22',
+  fontSize: '4rem',
+  textAlign: 'center',
+  position: 'absolute',
+});
 
 const ImageContainer = styled('div')({
   height: '100vh',
@@ -26,36 +45,39 @@ const ImageContainer = styled('div')({
   zIndex: 1,
 });
 
-const PieChartContainer = styled('div')({
-  height: '65vh',
+const PollExampleContainer = styled('div')({
+  height: '70vh',
+  width: '100%',
   backgroundColor: '#1b1532',
   display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
+const LinearContainer = styled('div')({
+  width: '80%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
   flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
 });
 
-const ButtonWrapper = styled('div')({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '30%',
-});
-
-const PieChartWrapper = styled('div')({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '70%',
-  marginLeft: '5%',
-});
-
-const PollContainer = styled('div')({
-  height: '45vh',
+const PieChartContainer = styled('div')({
+  height: '60vh',
+  width: '100%',
   backgroundColor: '#120e21',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+});
+
+const ButtonContainer = styled('div')({
+  height: '60vh',
+  width: '100%',
+  backgroundColor: '#1b1532',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
   flexDirection: 'column',
 });
 
@@ -63,25 +85,26 @@ const ButtonPollContrainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '20%',
-  width: '50%',
-  marginBottom: '0.5rem',
+  height: '10vh',
 });
 
-const ColorContainer = styled('div')({
-  height: '20vh',
-  backgroundColor: '#1b1532',
-});
-
-const Title = styled(Typography)({
-  color: '#F2BE22',
-  fontSize: '4rem',
-  textAlign: 'center',
-  position: 'absolute',
-  zIndex: 2,
+const GetStarted = styled('div')({
+  height: '40vh',
+  width: '100%',
+  backgroundColor: '#120e21',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexWrap: 'wrap',
 });
 
 function Home() {
+  const data = [
+    { id: 0, value: 44, color: '#F44336', label: 'Réponse 1' },
+    { id: 1, value: 26, color: '#2196F3', label: 'Réponse 2' },
+    { id: 2, value: 20, color: '#4CAF50', label: 'Réponse 3' },
+    { id: 3, value: 10, color: '#7f2f57', label: 'Réponse 4' },
+  ];
   const dispatch = useAppDispatch();
   // Snackbar pour les utilisateurs non connectés
   const snackbarIsLogged = useAppSelector((state) => state.snackbar.isLogged);
@@ -127,7 +150,7 @@ function Home() {
   }, [snackbarIsLogged, snackbarSuccessLogin, snackbarSucessSignup, dispatch]);
 
   return (
-    <>
+    <Wrapper>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2000}
@@ -140,55 +163,86 @@ function Home() {
         <Title variant="h1">O'Poll</Title>
       </ImageContainer>
 
+      <PollExampleContainer>
+        <LinearContainer>
+          {data.map((item) => (
+            <Box key={item.id} sx={{ width: '100%', marginBottom: '2rem' }}>
+              <Typography
+                variant="caption"
+                sx={{ color: '#ffffff', fontSize: '1rem' }}
+              >
+                {item.label} ({item.value} Votes)
+              </Typography>
+              <LinearProgress
+                variant="determinate"
+                value={item.value}
+                sx={{
+                  color: item.color,
+                  backgroundColor: '#212121',
+                  height: '2rem',
+                  border: '1px solid #565656',
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: item.color,
+                  },
+                }}
+              />
+            </Box>
+          ))}
+        </LinearContainer>
+      </PollExampleContainer>
+
       <PieChartContainer>
-        <ButtonWrapper>
-          <Button variant="contained" size="large" color="primary">
-            Créer un sondage
-          </Button>
-        </ButtonWrapper>
-        <PieChartWrapper>
-          <PieChart
-            series={[
-              {
-                data: [
-                  { id: 0, value: 10 },
-                  { id: 1, value: 15 },
-                  { id: 2, value: 20 },
-                  { id: 3, value: 20 },
-                ],
-              },
-            ]}
-            width={500}
-            height={250}
-          />
-        </PieChartWrapper>
+        <PieChart series={[{ data }]} width={500} height={300} />
       </PieChartContainer>
 
-      <PollContainer>
+      <ButtonContainer>
         <ButtonPollContrainer>
           <Button variant="contained" size="large" color="primary">
-            Option 1
+            Réponse 1
           </Button>
         </ButtonPollContrainer>
         <ButtonPollContrainer>
           <Button variant="contained" size="large" color="primary">
-            Option 2
+            Réponse 2
           </Button>
         </ButtonPollContrainer>
         <ButtonPollContrainer>
           <Button variant="contained" size="large" color="primary">
-            Option 3
+            Réponse 3
           </Button>
         </ButtonPollContrainer>
         <ButtonPollContrainer>
           <Button variant="contained" size="large" color="primary">
-            Option 4
+            Réponse 4
           </Button>
         </ButtonPollContrainer>
-      </PollContainer>
-
-      <ColorContainer />
-    </>
+      </ButtonContainer>
+      <GetStarted>
+        <Typography
+          variant="h2"
+          sx={{
+            color: '#ffffff',
+            fontSize: '2.5rem',
+            textAlign: 'center',
+            marginRight: '2rem',
+          }}
+        >
+          Créez votre premier sondage !
+        </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          color="primary"
+          component={RouterLink}
+          to="/surveys/create"
+          sx={{
+            padding: '1rem 2rem',
+          }}
+        >
+          Créer un sondage
+        </Button>
+      </GetStarted>
+    </Wrapper>
   );
 }
 
