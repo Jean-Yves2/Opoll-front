@@ -59,7 +59,7 @@ function Footer() {
               <StyledLink to="/contact">Contactez nous</StyledLink>
             </Grid>
             <Grid item>
-              <StyledLink to="/À-propos">A propos de nous</StyledLink>
+              <StyledLink to="/A-propos">A propos de nous</StyledLink>
             </Grid>
             <Grid item>
               <StyledLink to="/mentions-legales">Mentions légales</StyledLink>

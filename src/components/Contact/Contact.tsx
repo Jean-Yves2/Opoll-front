@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import './Contact.scss';
 
 function Contact() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
@@ -14,7 +15,8 @@ function Contact() {
   };
 
   return (
-    <div className="Contact">
+    <div className='container1'>
+      <div className="Contact">
       <Grid>
         <Card style={{ maxWidth: 450, padding: '20px 5px', margin: '0 auto' }}>
           <CardContent>
@@ -89,6 +91,9 @@ function Contact() {
         </Card>
       </Grid>
     </div>
+
+    </div>
+    
   );
 }
 
