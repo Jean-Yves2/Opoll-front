@@ -1,27 +1,26 @@
+import DarkModeToggle from './DarkModeToggle';
+import DrawerList from './DrawerList';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { styled, useTheme } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import CloseIcon from '@mui/icons-material/Close';
-import PersonIcon from '@mui/icons-material/Person';
-import PollIcon from '@mui/icons-material/Poll';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { handleLogout } from '../../store/reducers/login';
 import { resetSignupSuccess } from '../../store/reducers/signup';
-import DarkModeToggle from './DarkModeToggle';
+import { styled, useTheme } from '@mui/material/styles';
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  Grid,
+  Typography,
+  Button,
+  Link,
+  IconButton,
+  Drawer,
+  useMediaQuery,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import PollIcon from '@mui/icons-material/Poll';
 
 interface DarkModeToggleProps {
   darkMode: boolean;
@@ -29,35 +28,40 @@ interface DarkModeToggleProps {
 }
 
 function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
-  const theme = useTheme();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
+
   const isMinMdScreen = useMediaQuery(theme.breakpoints.up('md'));
   const isMaxMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isLogged = useAppSelector((state) => state.login.isLogged);
 
-  const MainContent = styled('div')({
+  const NavbarContainer = styled('div')({
     marginTop: '60px',
   });
 
+  // Fonction qui gère la déconnexion
   const handleLogoutClick = () => {
     dispatch(handleLogout());
     dispatch(resetSignupSuccess());
     navigate('/');
   };
 
+  // Gestion de la couleur du background de la navbar
   const backgroundColor = darkMode
     ? theme.palette.background.paper
     : theme.palette.background.paper;
 
+  // Fonction pour gérer l'ouverture et la fermeture du tiroir (drawer)
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === 'keydown' &&
         ((event as React.KeyboardEvent).key === 'Tab' ||
           (event as React.KeyboardEvent).key === 'Shift')
+        // Gestion de l'accesibilité pour les personnes utilisant un clavier
       ) {
         return;
       }
@@ -74,95 +78,25 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
         { name: 'Se connecter', path: '/login' },
       ];
 
+  // Fonction qui gère le contenu du menu dropdown à partir du composant DrawerList
   const list = () => (
     <Box
       sx={{ width: '100%', height: '100%' }}
       role="presentation"
       onClick={toggleDrawer(false)}
     >
-      <List
-        sx={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <PersonIcon sx={{ fontSize: '5em' }} />
-        {isLogged ? (
-          <>
-            <ListItem
-              component={RouterLink}
-              to="/surveys/create"
-              sx={{
-                padding: '40px',
-                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
-              }}
-            >
-              <ListItemText>
-                <Typography
-                  variant="h4"
-                  sx={{ textAlign: 'center' }}
-                  color="white"
-                >
-                  Créer un sondage
-                </Typography>
-              </ListItemText>
-            </ListItem>
-            <ListItem
-              key="Déconnexion"
-              onClick={handleLogoutClick}
-              sx={{
-                padding: '40px',
-                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
-              }}
-            >
-              <ListItemText>
-                <Typography
-                  variant="h4"
-                  sx={{ textAlign: 'center' }}
-                  color="white"
-                >
-                  Déconnexion
-                </Typography>
-              </ListItemText>
-            </ListItem>
-          </>
-        ) : (
-          menuItems.map((item) => (
-            <ListItem
-              key={item.name}
-              component={RouterLink}
-              to={item.path}
-              sx={{
-                padding: '40px',
-                '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.2)' },
-              }}
-            >
-              <ListItemText>
-                <Typography
-                  variant="h4"
-                  sx={{ textAlign: 'center' }}
-                  color="white"
-                >
-                  {item.name}
-                </Typography>
-              </ListItemText>
-            </ListItem>
-          ))
-        )}
-      </List>
+      <DrawerList menuItems={menuItems} onLogout={handleLogoutClick} />
     </Box>
   );
 
   return (
-    <MainContent>
+    <NavbarContainer>
       <Box sx={{ flexGrow: 3 }}>
-        <AppBar position="fixed" sx={{ backgroundColor, top: 0 }}>
+        {/* backgroundColor pour gérer le futur darkmode/lightmode */}
+        <AppBar position="fixed" sx={{ backgroundColor }}>
           <Toolbar>
             <Grid container justifyContent="space-between" alignItems="center">
+              {/* Gestion du logo  */}
               <Grid item>
                 <Typography variant="h5" sx={{ ml: 3 }}>
                   <Link
@@ -184,18 +118,22 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   </IconButton>
                 </Typography>
               </Grid>
+
+              {/* Gestion des boutons de la navbar en mode Desktop  (900px+) */}
               {isMinMdScreen && (
                 <Grid item>
                   <Button
                     color="info"
                     component={RouterLink}
                     to="/surveys/create"
-                    sx={{ ml: '6rem' }}
                   >
                     Créer un sondage
                   </Button>
                 </Grid>
               )}
+
+              {/* Si l'utilisateur est en mode Desktop (900px + de large) et il est connecté 
+              affiche bouton déconnexion*/}
               {isMinMdScreen && (
                 <Grid item>
                   <DarkModeToggle
@@ -237,8 +175,11 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   )}
                 </Grid>
               )}
+
+              {/* Gestion de l'affichage du menu dropdown sur les écran mobile (900px-) */}
               {isMaxMdScreen && (
                 <>
+                  {/* Icone menu dropdown */}
                   <IconButton
                     size="large"
                     edge="start"
@@ -247,12 +188,14 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                     sx={{ mr: 2 }}
                     onClick={toggleDrawer(true)}
                   >
+                    {/* Si le menu dropdown est ouvert alors affiche l'icone close sinon affiche l'icone menu */}
                     {drawerOpen ? (
                       <CloseIcon sx={{ fontSize: 50 }} />
                     ) : (
                       <MenuIcon sx={{ fontSize: 50 }} />
                     )}
                   </IconButton>
+                  {/* Gestion du drawer, style/transition et fonction pour ouvrir / fermer */}
                   <Drawer
                     anchor="top"
                     transitionDuration={{
@@ -269,6 +212,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                       },
                     }}
                   >
+                    {/* Contenu du drawer qui est conenu dans le composant DrawerList */}
                     {list()}
                   </Drawer>
                 </>
@@ -277,7 +221,7 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
           </Toolbar>
         </AppBar>
       </Box>
-    </MainContent>
+    </NavbarContainer>
   );
 }
 

@@ -1,14 +1,17 @@
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { styled, useTheme } from '@mui/material/styles';
+import { AppBar, Toolbar } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ShareIcon from '@mui/icons-material/Share';
-import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@mui/material';
-import { styled } from '@mui/material/styles';
+
+const FooterContainer = styled('div')({
+  backgroundColor: '#3e3274',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+});
 
 const StyledLink = styled(RouterLink)(({ theme }) => ({
   color: theme.palette.secondary.main,
@@ -18,56 +21,45 @@ const StyledLink = styled(RouterLink)(({ theme }) => ({
   },
 }));
 
-const styles = {
-  footer: {
-    marginTop: 'auto',
-  },
-};
+const SocialIconContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '3rem',
+  width: '100%',
+});
+
+const LinkContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-around',
+  width: '100%',
+});
 
 function Footer() {
   const theme = useTheme();
   const backgroundColor = theme.palette.background.paper;
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="sticky"
-        color="primary"
-        style={{ ...styles.footer, backgroundColor }}
-      >
-        <Toolbar>
-          <Grid container justifyContent="center" alignItems="center">
-            <Grid item>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                sx={{ gap: '3rem' }}
-              >
-                <TwitterIcon />
-                <FacebookIcon />
-                <LinkedInIcon />
-                <ShareIcon />
-              </Box>
-            </Grid>
-          </Grid>
+    <FooterContainer>
+      <AppBar position="sticky" color="primary" style={{ backgroundColor }}>
+        <Toolbar style={{ padding: '1rem 0' }}>
+          <SocialIconContainer>
+            <TwitterIcon />
+            <FacebookIcon />
+            <LinkedInIcon />
+            <ShareIcon />
+          </SocialIconContainer>
         </Toolbar>
 
         <Toolbar>
-          <Grid container justifyContent="space-around">
-            <Grid item>
-              <StyledLink to="/contact">Contactez nous</StyledLink>
-            </Grid>
-            <Grid item>
-              <StyledLink to="/a-propos">A propos de nous</StyledLink>
-            </Grid>
-            <Grid item>
-              <StyledLink to="/mentions-legales">Mentions légales</StyledLink>
-            </Grid>
-          </Grid>
+          <LinkContainer>
+            <StyledLink to="/contact">Contactez nous</StyledLink>
+            <StyledLink to="/a-propos">A propos de nous</StyledLink>
+            <StyledLink to="/mentions-legales">Mentions légales</StyledLink>
+          </LinkContainer>
         </Toolbar>
       </AppBar>
-    </Box>
+    </FooterContainer>
   );
 }
 

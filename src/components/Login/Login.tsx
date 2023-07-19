@@ -1,19 +1,22 @@
-import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   changeField,
   handleLogin,
   resetLoginState,
 } from '../../store/reducers/login';
-import { useNavigate } from 'react-router';
-import { styled, useTheme } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+  styled,
+  useTheme,
+} from '@mui/material';
 
-const Wrapper = styled('div')({
+const LoginContainer = styled('div')({
   backgroundColor: '#3e3274',
   padding: '1rem',
   display: 'flex',
@@ -32,21 +35,20 @@ const Form = styled('form')({
   maxWidth: '500px',
 });
 
+const INVALID_EMAIL_ERROR = 'Email non valide';
+const INVALID_PASSWORD_ERROR =
+  'Votre mot de passe doit être entre 6 et 20 caractères';
+
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const credentials = useAppSelector((state) => state.login.credentials);
   const isLoading = useAppSelector((state) => state.login.isLoading);
   const error = useAppSelector((state) => state.login.error);
   const isLogged = useAppSelector((state) => state.login.isLogged);
-
-  const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const containerClass = isSmallScreen
-    ? 'container small-screen'
-    : 'container large-screen';
 
   const [errors, setErrors] = useState<{
     email: string;
@@ -55,6 +57,16 @@ function Login() {
     email: '',
     password: '',
   });
+
+  const containerClass = useMemo(
+    () => (isSmallScreen ? 'container small-screen' : 'container large-screen'),
+    [isSmallScreen]
+  );
+
+  const handleChangeField =
+    (name: 'email' | 'password') => (event: ChangeEvent<HTMLInputElement>) => {
+      dispatch(changeField({ value: event.target.value, name }));
+    };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,19 +77,22 @@ function Login() {
     };
 
     if (!/\S+@\S+\.\S+/.test(credentials.email)) {
-      validationErrors.email = 'Email non valide';
+      validationErrors.email = INVALID_EMAIL_ERROR;
     }
 
     if (credentials.password.length < 6 || credentials.password.length > 20) {
-      validationErrors.password =
-        'Votre mot de passe doit être entre 6 et 20 caractères';
+      validationErrors.password = INVALID_PASSWORD_ERROR;
     }
 
     setErrors(validationErrors);
 
     const isValid = Object.values(validationErrors).every((error) => !error);
+    // isValid retournera true si toutes les erreurs sont des chaînes de caractères vides
+    // Cette validation est nécessaire pour empêcher l'utilisateur d'envoyer des données invalides
+    // Mais ne remplace pas la validation côté serveur
 
     if (isValid) {
+      // On envoie les données saisies par l'utilisateur au serveur
       void dispatch(handleLogin(credentials));
     }
   };
@@ -99,13 +114,8 @@ function Login() {
     }
   }, [isLogged, dispatch, navigate]);
 
-  const handleChangeField =
-    (name: 'email' | 'password') => (event: ChangeEvent<HTMLInputElement>) => {
-      dispatch(changeField({ value: event.target.value, name }));
-    };
-
   return (
-    <Wrapper>
+    <LoginContainer>
       <div className={containerClass}>
         <Title color="secondary" variant="h4">
           Connexion
@@ -157,7 +167,7 @@ function Login() {
           )}
         </Form>
       </div>
-    </Wrapper>
+    </LoginContainer>
   );
 }
 

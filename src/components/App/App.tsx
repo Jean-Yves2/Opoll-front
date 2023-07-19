@@ -8,9 +8,13 @@ import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes';
 import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
 import CreateSurveys from '../CreateSurveys/CreateSurveys';
+
 import Contact from '../Contact/Contact';
+import Error from '../Error/Error';
+
 
 function App() {
+  // Darkmode / Lightmode en standby pour le moment
   const lightTheme = createTheme({
     palette: {
       mode: 'light',
@@ -80,7 +84,11 @@ function App() {
             path="/surveys/create"
             element={<ProtectedRoutes element={CreateSurveys} />}
           />
+
           <Route path="/contact" element={<Contact />} />
+
+          <Route path="*" element={<Error />} />
+
         </Routes>
         <Footer />
       </Router>

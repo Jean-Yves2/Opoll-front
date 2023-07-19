@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { resetSnackbar } from '../../store/reducers/snackbar';
 import { resetSnackbarStatusSignup } from '../../store/reducers/signup';
 import { resetSnackbarStatusLogin } from '../../store/reducers/login';
-import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import { AlertColor } from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
+import {
+  Typography,
+  Button,
+  Snackbar,
+  Alert,
+  AlertColor,
+  styled,
+} from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { Link as RouterLink } from 'react-router-dom';
 
-const Wrapper = styled('div')({
+const HomepageContainer = styled('div')({
   backgroundColor: '#3e3274',
   display: 'flex',
   justifyContent: 'center',
@@ -33,6 +33,7 @@ const Title = styled(Typography)({
 const ImageContainer = styled('div')({
   height: '100vh',
   width: '100%',
+  // Image de background, un peu flou coté desktop,sujet a changement
   backgroundImage:
     "url('https://images.pexels.com/photos/6476260/pexels-photo-6476260.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
   backgroundSize: 'cover',
@@ -45,36 +46,20 @@ const ImageContainer = styled('div')({
   zIndex: 1,
 });
 
-const PollExampleContainer = styled('div')({
-  height: '70vh',
+const PieChartContainer = styled('div')({
+  height: '80vh',
   width: '100%',
   backgroundColor: '#1b1532',
   display: 'flex',
-  justifyContent: 'center',
   alignItems: 'center',
-});
-
-const LinearContainer = styled('div')({
-  width: '80%',
-  display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
   flexDirection: 'column',
 });
 
-const PieChartContainer = styled('div')({
-  height: '60vh',
+const PollExampleContainer = styled('div')({
+  height: '80vh',
   width: '100%',
   backgroundColor: '#120e21',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-});
-
-const ButtonContainer = styled('div')({
-  height: '60vh',
-  width: '100%',
-  backgroundColor: '#1b1532',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -86,12 +71,15 @@ const ButtonPollContrainer = styled('div')({
   justifyContent: 'center',
   alignItems: 'center',
   height: '10vh',
+  width: '100%',
+  marginBottom: '3rem',
 });
+0;
 
 const GetStarted = styled('div')({
   height: '40vh',
   width: '100%',
-  backgroundColor: '#120e21',
+  backgroundColor: '#1b1532',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -99,11 +87,19 @@ const GetStarted = styled('div')({
 });
 
 function Home() {
+  const pieParams = { height: 350, margin: { right: 5 } };
+  // Donnée statique pour le pie chart et les boutons de vote
   const data = [
-    { id: 0, value: 44, color: '#F44336', label: 'Réponse 1' },
-    { id: 1, value: 26, color: '#2196F3', label: 'Réponse 2' },
-    { id: 2, value: 20, color: '#4CAF50', label: 'Réponse 3' },
-    { id: 3, value: 10, color: '#7f2f57', label: 'Réponse 4' },
+    { id: 0, value: 44, color: '#F44336', textLeft: 'Paris', textRight: '44%' },
+    {
+      id: 1,
+      value: 26,
+      color: '#2196F3',
+      textLeft: 'Marseille',
+      textRight: '26%',
+    },
+    { id: 2, value: 20, color: '#4CAF50', textLeft: 'Lyon', textRight: '20%' },
+    { id: 3, value: 10, color: '#7f2f57', textLeft: 'Nice', textRight: '10%' },
   ];
   const dispatch = useAppDispatch();
   // Snackbar pour les utilisateurs non connectés
@@ -150,73 +146,105 @@ function Home() {
   }, [snackbarIsLogged, snackbarSuccessLogin, snackbarSucessSignup, dispatch]);
 
   return (
-    <Wrapper>
+    <HomepageContainer>
       <Snackbar
         open={openSnackbar}
+        // Durée d'affichage du snackbar en ms
         autoHideDuration={2000}
         onClose={handleSnackbarClose}
       >
+        {/* Type du snacker ainsi que son message */}
         <Alert severity={snackbarSeverity}>{snackbarMessage}</Alert>
       </Snackbar>
 
       <ImageContainer>
-        <Title variant="h1">O'Poll</Title>
+        <Title variant="h1">O'POLL</Title>
       </ImageContainer>
 
-      <PollExampleContainer>
-        <LinearContainer>
-          {data.map((item) => (
-            <Box key={item.id} sx={{ width: '100%', marginBottom: '2rem' }}>
-              <Typography
-                variant="caption"
-                sx={{ color: '#ffffff', fontSize: '1rem' }}
-              >
-                {item.label} ({item.value} Votes)
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={item.value}
-                sx={{
-                  color: item.color,
-                  backgroundColor: '#212121',
-                  height: '2rem',
-                  border: '1px solid #565656',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: item.color,
-                  },
-                }}
-              />
-            </Box>
-          ))}
-        </LinearContainer>
-      </PollExampleContainer>
-
       <PieChartContainer>
-        <PieChart series={[{ data }]} width={500} height={300} />
+        <Button
+          variant="contained"
+          size="large"
+          color="primary"
+          component={RouterLink}
+          to="/surveys/create"
+          sx={{ margin: '2rem 0 2rem 0' }}
+        >
+          Créer un sondage
+        </Button>
+
+        <Typography
+          variant="h4"
+          sx={{
+            color: '#ffffff',
+            textAlign: 'center',
+            marginBottom: '2rem',
+          }}
+        >
+          Où partir en vacances cet été ?
+        </Typography>
+
+        {/* PieChart est un composant de la librairie MUI qui permet de créer des
+        graphiques en camembert. Il est possible de le personnaliser en
+        utilisant les props de la librairie. */}
+        <PieChart
+          series={[
+            {
+              data, // Donnée statiques définies plus haut
+              highlightScope: { faded: 'global', highlighted: 'item' },
+              faded: { innerRadius: 30, additionalRadius: -30 },
+              // Highlightscope et faded permettent de faire des effet sympa en survolant les camemberts
+            },
+          ]}
+          {...pieParams} // Paramètres définis plus haut pour définir la taille du graphique
+        />
       </PieChartContainer>
 
-      <ButtonContainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 1
-          </Button>
-        </ButtonPollContrainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 2
-          </Button>
-        </ButtonPollContrainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 3
-          </Button>
-        </ButtonPollContrainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 4
-          </Button>
-        </ButtonPollContrainer>
-      </ButtonContainer>
+      {/* Bouton qui permettront de voter sur un sondage */}
+      <PollExampleContainer>
+        {/* boucle sur les données statiques pour créer les boutons */}
+        {data.map((item) => (
+          <ButtonPollContrainer key={item.id}>
+            <Button
+              variant="contained"
+              size="large"
+              color="primary"
+              style={{
+                width: '80%',
+                height: '6.25rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                // Gestion d'un texte coté gauche et coté droite
+                alignItems: 'center',
+              }}
+            >
+              <span
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  fontSize: '1.8rem',
+                }}
+              >
+                {/* texte coté gauche (options du sondage) */}
+                {item.textLeft}
+              </span>
+              <span
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  color: item.color,
+                  fontWeight: 'bold',
+                  fontSize: '1.6rem',
+                }}
+              >
+                {/* texte coté droit (pourcentage d'une option d'un sondage') */}
+                {item.textRight}
+              </span>
+            </Button>
+          </ButtonPollContrainer>
+        ))}
+      </PollExampleContainer>
+
       <GetStarted>
         <Typography
           variant="h2"
@@ -242,7 +270,7 @@ function Home() {
           Créer un sondage
         </Button>
       </GetStarted>
-    </Wrapper>
+    </HomepageContainer>
   );
 }
 
