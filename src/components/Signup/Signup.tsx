@@ -1,15 +1,12 @@
-import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleSignup } from '../../store/reducers/signup';
 import { styled, useTheme } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Typography } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { TextField, Button, CircularProgress, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-const Wrapper = styled('div')({
+const SignupContainer = styled('div')({
   backgroundColor: '#3e3274',
   padding: '1rem',
   display: 'flex',
@@ -32,18 +29,19 @@ function Signup() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const containerClass = isSmallScreen
-    ? 'container small-screen'
-    : 'container large-screen';
 
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
-  const snackbarSucess = useAppSelector((state) => state.signup.snackbarSucess);
   const isLogged = useAppSelector((state) => state.login.isLogged);
   const isSignupSuccess = useAppSelector(
     (state) => state.signup.isSignupSuccess
+  );
+  const snackbarSucess = useAppSelector((state) => state.signup.snackbarSucess);
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const containerClass = useMemo(
+    () => (isSmallScreen ? 'container small-screen' : 'container large-screen'),
+    [isSmallScreen]
   );
 
   useEffect(() => {
@@ -55,7 +53,7 @@ function Signup() {
   useEffect(() => {
     if (isLogged) {
       // Rediriger l'utilisateur connecté vers une autre page
-      // Pour l'empécher d'accéder à la page d'inscription
+      // Pour l'empécher d'accéder à la page d'inscription quand il est déjà connecté
       navigate('/');
     }
   }, [isLogged, navigate]);
@@ -65,6 +63,7 @@ function Signup() {
     username: '',
     password: '',
     passwordConfirm: '',
+    // On initialise les erreurs à une chaîne de caractères vide
   });
 
   const [userInput, setUserInput] = useState({
@@ -72,8 +71,11 @@ function Signup() {
     username: '',
     password: '',
     passwordConfirm: '',
+    // On initialise les valeurs à une chaîne de caractères vide
   });
 
+  // Fonction pour valider les données saisies par l'utilisateur
+  // Cette fonction retourne un objet contenant les erreurs de validation
   const validateInput = () => {
     const { email, username, password, passwordConfirm } = userInput;
     const validationErrors = {
@@ -112,13 +114,19 @@ function Signup() {
 
     setErrors(validationErrors);
 
+    // Vérifiez si l'objet contenant les erreurs de validation est vide
     const isValid = Object.values(validationErrors).every((error) => !error);
 
+    // isValid retournera true si toutes les erreurs sont des chaînes de caractères vides
+    // Cette validation est nécessaire pour empêcher l'utilisateur d'envoyer des données invalides
+    // Mais ne remplace pas la validation côté serveur
     if (isValid) {
+      // On envoie les données saisies par l'utilisateur au serveur
       void dispatch(handleSignup(userInput));
     }
   };
 
+  // HandleChange est appelée à chaque fois que l'utilisateur saisit quelque chose dans un champ de saisie
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -126,6 +134,7 @@ function Signup() {
     setUserInput((prevState) => ({
       ...prevState,
       [name]: value,
+      // Il utilise la fonction de forme de setState, qui prend l'état précédent et renvoie le nouvel état.
     }));
   };
 
@@ -140,7 +149,7 @@ function Signup() {
   }, [snackbarSucess, dispatch, navigate]);
 
   return (
-    <Wrapper>
+    <SignupContainer>
       <div className={containerClass}>
         <Title color="secondary" variant="h4">
           Inscription
@@ -228,7 +237,7 @@ function Signup() {
           )}
         </Form>
       </div>
-    </Wrapper>
+    </SignupContainer>
   );
 }
 

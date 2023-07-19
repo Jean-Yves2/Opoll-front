@@ -1,16 +1,20 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { FormEvent, useState } from 'react';
-import { styled, useTheme } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import axios from 'axios';
+import {
+  Typography,
+  TextField,
+  Button,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  styled,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
 
-const Wrapper = styled('div')({
+const CreateSurveyContainer = styled('div')({
   backgroundColor: '#3e3274',
   padding: '1rem',
   display: 'flex',
@@ -61,64 +65,58 @@ type SurveyData = {
 };
 
 function CreateSurvey() {
-  const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState<string[]>(['', '']);
-  const [isPublic, setIsPublic] = useState(true);
-  const [multipleChoice, setMultipleChoice] = useState(true);
-  const [endDateEnabled, setEndDateEnabled] = useState(false);
-  const [endDate, setEndDate] = useState('');
-  const theme = useTheme();
+  // State contenant les données du sondage
+  const [surveyData, setSurveyData] = useState<SurveyData>({
+    question: '',
+    options: ['', ''],
+    isPublic: true,
+    multipleChoice: true,
+    endDate: '',
+  });
 
+  const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const containerClass = isSmallScreen
     ? 'container small-screen'
     : 'container large-screen';
 
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setSurveyData((prevData) => ({ ...prevData, [field]: value }));
+  };
+
+  // Logique de changement d'une option du sondage
   const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...options];
+    const newOptions = [...surveyData.options];
     newOptions[index] = value;
-    setOptions(newOptions);
+    setSurveyData((prevData) => ({ ...prevData, options: newOptions }));
   };
 
+  // Ajout d'une option au sondage (max 4)
   const handleAddOption = () => {
-    if (options.length < 6) {
-      setOptions([...options, '']);
+    if (surveyData.options.length < 4) {
+      setSurveyData((prevData) => ({
+        ...prevData,
+        options: [...prevData.options, ''],
+      }));
     }
   };
 
-  const handleRemoveOption = (index: number) => {
-    if (options.length > 2) {
-      const newOptions = [...options];
-      newOptions.splice(index, 1);
-      setOptions(newOptions);
-    }
-  };
-
-  const handleSurveySubmit = (e: FormEvent<HTMLFormElement>) => {
+  // Logique de soumission du sondage au serveur
+  const handleSurveySubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const surveyData: SurveyData = {
-      question,
-      options,
-      isPublic,
-      multipleChoice,
-      endDate: endDateEnabled ? endDate : undefined,
-    };
-
-    axios
-      .post('/@me/survey', surveyData)
-      // Envoie du sondage au serveur
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      // On envoie les données du sondage au serveur
+      const response = await axios.post('/@me/survey', surveyData);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du sondage", error);
+    }
   };
 
   return (
-    <Wrapper>
+    <CreateSurveyContainer>
       <div className={containerClass}>
         <Title color="secondary" variant="h4">
           Création d'un sondage
@@ -126,11 +124,11 @@ function CreateSurvey() {
         <Form onSubmit={handleSurveySubmit}>
           <QuestionTextField
             label="Question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            value={surveyData.question}
+            onChange={(e) => handleInputChange('question', e.target.value)}
             required
           />
-          {options.map((option, index) => (
+          {surveyData.options.map((option, index) => (
             <TextField
               key={index}
               label={`Option ${index + 1}`}
@@ -139,7 +137,7 @@ function CreateSurvey() {
               required
             />
           ))}
-          {options.length < 6 && (
+          {surveyData.options.length < 4 && (
             <Button
               variant="contained"
               color="success"
@@ -148,21 +146,14 @@ function CreateSurvey() {
               Ajouter une option
             </Button>
           )}
-          {options.length > 2 && (
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => handleRemoveOption(options.length - 1)}
-            >
-              Supprimer une option
-            </Button>
-          )}
           <FormGroup>
             <CustomFormControlLabel
               control={
                 <Checkbox
-                  checked={isPublic}
-                  onChange={(e) => setIsPublic(e.target.checked)}
+                  checked={surveyData.isPublic}
+                  onChange={(e) =>
+                    handleInputChange('isPublic', e.target.checked)
+                  }
                 />
               }
               label={
@@ -174,8 +165,10 @@ function CreateSurvey() {
             <CustomFormControlLabel
               control={
                 <Checkbox
-                  checked={multipleChoice}
-                  onChange={(e) => setMultipleChoice(e.target.checked)}
+                  checked={surveyData.multipleChoice}
+                  onChange={(e) =>
+                    handleInputChange('multipleChoice', e.target.checked)
+                  }
                 />
               }
               label={
@@ -188,8 +181,15 @@ function CreateSurvey() {
           <FormControlLabel
             control={
               <Switch
-                checked={endDateEnabled}
-                onChange={() => setEndDateEnabled(!endDateEnabled)}
+                checked={!!surveyData.endDate}
+                onChange={() =>
+                  handleInputChange(
+                    'endDate',
+                    surveyData.endDate
+                      ? ''
+                      : new Date().toISOString().split('T')[0]
+                  )
+                }
               />
             }
             label={
@@ -200,12 +200,12 @@ function CreateSurvey() {
             labelPlacement="end"
             sx={{ color: '#F2BE22' }}
           />
-          {endDateEnabled && (
+          {surveyData.endDate && (
             <TextField
               label="Date de fin"
               type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={surveyData.endDate}
+              onChange={(e) => handleInputChange('endDate', e.target.value)}
               required
             />
           )}
@@ -214,7 +214,7 @@ function CreateSurvey() {
           </Button>
         </Form>
       </div>
-    </Wrapper>
+    </CreateSurveyContainer>
   );
 }
 

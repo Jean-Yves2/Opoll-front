@@ -6,7 +6,7 @@ interface DarkModeToggleProps {
   darkMode: boolean;
   toggleDarkMode: () => void;
 }
-
+// Gestion du mode sombre/lumineux
 function DarkModeToggle({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   return (
     <IconButton color="inherit" onClick={toggleDarkMode}>
