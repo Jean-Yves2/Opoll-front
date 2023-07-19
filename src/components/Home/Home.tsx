@@ -9,8 +9,6 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { AlertColor } from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -45,36 +43,21 @@ const ImageContainer = styled('div')({
   zIndex: 1,
 });
 
-const PollExampleContainer = styled('div')({
-  height: '70vh',
+const PieChartContainer = styled('div')({
+  height: '80vh',
   width: '100%',
   backgroundColor: '#1b1532',
   display: 'flex',
-  justifyContent: 'center',
   alignItems: 'center',
-});
-
-const LinearContainer = styled('div')({
-  width: '80%',
-  display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
   flexDirection: 'column',
+  padding: '3rem',
 });
 
-const PieChartContainer = styled('div')({
-  height: '60vh',
+const PollExampleContainer = styled('div')({
+  height: '80vh',
   width: '100%',
   backgroundColor: '#120e21',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-});
-
-const ButtonContainer = styled('div')({
-  height: '60vh',
-  width: '100%',
-  backgroundColor: '#1b1532',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -86,12 +69,15 @@ const ButtonPollContrainer = styled('div')({
   justifyContent: 'center',
   alignItems: 'center',
   height: '10vh',
+  width: '100%',
+  marginBottom: '3rem',
 });
+0;
 
 const GetStarted = styled('div')({
   height: '40vh',
   width: '100%',
-  backgroundColor: '#120e21',
+  backgroundColor: '#1b1532',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -99,11 +85,18 @@ const GetStarted = styled('div')({
 });
 
 function Home() {
+  const pieParams = { height: 350, margin: { right: 5 } };
   const data = [
-    { id: 0, value: 44, color: '#F44336', label: 'Réponse 1' },
-    { id: 1, value: 26, color: '#2196F3', label: 'Réponse 2' },
-    { id: 2, value: 20, color: '#4CAF50', label: 'Réponse 3' },
-    { id: 3, value: 10, color: '#7f2f57', label: 'Réponse 4' },
+    { id: 0, value: 44, color: '#F44336', textLeft: 'Paris', textRight: '44%' },
+    {
+      id: 1,
+      value: 26,
+      color: '#2196F3',
+      textLeft: 'Marseille',
+      textRight: '26%',
+    },
+    { id: 2, value: 20, color: '#4CAF50', textLeft: 'Lyon', textRight: '20%' },
+    { id: 3, value: 10, color: '#7f2f57', textLeft: 'Nice', textRight: '10%' },
   ];
   const dispatch = useAppDispatch();
   // Snackbar pour les utilisateurs non connectés
@@ -163,60 +156,83 @@ function Home() {
         <Title variant="h1">O'Poll</Title>
       </ImageContainer>
 
-      <PollExampleContainer>
-        <LinearContainer>
-          {data.map((item) => (
-            <Box key={item.id} sx={{ width: '100%', marginBottom: '2rem' }}>
-              <Typography
-                variant="caption"
-                sx={{ color: '#ffffff', fontSize: '1rem' }}
-              >
-                {item.label} ({item.value} Votes)
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={item.value}
-                sx={{
-                  color: item.color,
-                  backgroundColor: '#212121',
-                  height: '2rem',
-                  border: '1px solid #565656',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: item.color,
-                  },
-                }}
-              />
-            </Box>
-          ))}
-        </LinearContainer>
-      </PollExampleContainer>
-
       <PieChartContainer>
-        <PieChart series={[{ data }]} width={500} height={300} />
+        <Button
+          variant="contained"
+          size="large"
+          color="primary"
+          component={RouterLink}
+          to="/surveys/create"
+          sx={{
+            padding: '2rem 2rem',
+            margin: '2rem',
+          }}
+        >
+          Créer un sondage
+        </Button>
+        <Typography
+          variant="h2"
+          sx={{
+            color: '#ffffff',
+            fontSize: '2rem',
+            textAlign: 'center',
+            margin: '2rem',
+          }}
+        >
+          Où partir en vacances cet été ?
+        </Typography>
+        <PieChart
+          series={[
+            {
+              data,
+              highlightScope: { faded: 'global', highlighted: 'item' },
+              faded: { innerRadius: 30, additionalRadius: -30 },
+            },
+          ]}
+          {...pieParams}
+        />
       </PieChartContainer>
 
-      <ButtonContainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 1
-          </Button>
-        </ButtonPollContrainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 2
-          </Button>
-        </ButtonPollContrainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 3
-          </Button>
-        </ButtonPollContrainer>
-        <ButtonPollContrainer>
-          <Button variant="contained" size="large" color="primary">
-            Réponse 4
-          </Button>
-        </ButtonPollContrainer>
-      </ButtonContainer>
+      <PollExampleContainer>
+        {data.map((item) => (
+          <ButtonPollContrainer key={item.id}>
+            <Button
+              variant="contained"
+              size="large"
+              color="primary"
+              style={{
+                width: '80%',
+                height: '100px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <span
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  fontSize: '1.8rem',
+                }}
+              >
+                {item.textLeft}
+              </span>
+              <span
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  color: item.color,
+                  fontWeight: 'bold',
+                  fontSize: '1.6rem',
+                }}
+              >
+                {item.textRight}
+              </span>
+            </Button>
+          </ButtonPollContrainer>
+        ))}
+      </PollExampleContainer>
+
       <GetStarted>
         <Typography
           variant="h2"
