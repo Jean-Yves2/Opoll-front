@@ -4,7 +4,6 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { handleLogin } from './login';
 
 interface User {
   id: number;
@@ -22,7 +21,6 @@ interface SignUpState {
   error: string | null;
   isLoading: boolean;
   snackbarSucess: boolean;
-  isSignupSuccess: boolean;
 }
 
 const initialValue: SignUpState = {
@@ -35,7 +33,6 @@ const initialValue: SignUpState = {
   error: null,
   isLoading: false,
   snackbarSucess: false,
-  isSignupSuccess: false,
 };
 
 export const resetSnackbarStatusSignup = createAction('signup/RESET_SNACKBAR');
@@ -43,14 +40,12 @@ export const resetSignupSuccess = createAction('signup/RESET_SUCCESS');
 
 export const handleSignup = createAsyncThunk(
   'signup/HANDLE_SIGNUP',
-  async (credentials: SignUpState['credentials'], { dispatch }) => {
+  async (credentials: SignUpState['credentials']) => {
     try {
       const response = await axios.post<User>(
         'http://localhost:3000/auth/register',
         credentials
       );
-      await dispatch(handleLogin(credentials));
-
       return response.data;
     } catch (error) {
       console.error("Une erreur s'est produite lors de l'inscription':", error);
@@ -76,14 +71,10 @@ const signupReducer = createReducer(initialValue, (builder) => {
     .addCase(handleSignup.fulfilled, (state) => {
       state.isLoading = false;
       state.snackbarSucess = true;
-      state.isSignupSuccess = true;
       state.error = null;
     })
     .addCase(resetSnackbarStatusSignup, (state) => {
       state.snackbarSucess = false;
-    })
-    .addCase(resetSignupSuccess, (state) => {
-      state.isSignupSuccess = false;
     });
 });
 

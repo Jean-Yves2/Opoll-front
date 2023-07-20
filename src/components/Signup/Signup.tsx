@@ -33,9 +33,7 @@ function Signup() {
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
   const isLogged = useAppSelector((state) => state.login.isLogged);
-  const isSignupSuccess = useAppSelector(
-    (state) => state.signup.isSignupSuccess
-  );
+
   const snackbarSucess = useAppSelector((state) => state.signup.snackbarSucess);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -43,12 +41,6 @@ function Signup() {
     () => (isSmallScreen ? 'container small-screen' : 'container large-screen'),
     [isSmallScreen]
   );
-
-  useEffect(() => {
-    if (isSignupSuccess) {
-      navigate('/'); // Redirigez l'utilisateur vers la page d'accueil après une inscription réussie
-    }
-  }, [isSignupSuccess, navigate]);
 
   useEffect(() => {
     if (isLogged) {

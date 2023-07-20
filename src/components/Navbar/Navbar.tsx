@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { handleLogout } from '../../store/reducers/login';
-import { resetSignupSuccess } from '../../store/reducers/signup';
 import { styled, useTheme } from '@mui/material/styles';
 import {
   AppBar,
@@ -45,7 +44,6 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   // Fonction qui gère la déconnexion
   const handleLogoutClick = () => {
     dispatch(handleLogout());
-    dispatch(resetSignupSuccess());
     navigate('/');
   };
 
