@@ -11,6 +11,7 @@ import CreateSurveys from '../CreateSurveys/CreateSurveys';
 
 import Contact from '../Contact/Contact';
 import MentionLegale from '../MentionLegale/MentionLegale';
+import Apropos from '../Apropos/Apropos';
 import Error from '../Error/Error';
 
 
@@ -88,6 +89,7 @@ function App() {
 
           <Route path="/contact" element={<Contact />} />
           <Route path="/mentions-legales" element={<MentionLegale />} />
+          <Route path="/a-propos" element={<Apropos />} />
 
           <Route path="*" element={<Error />} />
 
