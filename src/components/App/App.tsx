@@ -10,6 +10,7 @@ import Signup from '../Signup/Signup';
 import CreateSurveys from '../CreateSurveys/CreateSurveys';
 
 import Contact from '../Contact/Contact';
+import MentionLegale from '../MentionLegale/MentionLegale';
 import Error from '../Error/Error';
 
 
@@ -86,6 +87,7 @@ function App() {
           />
 
           <Route path="/contact" element={<Contact />} />
+          <Route path="/mentions-legales" element={<MentionLegale />} />
 
           <Route path="*" element={<Error />} />
 
