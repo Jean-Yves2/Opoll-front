@@ -10,21 +10,46 @@ import {
   FormControlLabel,
   Switch,
   styled,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 
-const CreateSurveyContainer = styled('div')({
+type ValidationErrors = {
+  title: string;
+  responses: string[];
+};
+
+const Wrapper = styled('div')({
   backgroundColor: '#3e3274',
-  padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
 });
 
-const Title = styled(Typography)({
-  margin: '1.5rem',
-});
+const CreateSurveyContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: '1.5rem 2rem',
+  backgroundColor: '#1b1532',
+  height: 'auto',
+  borderRadius: '0.5rem',
+  margin: '2rem',
+  width: '50%',
+  [theme.breakpoints.down('md')]: {
+    width: '90%',
+  },
+}));
 
+const Title = styled(Typography)(({ theme }) => ({
+  margin: '1.5rem',
+  [theme.breakpoints.up('md')]: {
+    fontSize: '2.5rem',
+  },
+  [theme.breakpoints.down('md')]: {
+    fontSize: '2rem',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.5rem',
+  },
+}));
 const Form = styled('form')({
   display: 'flex',
   flexDirection: 'column',
@@ -57,29 +82,27 @@ const QuestionTextField = styled(TextField)({
 });
 
 type SurveyData = {
-  question: string;
-  options: string[];
-  isPublic: boolean;
-  multipleChoice: boolean;
+  title: string;
+  responses: string[];
+  public: boolean;
+  multiple_responses: boolean;
   endDate?: string;
 };
 
 function CreateSurvey() {
   // State contenant les données du sondage
   const [surveyData, setSurveyData] = useState<SurveyData>({
-    question: '',
-    options: ['', ''],
-    isPublic: true,
-    multipleChoice: true,
+    title: '',
+    responses: ['', ''],
+    public: true,
+    multiple_responses: true,
     endDate: '',
   });
 
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-  const containerClass = isSmallScreen
-    ? 'container small-screen'
-    : 'container large-screen';
+  const [errors, setErrors] = useState<ValidationErrors>({
+    title: '',
+    responses: [],
+  });
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setSurveyData((prevData) => ({ ...prevData, [field]: value }));
@@ -87,28 +110,75 @@ function CreateSurvey() {
 
   // Logique de changement d'une option du sondage
   const handleOptionChange = (index: number, value: string) => {
-    const newOptions = [...surveyData.options];
-    newOptions[index] = value;
-    setSurveyData((prevData) => ({ ...prevData, options: newOptions }));
+    const responses = [...surveyData.responses];
+    responses[index] = value;
+    setSurveyData((prevData) => ({ ...prevData, responses: responses }));
   };
 
-  // Ajout d'une option au sondage (max 4)
+  // Ajout d'une option au sondage (max 6)
   const handleAddOption = () => {
-    if (surveyData.options.length < 4) {
+    if (surveyData.responses.length < 6) {
       setSurveyData((prevData) => ({
         ...prevData,
-        options: [...prevData.options, ''],
+        responses: [...prevData.responses, ''],
       }));
     }
+  };
+
+  const MAX_TITLE_LENGTH = 30;
+  const MAX_OPTION_LENGTH = 50;
+
+  const validateInput = () => {
+    const validationErrors: ValidationErrors = {
+      title: '',
+      responses: [],
+    };
+
+    if (surveyData.title.length > MAX_TITLE_LENGTH) {
+      validationErrors.title = `Le titre du sondage doit être inférieur à ${MAX_TITLE_LENGTH} caractères.`;
+    }
+
+    for (let i = 0; i < surveyData.responses.length; i++) {
+      if (surveyData.responses[i].length > MAX_OPTION_LENGTH) {
+        validationErrors.responses.push(
+          `La réponse ${
+            i + 1
+          } doit être entre inférieur à ${MAX_OPTION_LENGTH} caractères.`
+        );
+      }
+    }
+
+    setErrors(validationErrors);
+
+    const isValid =
+      !validationErrors.title && validationErrors.responses.length === 0;
+    // isValid retournera true si toutes les erreurs sont des chaînes de caractères vides
+    // Cette validation est nécessaire pour empêcher l'utilisateur d'envoyer des données invalides
+    // Mais ne remplace pas la validation côté serveur
+
+    return isValid;
   };
 
   // Logique de soumission du sondage au serveur
   const handleSurveySubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setErrors({ title: '', responses: [] });
+
+    if (!validateInput()) {
+      return;
+    }
+    // On transforme les données du sondage pour qu'elles correspondent à ce que le back-end attend
+    const transformedSurveyData = {
+      title: surveyData.title,
+      public: surveyData.public,
+      multiple_responses: surveyData.multiple_responses,
+      responses: surveyData.responses.map((response) => ({ title: response })),
+    };
     try {
       // On envoie les données du sondage au serveur
-      const response = await axios.post('/@me/survey', surveyData);
+      const response = await axios.post('/@me/survey', transformedSurveyData);
+      console.log('Sondage envoyé !');
       console.log(response.data);
     } catch (error) {
       console.error("Erreur lors de l'envoi du sondage", error);
@@ -116,28 +186,32 @@ function CreateSurvey() {
   };
 
   return (
-    <CreateSurveyContainer>
-      <div className={containerClass}>
+    <Wrapper>
+      <CreateSurveyContainer>
         <Title color="secondary" variant="h4">
           Création d'un sondage
         </Title>
         <Form onSubmit={handleSurveySubmit}>
           <QuestionTextField
+            error={!!errors.title}
+            helperText={errors.title}
             label="Question"
-            value={surveyData.question}
-            onChange={(e) => handleInputChange('question', e.target.value)}
+            value={surveyData.title}
+            onChange={(e) => handleInputChange('title', e.target.value)}
             required
           />
-          {surveyData.options.map((option, index) => (
+          {surveyData.responses.map((response, index) => (
             <TextField
+              error={!!errors.responses[index]}
+              helperText={errors.responses[index]}
               key={index}
-              label={`Option ${index + 1}`}
-              value={option}
+              label={`Réponse ${index + 1}`}
+              value={response}
               onChange={(e) => handleOptionChange(index, e.target.value)}
               required
             />
           ))}
-          {surveyData.options.length < 4 && (
+          {surveyData.responses.length < 6 && (
             <Button
               variant="contained"
               color="success"
@@ -150,9 +224,9 @@ function CreateSurvey() {
             <CustomFormControlLabel
               control={
                 <Checkbox
-                  checked={surveyData.isPublic}
+                  checked={surveyData.public}
                   onChange={(e) =>
-                    handleInputChange('isPublic', e.target.checked)
+                    handleInputChange('public', e.target.checked)
                   }
                 />
               }
@@ -165,9 +239,9 @@ function CreateSurvey() {
             <CustomFormControlLabel
               control={
                 <Checkbox
-                  checked={surveyData.multipleChoice}
+                  checked={surveyData.multiple_responses}
                   onChange={(e) =>
-                    handleInputChange('multipleChoice', e.target.checked)
+                    handleInputChange('multiple_responses', e.target.checked)
                   }
                 />
               }
@@ -213,8 +287,8 @@ function CreateSurvey() {
             Créer
           </Button>
         </Form>
-      </div>
-    </CreateSurveyContainer>
+      </CreateSurveyContainer>
+    </Wrapper>
   );
 }
 
