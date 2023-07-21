@@ -81,133 +81,131 @@ function Navbar() {
 
   return (
     <NavbarContainer>
-      <Box>
-        <AppBar position="fixed" sx={{ backgroundColor }}>
-          <Toolbar>
-            <Grid container justifyContent="space-between" alignItems="center">
-              {/* Gestion du logo  */}
-              <Grid item>
-                <Typography variant="h5" sx={{ ml: 3 }}>
-                  <Link
-                    component={RouterLink}
-                    to="/"
-                    color="inherit"
-                    underline="none"
-                  >
-                    O'POLL
-                  </Link>
-                  <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ ml: 0.3 }}
-                  >
-                    <PollIcon sx={{ fontSize: 30 }} />
-                  </IconButton>
-                </Typography>
-              </Grid>
-
-              {/* Gestion des boutons de la navbar en mode Desktop  (900px+) */}
-              {isMinMdScreen && (
-                <Grid item>
-                  <Button
-                    color="info"
-                    component={RouterLink}
-                    to="/surveys/create"
-                  >
-                    Créer un sondage
-                  </Button>
-                </Grid>
-              )}
-
-              {/* Si l'utilisateur est en mode Desktop (900px + de large) et il est connecté 
-              affiche bouton déconnexion*/}
-              {isMinMdScreen && (
-                <Grid item>
-                  {isLogged ? (
-                    // SI l'utilisateur est connecté alors bouton déconnexion affiché
-                    <>
-                      <Button
-                        color="error"
-                        variant="contained"
-                        sx={{ ml: 2 }}
-                        onClick={handleLogoutClick}
-                      >
-                        Déconnexion
-                      </Button>
-                    </>
-                  ) : (
-                    // Sinon on l'invite à se créer un compte ou se connecter
-                    <>
-                      <Button
-                        color="info"
-                        component={RouterLink}
-                        to="/login"
-                        sx={{ marginRight: '0.5rem' }}
-                      >
-                        Se connecter
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        component={RouterLink}
-                        to="/signup"
-                      >
-                        S'inscrire
-                      </Button>
-                    </>
-                  )}
-                </Grid>
-              )}
-
-              {/* Gestion de l'affichage du menu dropdown sur les écran mobile (900px-) */}
-              {isMaxMdScreen && (
-                <>
-                  {/* Icone menu dropdown */}
-                  <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                    onClick={toggleDrawer(true)}
-                  >
-                    {/* Si le menu dropdown est ouvert alors affiche l'icone close sinon affiche l'icone menu */}
-                    {drawerOpen ? (
-                      <CloseIcon sx={{ fontSize: 50 }} />
-                    ) : (
-                      <MenuIcon sx={{ fontSize: 50 }} />
-                    )}
-                  </IconButton>
-                  {/* Gestion du drawer, style/transition et fonction pour ouvrir / fermer */}
-                  <Drawer
-                    anchor="top"
-                    transitionDuration={{
-                      enter: 300,
-                      exit: 150,
-                    }}
-                    open={drawerOpen}
-                    onClose={toggleDrawer(false)}
-                    sx={{
-                      '& .MuiDrawer-paper': {
-                        width: '100%',
-                        height: '100vh',
-                        background: 'transparent',
-                        // Ajout du petit blur effect sur le drawer
-                        backdropFilter: 'blur(10px)',
-                      },
-                    }}
-                  >
-                    {/* Contenu du drawer qui est conenu dans le composant DrawerList */}
-                    {list()}
-                  </Drawer>
-                </>
-              )}
+      <AppBar position="fixed" sx={{ backgroundColor }}>
+        <Toolbar>
+          <Grid container justifyContent="space-between" alignItems="center">
+            {/* Gestion du logo  */}
+            <Grid item>
+              <Typography variant="h5" sx={{ ml: 3 }}>
+                <Link
+                  component={RouterLink}
+                  to="/"
+                  color="inherit"
+                  underline="none"
+                >
+                  O'POLL
+                </Link>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{ ml: 0.3 }}
+                >
+                  <PollIcon sx={{ fontSize: 30 }} />
+                </IconButton>
+              </Typography>
             </Grid>
-          </Toolbar>
-        </AppBar>
-      </Box>
+
+            {/* Gestion des boutons de la navbar en mode Desktop  (900px+) */}
+            {isMinMdScreen && (
+              <Grid item>
+                <Button
+                  color="info"
+                  component={RouterLink}
+                  to="/surveys/create"
+                >
+                  Créer un sondage
+                </Button>
+              </Grid>
+            )}
+
+            {/* Si l'utilisateur est en mode Desktop (900px + de large) et il est connecté 
+              affiche bouton déconnexion*/}
+            {isMinMdScreen && (
+              <Grid item>
+                {isLogged ? (
+                  // SI l'utilisateur est connecté alors bouton déconnexion affiché
+                  <>
+                    <Button
+                      color="error"
+                      variant="contained"
+                      sx={{ ml: 2 }}
+                      onClick={handleLogoutClick}
+                    >
+                      Déconnexion
+                    </Button>
+                  </>
+                ) : (
+                  // Sinon on l'invite à se créer un compte ou se connecter
+                  <>
+                    <Button
+                      color="info"
+                      component={RouterLink}
+                      to="/login"
+                      sx={{ marginRight: '0.5rem' }}
+                    >
+                      Se connecter
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      component={RouterLink}
+                      to="/signup"
+                    >
+                      S'inscrire
+                    </Button>
+                  </>
+                )}
+              </Grid>
+            )}
+
+            {/* Gestion de l'affichage du menu dropdown sur les écran mobile (900px-) */}
+            {isMaxMdScreen && (
+              <>
+                {/* Icone menu dropdown */}
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{ mr: 2 }}
+                  onClick={toggleDrawer(true)}
+                >
+                  {/* Si le menu dropdown est ouvert alors affiche l'icone close sinon affiche l'icone menu */}
+                  {drawerOpen ? (
+                    <CloseIcon sx={{ fontSize: 50 }} />
+                  ) : (
+                    <MenuIcon sx={{ fontSize: 50 }} />
+                  )}
+                </IconButton>
+                {/* Gestion du drawer, style/transition et fonction pour ouvrir / fermer */}
+                <Drawer
+                  anchor="top"
+                  transitionDuration={{
+                    enter: 300,
+                    exit: 150,
+                  }}
+                  open={drawerOpen}
+                  onClose={toggleDrawer(false)}
+                  sx={{
+                    '& .MuiDrawer-paper': {
+                      width: '100%',
+                      height: '100vh',
+                      background: 'transparent',
+                      // Ajout du petit blur effect sur le drawer
+                      backdropFilter: 'blur(10px)',
+                    },
+                  }}
+                >
+                  {/* Contenu du drawer qui est conenu dans le composant DrawerList */}
+                  {list()}
+                </Drawer>
+              </>
+            )}
+          </Grid>
+        </Toolbar>
+      </AppBar>
     </NavbarContainer>
   );
 }

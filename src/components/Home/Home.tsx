@@ -117,6 +117,7 @@ function Home() {
   const snackbarSucessSignup = useAppSelector(
     (state) => state.signup.snackbarSucess
   );
+  const snackbarIsExpired = useAppSelector((state) => state.snackbar.isExpired);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>();
@@ -125,30 +126,36 @@ function Home() {
     setOpenSnackbar(false);
   };
 
+  // Gestion d'affichage des différentes snackbar
   useEffect(() => {
-    if (!snackbarIsLogged) {
-      // Si je ne suis pas connecté, je veux que mon snackbar s'affiche
+    if (!snackbarIsLogged && snackbarIsExpired == false) {
       setOpenSnackbar(true);
       setSnackbarMessage('Vous devez être connecté pour accéder à cette page.');
       setSnackbarSeverity('error');
       dispatch(resetSnackbar());
-      // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page d'accueil
     } else if (snackbarSuccessLogin) {
-      // Si ma connexion est réussie, je veux que mon snackbar s'affiche
       setOpenSnackbar(true);
       setSnackbarMessage('Connexion réussie !');
       setSnackbarSeverity('success');
       dispatch(resetSnackbarStatusLogin());
-      // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page de connexion
     } else if (snackbarSucessSignup) {
-      // Si mon inscription est réussie, je veux que mon snackbar s'affiche
       setOpenSnackbar(true);
       setSnackbarMessage('Inscription réussie !');
       setSnackbarSeverity('success');
       dispatch(resetSnackbarStatusSignup());
-      // Puis je le réinitialise pour pas qu'il s'affiche à chaque fois que je reviens sur la page d'inscription
+    } else if (snackbarIsExpired) {
+      setOpenSnackbar(true);
+      setSnackbarMessage('Votre session a expiré, veuillez vous reconnecter.');
+      setSnackbarSeverity('error');
+      dispatch(resetSnackbar());
     }
-  }, [snackbarIsLogged, snackbarSuccessLogin, snackbarSucessSignup, dispatch]);
+  }, [
+    snackbarIsExpired,
+    snackbarIsLogged,
+    snackbarSuccessLogin,
+    snackbarSucessSignup,
+    dispatch,
+  ]);
 
   return (
     <HomepageContainer>

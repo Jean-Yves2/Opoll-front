@@ -121,7 +121,6 @@ function Login() {
     if (isLogged) {
       // Réinitialisez les états
       setErrors({ email: '', password: '' });
-      // Redirigez vers la page d'accueil
       navigate('/');
     }
   }, [isLogged, dispatch, navigate]);
@@ -164,6 +163,7 @@ function Login() {
           <Typography color="error">{error}</Typography>
 
           {isLoading ? (
+            // Si l'utilisateur est en train de se connecter, on affiche un spinner et on désactive le bouton
             <Button variant="contained" color="primary" disabled>
               <CircularProgress size={24} color="inherit" />
             </Button>

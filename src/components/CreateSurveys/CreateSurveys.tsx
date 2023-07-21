@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { FormEvent, useState } from 'react';
+import { handleLogout } from '../../store/reducers/login';
+import { expiredToken } from '../../store/reducers/snackbar';
+import { useAppDispatch } from '../../hooks/redux';
+import { useNavigate } from 'react-router';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
   Typography,
@@ -12,9 +17,9 @@ import {
   styled,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Cookies from 'js-cookie';
 
 type ValidationErrors = {
   title: string;
@@ -97,6 +102,9 @@ type SurveyData = {
 
 function CreateSurvey() {
   // State contenant les données du sondage
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [surveyData, setSurveyData] = useState<SurveyData>({
     title: '',
     responses: ['', ''],
@@ -193,6 +201,8 @@ function CreateSurvey() {
     const token = Cookies.get('token') as string;
     console.log(token);
 
+    setIsLoading(true); // Début du chargement
+
     try {
       // On envoie les données du sondage au serveur
       const response = await axios.post(
@@ -204,11 +214,19 @@ function CreateSurvey() {
           },
         }
       );
-      console.log('Sondage envoyé !');
       console.log(response.data);
     } catch (error) {
-      console.error("Erreur lors de l'envoi du sondage", error);
+      console.error(
+        "Erreur lors de l'envoi du sondage, token probablement invalide ou expiré",
+        error
+      );
+      // Si le token est invalide ou expiré, on déconnecte l'utilisateur
+      dispatch(handleLogout());
+      // On set le l'expiration du token a true pour afficher le snackbar
+      dispatch(expiredToken());
+      navigate('/');
     }
+    setIsLoading(false); // Fin du chargement
   };
 
   return (
@@ -321,8 +339,13 @@ function CreateSurvey() {
               required
             />
           )}
-          <Button variant="contained" color="primary" type="submit">
-            Créer
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={isLoading} // Désactiver le bouton pendant le chargement
+          >
+            {isLoading ? <CircularProgress size={24} /> : 'Créer'}
           </Button>
         </Form>
       </CreateSurveyContainer>

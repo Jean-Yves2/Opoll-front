@@ -37,7 +37,7 @@ function App() {
       },
     },
     typography: {
-      fontFamily: 'Montserrat, sans-serif',
+      fontFamily: 'Tektur, sans-serif',
     },
   });
 
