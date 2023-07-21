@@ -1,4 +1,4 @@
-import { useState, FormEvent, ChangeEvent, useEffect, useMemo } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
@@ -11,17 +11,36 @@ import {
   Button,
   CircularProgress,
   Typography,
-  useMediaQuery,
   styled,
-  useTheme,
 } from '@mui/material';
 
-const LoginContainer = styled('div')({
-  backgroundColor: '#3e3274',
+const WrapperLoginContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
   padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
-});
+}));
+
+const LoginContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
+  display: 'flex',
+  justifyContent: 'start',
+  alignItems: 'center',
+  flexDirection: 'column',
+  height: 'auto',
+  minHeight: '100vh',
+  margin: '1rem',
+  padding: '2rem',
+  borderRadius: '1rem',
+  boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
+  width: '55%',
+  [theme.breakpoints.down('md')]: {
+    width: '75%',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
+}));
 
 const Title = styled(Typography)({
   margin: '1.5rem',
@@ -42,13 +61,11 @@ const INVALID_PASSWORD_ERROR =
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const credentials = useAppSelector((state) => state.login.credentials);
   const isLoading = useAppSelector((state) => state.login.isLoading);
   const error = useAppSelector((state) => state.login.error);
   const isLogged = useAppSelector((state) => state.login.isLogged);
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [errors, setErrors] = useState<{
     email: string;
@@ -57,11 +74,6 @@ function Login() {
     email: '',
     password: '',
   });
-
-  const containerClass = useMemo(
-    () => (isSmallScreen ? 'container small-screen' : 'container large-screen'),
-    [isSmallScreen]
-  );
 
   const handleChangeField =
     (name: 'email' | 'password') => (event: ChangeEvent<HTMLInputElement>) => {
@@ -115,9 +127,9 @@ function Login() {
   }, [isLogged, dispatch, navigate]);
 
   return (
-    <LoginContainer>
-      <div className={containerClass}>
-        <Title color="secondary" variant="h4">
+    <WrapperLoginContainer>
+      <LoginContainer>
+        <Title color="primary" variant="h4">
           Connexion
         </Title>
         <Form onSubmit={handleSubmit}>
@@ -166,8 +178,8 @@ function Login() {
             </Button>
           )}
         </Form>
-      </div>
-    </LoginContainer>
+      </LoginContainer>
+    </WrapperLoginContainer>
   );
 }
 

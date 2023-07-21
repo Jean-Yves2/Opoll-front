@@ -14,21 +14,21 @@ import {
 } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 
-const HomepageContainer = styled('div')({
-  backgroundColor: '#3e3274',
+const HomepageContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
   alignItems: 'center',
   height: 'auto',
-});
+}));
 
-const Title = styled(Typography)({
-  color: '#F2BE22',
+const Title = styled('div')(({ theme }) => ({
+  color: theme.palette.primary.main,
   fontSize: '4rem',
   textAlign: 'center',
   position: 'absolute',
-});
+}));
 
 const ImageContainer = styled('div')({
   height: '100vh',
@@ -46,45 +46,50 @@ const ImageContainer = styled('div')({
   zIndex: 1,
 });
 
-const PieChartContainer = styled('div')({
-  height: '80vh',
+const PieChartContainer = styled('div')(({ theme }) => ({
+  height: 'auto',
   width: '100%',
-  backgroundColor: '#1b1532',
+  backgroundColor: theme.palette.background.default,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'column',
-});
+  paddingBottom: '2rem',
+}));
 
-const PollExampleContainer = styled('div')({
+const PollExampleContainer = styled('div')(({ theme }) => ({
   height: '80vh',
   width: '100%',
-  backgroundColor: '#120e21',
+  backgroundColor: theme.palette.secondary.main,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   flexDirection: 'column',
-});
+}));
 
-const ButtonPollContrainer = styled('div')({
+const ButtonPollContrainer = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
-  height: '10vh',
+  alignItems: 'space-between',
+  margin: '1rem',
   width: '100%',
-  marginBottom: '3rem',
-});
+  [theme.breakpoints.down('md')]: {
+    '& span': {
+      fontSize: '1rem',
+    },
+  },
+}));
 0;
 
-const GetStarted = styled('div')({
+const GetStarted = styled('div')(({ theme }) => ({
   height: '40vh',
   width: '100%',
-  backgroundColor: '#1b1532',
+  backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   flexWrap: 'wrap',
-});
+}));
 
 function Home() {
   const pieParams = { height: 350, margin: { right: 5 } };
@@ -158,7 +163,7 @@ function Home() {
       </Snackbar>
 
       <ImageContainer>
-        <Title variant="h1">O'POLL</Title>
+        <Title>O'POLL</Title>
       </ImageContainer>
 
       <PieChartContainer>
@@ -176,7 +181,7 @@ function Home() {
         <Typography
           variant="h4"
           sx={{
-            color: '#ffffff',
+            color: 'info.main',
             textAlign: 'center',
             marginBottom: '2rem',
           }}
@@ -249,7 +254,7 @@ function Home() {
         <Typography
           variant="h2"
           sx={{
-            color: '#ffffff',
+            color: 'info.main',
             fontSize: '2.5rem',
             textAlign: 'center',
             marginRight: '2rem',

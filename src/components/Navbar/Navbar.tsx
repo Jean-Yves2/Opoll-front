@@ -1,4 +1,3 @@
-import DarkModeToggle from './DarkModeToggle';
 import DrawerList from './DrawerList';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -21,12 +20,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import PollIcon from '@mui/icons-material/Poll';
 
-interface DarkModeToggleProps {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
-}
-
-function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
+function Navbar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -34,37 +28,11 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
   const isMinMdScreen = useMediaQuery(theme.breakpoints.up('md'));
   const isMaxMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const isLogged = useAppSelector((state) => state.login.isLogged);
-
-  const NavbarContainer = styled('div')({
-    marginTop: '60px',
-  });
-
-  // Fonction qui gère la déconnexion
-  const handleLogoutClick = () => {
-    dispatch(handleLogout());
-    navigate('/');
-  };
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Gestion de la couleur du background de la navbar
-  const backgroundColor = darkMode
-    ? theme.palette.background.paper
-    : theme.palette.background.paper;
-
-  // Fonction pour gérer l'ouverture et la fermeture du tiroir (drawer)
-  const toggleDrawer =
-    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === 'keydown' &&
-        ((event as React.KeyboardEvent).key === 'Tab' ||
-          (event as React.KeyboardEvent).key === 'Shift')
-        // Gestion de l'accesibilité pour les personnes utilisant un clavier
-      ) {
-        return;
-      }
-      setDrawerOpen(open);
-    };
+  const backgroundColor = theme.palette.background.paper;
 
   const menuItems = isLogged
     ? [
@@ -87,10 +55,33 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
     </Box>
   );
 
+  const NavbarContainer = styled('div')({
+    height: '4rem',
+  });
+
+  // Fonction qui gère la déconnexion
+  const handleLogoutClick = () => {
+    dispatch(handleLogout());
+    navigate('/');
+  };
+
+  // Fonction pour gérer l'ouverture et la fermeture du tiroir (drawer)
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+        // Gestion de l'accesibilité pour les personnes utilisant un clavier
+      ) {
+        return;
+      }
+      setDrawerOpen(open);
+    };
+
   return (
     <NavbarContainer>
-      <Box sx={{ flexGrow: 3 }}>
-        {/* backgroundColor pour gérer le futur darkmode/lightmode */}
+      <Box>
         <AppBar position="fixed" sx={{ backgroundColor }}>
           <Toolbar>
             <Grid container justifyContent="space-between" alignItems="center">
@@ -134,10 +125,6 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
               affiche bouton déconnexion*/}
               {isMinMdScreen && (
                 <Grid item>
-                  <DarkModeToggle
-                    darkMode={darkMode}
-                    toggleDarkMode={toggleDarkMode}
-                  />
                   {isLogged ? (
                     // SI l'utilisateur est connecté alors bouton déconnexion affiché
                     <>
@@ -197,16 +184,18 @@ function Navbar({ darkMode, toggleDarkMode }: DarkModeToggleProps) {
                   <Drawer
                     anchor="top"
                     transitionDuration={{
-                      enter: 500,
-                      exit: 200,
+                      enter: 300,
+                      exit: 150,
                     }}
                     open={drawerOpen}
                     onClose={toggleDrawer(false)}
                     sx={{
                       '& .MuiDrawer-paper': {
                         width: '100%',
-                        height: '100%',
+                        height: '100vh',
                         background: 'transparent',
+                        // Ajout du petit blur effect sur le drawer
+                        backdropFilter: 'blur(10px)',
                       },
                     }}
                   >

@@ -10,29 +10,35 @@ import {
   FormControlLabel,
   Switch,
   styled,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import Cookies from 'js-cookie';
 
 type ValidationErrors = {
   title: string;
   responses: string[];
 };
 
-const Wrapper = styled('div')({
-  backgroundColor: '#3e3274',
+const WrapperCreateSurvey = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
-});
+  minHeight: '100vh',
+}));
 
 const CreateSurveyContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   padding: '1.5rem 2rem',
-  backgroundColor: '#1b1532',
+  backgroundColor: theme.palette.secondary.main,
   height: 'auto',
   borderRadius: '0.5rem',
   margin: '2rem',
   width: '50%',
+  boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
   [theme.breakpoints.down('md')]: {
     width: '90%',
   },
@@ -125,6 +131,15 @@ function CreateSurvey() {
     }
   };
 
+  // Logique de suppression d'une option du sondage (min 2)
+  const handleRemoveOption = (index: number) => {
+    if (surveyData.responses.length > 2) {
+      const responses = [...surveyData.responses];
+      responses.splice(index, 1);
+      setSurveyData((prevData) => ({ ...prevData, responses: responses }));
+    }
+  };
+
   const MAX_TITLE_LENGTH = 30;
   const MAX_OPTION_LENGTH = 50;
 
@@ -175,9 +190,20 @@ function CreateSurvey() {
       multiple_responses: surveyData.multiple_responses,
       responses: surveyData.responses.map((response) => ({ title: response })),
     };
+    const token = Cookies.get('token') as string;
+    console.log(token);
+
     try {
       // On envoie les données du sondage au serveur
-      const response = await axios.post('/@me/survey', transformedSurveyData);
+      const response = await axios.post(
+        'http://localhost:3000/@me/survey',
+        transformedSurveyData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log('Sondage envoyé !');
       console.log(response.data);
     } catch (error) {
@@ -186,9 +212,9 @@ function CreateSurvey() {
   };
 
   return (
-    <Wrapper>
+    <WrapperCreateSurvey>
       <CreateSurveyContainer>
-        <Title color="secondary" variant="h4">
+        <Title color="primary" variant="h4">
           Création d'un sondage
         </Title>
         <Form onSubmit={handleSurveySubmit}>
@@ -204,11 +230,22 @@ function CreateSurvey() {
             <TextField
               error={!!errors.responses[index]}
               helperText={errors.responses[index]}
-              key={index}
               label={`Réponse ${index + 1}`}
               value={response}
               onChange={(e) => handleOptionChange(index, e.target.value)}
               required
+              InputProps={{
+                endAdornment: surveyData.responses.length > 2 && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      edge="end"
+                      onClick={() => handleRemoveOption(index)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           ))}
           {surveyData.responses.length < 6 && (
@@ -220,6 +257,7 @@ function CreateSurvey() {
               Ajouter une option
             </Button>
           )}
+
           <FormGroup>
             <CustomFormControlLabel
               control={
@@ -288,7 +326,7 @@ function CreateSurvey() {
           </Button>
         </Form>
       </CreateSurveyContainer>
-    </Wrapper>
+    </WrapperCreateSurvey>
   );
 }
 

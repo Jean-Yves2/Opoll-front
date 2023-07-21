@@ -9,13 +9,6 @@ import {
 } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 
-const VoteResultWrapper = styled('div')({
-  backgroundColor: '#3e3274',
-  padding: '1rem',
-  display: 'flex',
-  justifyContent: 'center',
-});
-
 function VoteResults() {
   const pieParams = { height: 350, margin: { right: 5 } };
   const data = [
@@ -27,21 +20,28 @@ function VoteResults() {
 
   const theme = useTheme();
 
-  const VoteResultContainer = styled('div')({
+  const VoteResultWrapper = styled('div')(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
+    padding: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+  }));
+
+  const VoteResultContainer = styled('div')(({ theme }) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
     width: '100%',
-    backgroundColor: '#1b1532',
+    backgroundColor: theme.palette.secondary.main,
     borderRadius: '0.5rem',
     [theme.breakpoints.down('md')]: {
       justifyContent: 'start',
       flexDirection: 'column',
-      height: '150vh',
+      height: 'auto',
     },
-  });
+  }));
 
   const LinearContainer = styled('div')({
     width: '50%',
@@ -91,7 +91,7 @@ function VoteResults() {
           <ResponsiveH3
             variant="h3"
             sx={{
-              color: '#ffffff',
+              color: 'info.main',
               textAlign: 'start',
               marginBottom: '2rem',
             }}
@@ -101,7 +101,7 @@ function VoteResults() {
           <ResponsiveH5
             variant="h5"
             sx={{
-              color: '#ffffff',
+              color: 'info.main',
               textAlign: 'start',
               marginBottom: '2rem',
             }}
@@ -112,7 +112,7 @@ function VoteResults() {
             <Box key={item.id} sx={{ width: '100%', marginBottom: '2rem' }}>
               <Typography
                 variant="caption"
-                sx={{ color: '#ffffff', fontSize: '1rem' }}
+                sx={{ color: 'info.main', fontSize: '1rem' }}
               >
                 {item.textLeft} ({item.value} Votes)
               </Typography>

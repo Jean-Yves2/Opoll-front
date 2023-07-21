@@ -1,17 +1,42 @@
-import { useState, FormEvent, ChangeEvent, useEffect, useMemo } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleSignup } from '../../store/reducers/signup';
-import { styled, useTheme } from '@mui/material/styles';
-import { TextField, Button, CircularProgress, Typography } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+  styled,
+} from '@mui/material';
 
-const SignupContainer = styled('div')({
-  backgroundColor: '#3e3274',
+const WrapperSignupContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
   padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
-});
+}));
+
+const SignUpContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
+  display: 'flex',
+  justifyContent: 'start',
+  alignItems: 'center',
+  flexDirection: 'column',
+  height: 'auto',
+  minHeight: '100vh',
+  margin: '1rem',
+  padding: '2rem',
+  borderRadius: '1rem',
+  boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
+  width: '55%',
+  [theme.breakpoints.down('md')]: {
+    width: '75%',
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
+}));
 
 const Title = styled(Typography)({
   margin: '1.5rem',
@@ -28,19 +53,12 @@ const Form = styled('form')({
 function Signup() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const isLoading = useAppSelector((state) => state.signup.isLoading);
   const error = useAppSelector((state) => state.signup.error);
   const isLogged = useAppSelector((state) => state.login.isLogged);
 
   const snackbarSucess = useAppSelector((state) => state.signup.snackbarSucess);
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const containerClass = useMemo(
-    () => (isSmallScreen ? 'container small-screen' : 'container large-screen'),
-    [isSmallScreen]
-  );
 
   useEffect(() => {
     if (isLogged) {
@@ -141,9 +159,9 @@ function Signup() {
   }, [snackbarSucess, dispatch, navigate]);
 
   return (
-    <SignupContainer>
-      <div className={containerClass}>
-        <Title color="secondary" variant="h4">
+    <WrapperSignupContainer>
+      <SignUpContainer>
+        <Title color="primary" variant="h4">
           Inscription
         </Title>
         <Form onSubmit={handleSubmit}>
@@ -228,8 +246,8 @@ function Signup() {
             </Button>
           )}
         </Form>
-      </div>
-    </SignupContainer>
+      </SignUpContainer>
+    </WrapperSignupContainer>
   );
 }
 

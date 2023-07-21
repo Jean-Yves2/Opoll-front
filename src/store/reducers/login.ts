@@ -68,6 +68,8 @@ export const handleLogin = createAsyncThunk(
         'http://localhost:3000/auth/login',
         credentials
       );
+      console.log(data.token);
+
       TypedCookies.set('token', data.token);
       return { username: data.username };
     } catch (error) {

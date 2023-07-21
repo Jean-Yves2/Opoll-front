@@ -7,14 +7,13 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ShareIcon from '@mui/icons-material/Share';
 
 const FooterContainer = styled('div')({
-  backgroundColor: '#3e3274',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
 });
 
 const StyledLink = styled(RouterLink)(({ theme }) => ({
-  color: theme.palette.secondary.main,
+  color: theme.palette.info.main,
   textDecoration: 'none',
   '&:hover': {
     textDecoration: 'underline',
@@ -41,8 +40,8 @@ function Footer() {
 
   return (
     <FooterContainer>
-      <AppBar position="sticky" color="primary" style={{ backgroundColor }}>
-        <Toolbar style={{ padding: '1rem 0' }}>
+      <AppBar position="sticky" style={{ backgroundColor }}>
+        <Toolbar>
           <SocialIconContainer>
             <TwitterIcon />
             <FacebookIcon />

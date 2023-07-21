@@ -1,0 +1,82 @@
+/* Reset CSS */
+/* Remove default margin and padding */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set box-sizing to border-box for all elements */
+* {
+  box-sizing: border-box;
+}
+
+/* Remove list styles (bullets and indentation) */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Remove hyperlink styles */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove button styles */
+button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Remove input styles */
+input,
+textarea,
+select,
+button {
+  appearance: none;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+/* Set a base font-size and font-family */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+/* Optionally, you can add more reset rules here based on your requirements */
+
+/* Ensure HTML and body take up the full viewport height */
+html,
+body {
+  height: 100%;
+}
+
+/* Optionally, you can set additional base styles for your layout */
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add styles for other common elements */
+/* e.g., headings, links, buttons, form elements, etc. */
