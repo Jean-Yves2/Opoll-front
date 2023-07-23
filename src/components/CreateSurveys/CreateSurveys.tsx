@@ -30,7 +30,7 @@ const WrapperCreateSurvey = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
-  minHeight: '100vh',
+  minHeight: '100dvh',
 }));
 
 const CreateSurveyContainer = styled('div')(({ theme }) => ({
@@ -42,10 +42,16 @@ const CreateSurveyContainer = styled('div')(({ theme }) => ({
   height: 'auto',
   borderRadius: '0.5rem',
   margin: '2rem',
-  width: '50%',
+  width: '60%',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
   [theme.breakpoints.down('md')]: {
-    width: '90%',
+    margin: '1rem',
+    width: '80%',
+  },
+  [theme.breakpoints.down('sm')]: {
+    margin: '0rem',
+    width: '100%',
+    borderRadius: '0rem',
   },
 }));
 

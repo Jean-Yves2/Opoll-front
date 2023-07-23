@@ -12,7 +12,6 @@ import {
 
 const WrapperSignupContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
 }));
@@ -29,12 +28,14 @@ const SignUpContainer = styled('div')(({ theme }) => ({
   padding: '2rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
-  width: '55%',
+  width: '50%',
   [theme.breakpoints.down('md')]: {
     width: '75%',
   },
   [theme.breakpoints.down('sm')]: {
     width: '100%',
+    margin: '0rem',
+    borderRadius: '0rem',
   },
 }));
 

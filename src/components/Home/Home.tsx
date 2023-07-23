@@ -31,7 +31,7 @@ const Title = styled('div')(({ theme }) => ({
 }));
 
 const ImageContainer = styled('div')({
-  height: '100vh',
+  height: '100dvh',
   width: '100%',
   // Image de background, un peu flou coté desktop,sujet a changement
   backgroundImage:
@@ -58,8 +58,9 @@ const PieChartContainer = styled('div')(({ theme }) => ({
 }));
 
 const PollExampleContainer = styled('div')(({ theme }) => ({
-  height: '80vh',
+  height: 'auto',
   width: '100%',
+  padding: '3rem 0rem',
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
   justifyContent: 'center',
@@ -82,13 +83,23 @@ const ButtonPollContrainer = styled('div')(({ theme }) => ({
 0;
 
 const GetStarted = styled('div')(({ theme }) => ({
-  height: '40vh',
+  height: 'auto',
   width: '100%',
+  margin: '2rem 0rem',
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   flexWrap: 'wrap',
+}));
+
+const ResponsiveTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.info.main,
+  fontSize: '2.5rem',
+  margin: '1rem',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '1.5rem',
+  },
 }));
 
 function Home() {
@@ -258,17 +269,7 @@ function Home() {
       </PollExampleContainer>
 
       <GetStarted>
-        <Typography
-          variant="h2"
-          sx={{
-            color: 'info.main',
-            fontSize: '2.5rem',
-            textAlign: 'center',
-            marginRight: '2rem',
-          }}
-        >
-          Créez votre premier sondage !
-        </Typography>
+        <ResponsiveTypography>Créez votre premier sondage</ResponsiveTypography>
         <Button
           variant="contained"
           size="large"
