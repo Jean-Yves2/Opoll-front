@@ -57,6 +57,10 @@ function Navbar() {
 
   const NavbarContainer = styled('div')({
     height: '4rem',
+    marginBottom: '4rem',
+    [theme.breakpoints.down('lg')]: {
+      marginBottom: '0rem',
+    },
   });
 
   // Fonction qui gère la déconnexion

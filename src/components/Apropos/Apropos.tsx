@@ -1,24 +1,26 @@
-import './Apropos.scss'
+import './Apropos.scss';
 function Apropos() {
   return (
     <div className="container-page">
-      <div className='description'>
+      <div className="description">
         <h1>A PROPOS</h1>
         <section>
           <p>
-           Bienvenue sur notre page À Propos ! Nous sommes une équipe de 4 développeurs web 
-           passionnés par la création de solutions numériques innovantes et efficaces. 
-           Permettez-nous de vous présenter brièvement. Notre aventure a commencé
-           il y a quelques mois, lorsque nous étions apprenant chez O'clock.
-           Passionnés par la technologie et le web, nous sommes rapidement rendus 
-           compte que nous avions une vision commune : créer des expériences en ligne
-           exceptionnelles et donner vie aux idées innovantes de nos clients. 
-           Après avoir collaboré sur plusieurs projets, nous avons décidé de créer
-           notre propre site en ligne, mettant ainsi en commun nos compétences et notre expertise.
+            Bienvenue sur notre page À Propos ! Nous sommes une équipe de 4
+            développeurs web passionnés par la création de solutions numériques
+            innovantes et efficaces. Permettez-nous de vous présenter
+            brièvement. Notre aventure a commencé il y a quelques mois, lorsque
+            nous étions apprenant chez O'clock. Passionnés par la technologie et
+            le web, nous sommes rapidement rendus compte que nous avions une
+            vision commune : créer des expériences en ligne exceptionnelles et
+            donner vie aux idées innovantes de nos clients. Après avoir
+            collaboré sur plusieurs projets, nous avons décidé de créer notre
+            propre site en ligne, mettant ainsi en commun nos compétences et
+            notre expertise.
           </p>
         </section>
       </div>
-      <div className='cover'>
+      <div className="cover">
         <img src="src\assets\Apropos.jpg" alt="Photo de Statistic" />
       </div>
     </div>

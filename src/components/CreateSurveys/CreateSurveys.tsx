@@ -21,10 +21,28 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+interface AxiosError {
+  response?: {
+    status?: number;
+  };
+}
+
 type ValidationErrors = {
   title: string;
   responses: string[];
 };
+
+type SurveyData = {
+  title: string;
+  responses: string[];
+  public: boolean;
+  multiple_responses: boolean;
+  endDate?: string;
+};
+
+interface SurveyResponse {
+  id: string;
+}
 
 const WrapperCreateSurvey = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -97,14 +115,6 @@ const QuestionTextField = styled(TextField)({
     },
   },
 });
-
-type SurveyData = {
-  title: string;
-  responses: string[];
-  public: boolean;
-  multiple_responses: boolean;
-  endDate?: string;
-};
 
 function CreateSurvey() {
   // State contenant les données du sondage
@@ -205,13 +215,12 @@ function CreateSurvey() {
       responses: surveyData.responses.map((response) => ({ title: response })),
     };
     const token = Cookies.get('token') as string;
-    console.log(token);
 
     setIsLoading(true); // Début du chargement
 
     try {
       // On envoie les données du sondage au serveur
-      const response = await axios.post(
+      const response = await axios.post<SurveyResponse>(
         'http://localhost:3000/@me/survey',
         transformedSurveyData,
         {
@@ -220,17 +229,19 @@ function CreateSurvey() {
           },
         }
       );
-      console.log(response.data);
+      navigate(`/surveys/${response.data.id}/vote`);
     } catch (error) {
+      const axiosError = error as AxiosError;
       console.error(
         "Erreur lors de l'envoi du sondage, token probablement invalide ou expiré",
-        error
+        axiosError
       );
       // Si le token est invalide ou expiré, on déconnecte l'utilisateur
-      dispatch(handleLogout());
-      // On set le l'expiration du token a true pour afficher le snackbar
-      dispatch(expiredToken());
-      navigate('/');
+      if (axiosError.response && axiosError.response.status === 401) {
+        dispatch(handleLogout());
+        dispatch(expiredToken());
+        navigate('/');
+      }
     }
     setIsLoading(false); // Fin du chargement
   };
