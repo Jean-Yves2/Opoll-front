@@ -14,16 +14,16 @@ const WrapperSignupContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'start',
+  alignItems: 'center',
   minHeight: '100vh',
 }));
 
 const SignUpContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
+  justifyContent: 'start',
   alignItems: 'center',
   flexDirection: 'column',
-  marginTop: '4rem',
   height: 'auto',
   padding: '2rem',
   borderRadius: '1rem',
