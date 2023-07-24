@@ -48,27 +48,28 @@ const WrapperCreateSurvey = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
-  minHeight: '100dvh',
+  alignItems: 'start',
+  minHeight: '100vh',
 }));
 
 const CreateSurveyContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.secondary.main,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   padding: '1.5rem 2rem',
-  backgroundColor: theme.palette.secondary.main,
+  marginTop: '4rem',
   height: 'auto',
-  borderRadius: '0.5rem',
-  margin: '2rem',
+  borderRadius: '1rem',
   width: '60%',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
   [theme.breakpoints.down('md')]: {
-    margin: '1rem',
     width: '80%',
   },
   [theme.breakpoints.down('sm')]: {
-    margin: '0rem',
+    marginTop: '0rem',
     width: '100%',
+    height: '100vh',
     borderRadius: '0rem',
   },
 }));

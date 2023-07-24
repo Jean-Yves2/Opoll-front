@@ -17,6 +17,8 @@ const WrapperContact = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'start',
+  minHeight: '100vh',
 }));
 
 const ContactContainer = styled('div')(({ theme }) => ({
@@ -26,21 +28,21 @@ const ContactContainer = styled('div')(({ theme }) => ({
   alignItems: 'center',
   flexDirection: 'column',
   height: 'auto',
-  minHeight: '100vh',
-  margin: '1rem',
+  marginTop: '4rem',
   padding: '2rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
-  width: '50%',
+  width: '40%',
   [theme.breakpoints.down('lg')]: {
-    width: '65%',
+    width: '60%',
   },
   [theme.breakpoints.down('md')]: {
-    width: '75%',
+    width: '80%',
   },
   [theme.breakpoints.down('sm')]: {
+    height: '100vh',
     width: '100%',
-    margin: '0rem',
+    marginTop: '0rem',
     borderRadius: '0rem',
   },
 }));
@@ -60,9 +62,9 @@ const TitleContainer = styled('div')(({ theme }) => ({
   width: '100%',
   padding: '1rem',
   '& h5': {
-    fontSize: '2rem',
+    fontSize: '2.3rem',
     [theme.breakpoints.down('md')]: {
-      fontSize: '1.5rem',
+      fontSize: '1.8rem',
     },
   },
 }));

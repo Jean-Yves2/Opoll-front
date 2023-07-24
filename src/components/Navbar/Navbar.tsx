@@ -55,13 +55,10 @@ function Navbar() {
     </Box>
   );
 
-  const NavbarContainer = styled('div')({
-    height: '4rem',
-    marginBottom: '4rem',
-    [theme.breakpoints.down('lg')]: {
-      marginBottom: '0rem',
-    },
-  });
+  const NavbarContainer = styled('div')(({ theme }) => ({
+    position: 'relative',
+    paddingTop: '4rem',
+  }));
 
   // Fonction qui gère la déconnexion
   const handleLogoutClick = () => {

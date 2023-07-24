@@ -14,17 +14,17 @@ const WrapperSignupContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'start',
+  minHeight: '100vh',
 }));
 
 const SignUpContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
-  justifyContent: 'start',
   alignItems: 'center',
   flexDirection: 'column',
+  marginTop: '4rem',
   height: 'auto',
-  minHeight: '100vh',
-  margin: '1rem',
   padding: '2rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
@@ -33,8 +33,9 @@ const SignUpContainer = styled('div')(({ theme }) => ({
     width: '75%',
   },
   [theme.breakpoints.down('sm')]: {
+    height: '100vh',
     width: '100%',
-    margin: '0rem',
+    marginTop: '0rem',
     borderRadius: '0rem',
   },
 }));
