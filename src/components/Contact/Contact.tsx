@@ -18,7 +18,11 @@ const WrapperContact = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'start',
-  minHeight: '100vh',
+  minHeight: '80.20vh',
+  overflow: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    minHeight: '10vh',
+  }
 }));
 
 const ContactContainer = styled('div')(({ theme }) => ({
@@ -33,6 +37,7 @@ const ContactContainer = styled('div')(({ theme }) => ({
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
   width: '40%',
+  overflow: 'auto',
   [theme.breakpoints.down('lg')]: {
     width: '60%',
   },
@@ -40,7 +45,7 @@ const ContactContainer = styled('div')(({ theme }) => ({
     width: '80%',
   },
   [theme.breakpoints.down('sm')]: {
-    height: '100vh',
+    height: '78vh',
     width: '100%',
     marginTop: '0rem',
     borderRadius: '0rem',
