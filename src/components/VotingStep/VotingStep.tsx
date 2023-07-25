@@ -92,17 +92,17 @@ function VoteStep() {
         return;
       }
       try {
-        const response = await axios.get<Survey>(
-          `http://localhost:3000/@me/survey/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSurvey(response.data);
+        const GetSurveyConfig = {
+          method: 'get',
+          url: `http://localhost:3000/@me/survey/${id}`,
+          headers: {
+            Authorization: token,
+          },
+        }
+        const GetSurvey = await axios(GetSurveyConfig)
+        setSurvey(GetSurvey.data);
         console.log('Sondage récupéré :');
-        console.log(response.data);
+        console.log(GetSurvey.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du sondage', error);
       }
@@ -135,18 +135,17 @@ function VoteStep() {
     }
 
     try {
-      const response = await axios.post(
-        // Envoie des réponse(s) du sondage sélectionnées au serveur
-        `http://localhost:3000/@me/survey/${id}/respond`,
-        { responses: selectedOptions },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log('Réponse envoyée :');
-      console.log(response.data);
+      const VoteSurveyConfig = {
+        method: 'post',
+        url: `http://localhost:3000/@me/survey/${id}/respond`,
+        headers: {
+          Authorization: token,
+        },
+        data: { responses: selectedOptions },
+      }
+      const VoteSurvey = await axios(VoteSurveyConfig)
+      // Gérer la logique de redirection vers les résultats en temps réel
+      console.log(VoteSurvey.data);
     } catch (error) {
       console.error('Erreur lors de la soumission du vote', error);
     }

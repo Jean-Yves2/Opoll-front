@@ -221,16 +221,17 @@ function CreateSurvey() {
 
     try {
       // On envoie les données du sondage au serveur
-      const response = await axios.post<SurveyResponse>(
-        'http://localhost:3000/@me/survey',
-        transformedSurveyData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      navigate(`/surveys/${response.data.id}/vote`);
+      const CreateSurveyConfig = {
+        method: 'post',
+        url: 'http://localhost:3000/@me/survey',
+        headers: {
+          Authorization: token,
+        },
+        data: transformedSurveyData,
+      }
+      const CreateSurvey = await axios(CreateSurveyConfig)
+
+      navigate(`/surveys/${CreateSurvey.data.id}/vote`);
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error(
