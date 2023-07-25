@@ -10,8 +10,10 @@ import CreateSurveys from '../CreateSurveys/CreateSurveys';
 import Contact from '../Contact/Contact';
 import MentionLegale from '../MentionLegale/MentionLegale';
 import Apropos from '../Apropos/Apropos';
+import SurveyList from '../SurveyList/SurveyList';
 import Error from '../Error/Error';
 import VoteResults from '../VoteResults/VoteResults';
+import VotingStep from '../VotingStep/VotingStep';
 
 function App() {
   // Darkmode / Lightmode en standby pour le moment
@@ -53,11 +55,17 @@ function App() {
             path="/surveys/create"
             element={<ProtectedRoutes element={CreateSurveys} />}
           />
+          <Route
+            path="/surveys/:id/vote"
+            element={<ProtectedRoutes element={VotingStep} />}
+          />
+
           {/* Composant pour présenter les résultats du sondage pas encore implémenté */}
           <Route path="/test" element={<VoteResults />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/mentions-legales" element={<MentionLegale />} />
           <Route path="/a-propos" element={<Apropos />} />
+          <Route path="/survey" element={<SurveyList />} />
 
           <Route path="*" element={<Error />} />
         </Routes>

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+// Formulaire de contact fonctionne OK, manque juste snackbar pour afficher message de confirmation
 import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 import {
   Button,
@@ -13,9 +15,10 @@ import {
 
 const WrapperContact = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'start',
+  minHeight: '100vh',
 }));
 
 const ContactContainer = styled('div')(({ theme }) => ({
@@ -25,20 +28,22 @@ const ContactContainer = styled('div')(({ theme }) => ({
   alignItems: 'center',
   flexDirection: 'column',
   height: 'auto',
-  minHeight: '100vh',
-  margin: '1rem',
+  marginTop: '4rem',
   padding: '2rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
-  width: '50%',
+  width: '40%',
   [theme.breakpoints.down('lg')]: {
-    width: '65%',
+    width: '60%',
   },
   [theme.breakpoints.down('md')]: {
-    width: '75%',
+    width: '80%',
   },
   [theme.breakpoints.down('sm')]: {
+    height: '100vh',
     width: '100%',
+    marginTop: '0rem',
+    borderRadius: '0rem',
   },
 }));
 
@@ -57,9 +62,9 @@ const TitleContainer = styled('div')(({ theme }) => ({
   width: '100%',
   padding: '1rem',
   '& h5': {
-    fontSize: '2rem',
+    fontSize: '2.3rem',
     [theme.breakpoints.down('md')]: {
-      fontSize: '1.5rem',
+      fontSize: '1.8rem',
     },
   },
 }));
@@ -67,17 +72,28 @@ const TitleContainer = styled('div')(({ theme }) => ({
 function Contact() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false); // Ajoutez cet état
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+
+  const handleMessageChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setMessage(event.target.value);
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-
     try {
       await axios.post('http://localhost:3000/contact', { email, message });
-      console.log('Message envoyé avec succès');
       setEmail('');
       setMessage('');
+      navigate('/');
+      // Ajouter snackbar pour afficher message de confirmation
     } catch (error) {
       console.error(
         "Erreur lors de l'envoi du formulaire de contact, veuillez réessayer",
@@ -107,6 +123,8 @@ function Contact() {
                   variant="outlined"
                   fullWidth
                   required
+                  value={email}
+                  onChange={handleEmailChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -118,6 +136,8 @@ function Contact() {
                   variant="outlined"
                   fullWidth
                   required
+                  value={message}
+                  onChange={handleMessageChange}
                 />
               </Grid>
               <Grid item xs={12}>

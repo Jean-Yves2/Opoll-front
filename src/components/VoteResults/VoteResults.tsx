@@ -22,7 +22,6 @@ function VoteResults() {
 
   const VoteResultWrapper = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    padding: '1rem',
     display: 'flex',
     justifyContent: 'center',
   }));
@@ -32,14 +31,17 @@ function VoteResults() {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh',
+    height: '90dvh',
     width: '100%',
+    margin: '1.5rem',
+    padding: '2rem 0rem',
     backgroundColor: theme.palette.secondary.main,
     borderRadius: '0.5rem',
     [theme.breakpoints.down('md')]: {
       justifyContent: 'start',
       flexDirection: 'column',
       height: 'auto',
+      margin: '0rem',
     },
   }));
 
@@ -74,7 +76,7 @@ function VoteResults() {
 
   const ResponsiveH3 = styled(Typography)(({ theme }) => ({
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.8rem',
+      fontSize: '2.2rem',
     },
   }));
 

@@ -16,29 +16,32 @@ import {
 
 const WrapperLoginContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'start',
+  minHeight: '100vh',
 }));
 
 const LoginContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
-  justifyContent: 'start',
   alignItems: 'center',
   flexDirection: 'column',
   height: 'auto',
-  minHeight: '100vh',
-  margin: '1rem',
   padding: '2rem',
+  marginTop: '4rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
-  width: '55%',
+  width: '40%',
+  boxSizing: 'border-box',
   [theme.breakpoints.down('md')]: {
-    width: '75%',
+    width: '70%',
   },
   [theme.breakpoints.down('sm')]: {
+    height: '100vh',
     width: '100%',
+    borderRadius: '0rem',
+    marginTop: '0rem',
   },
 }));
 

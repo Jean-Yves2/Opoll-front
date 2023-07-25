@@ -12,9 +12,10 @@ import {
 
 const WrapperSignupContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  padding: '1rem',
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '100vh',
 }));
 
 const SignUpContainer = styled('div')(({ theme }) => ({
@@ -24,17 +25,18 @@ const SignUpContainer = styled('div')(({ theme }) => ({
   alignItems: 'center',
   flexDirection: 'column',
   height: 'auto',
-  minHeight: '100vh',
-  margin: '1rem',
   padding: '2rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
-  width: '55%',
+  width: '50%',
   [theme.breakpoints.down('md')]: {
     width: '75%',
   },
   [theme.breakpoints.down('sm')]: {
+    height: '100vh',
     width: '100%',
+    marginTop: '0rem',
+    borderRadius: '0rem',
   },
 }));
 
