@@ -29,6 +29,9 @@ interface LoginState {
   error: string | null;
   isLoading: boolean;
   snackbarSucess?: boolean;
+  verificationCode: string;
+  isVerified: boolean;
+  verificationError: string | null;
 }
 
 const initialValue: LoginState = {
@@ -41,6 +44,9 @@ const initialValue: LoginState = {
   error: null,
   isLoading: false,
   snackbarSucess: false,
+  verificationCode: '',
+  isVerified: false,
+  verificationError: null,
 };
 
 const TypedCookies: CookiesType = Cookies;
@@ -59,6 +65,36 @@ export const changeField = createAction<{
   name: KeysOfCredentials;
   value: string;
 }>('login/CHANGE_FIELD');
+
+export const changeVerificationCode = createAction<string>(
+  'login/CHANGE_VERIFICATION_CODE'
+);
+
+export const handleVerification = createAsyncThunk(
+  'login/VERIFY',
+  async (verificationCode: string, { rejectWithValue }) => {
+    try {
+      const token = Cookies.get('token');
+      if (!token) throw new Error('Token not found');
+      const { data } = await axios.post<{ message: string }>(
+        'http://localhost:3000/@me/verify',
+        { code: verificationCode },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return { message: data.message };
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la vérification:",
+        error
+      );
+      return rejectWithValue('Code de vérification incorrect');
+    }
+  }
+);
 
 export const handleLogin = createAsyncThunk(
   'settings/LOGIN',
@@ -111,6 +147,26 @@ const loginReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(resetSnackbarStatusLogin, (state) => {
       state.snackbarSucess = false;
+    })
+    .addCase(changeVerificationCode, (state, action) => {
+      state.verificationCode = action.payload;
+    })
+    .addCase(handleVerification.pending, (state) => {
+      state.isLoading = true;
+      state.verificationError = null;
+    })
+    .addCase(handleVerification.rejected, (state, action) => {
+      state.verificationError = action.payload as string;
+      state.isVerified = false;
+      state.isLoading = false;
+    })
+    .addCase(handleVerification.fulfilled, (state, action) => {
+      if (action.payload.message === 'User verified') {
+        state.isVerified = true;
+      } else {
+        state.verificationError = action.payload.message;
+      }
+      state.isLoading = false;
     });
 });
 

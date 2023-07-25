@@ -13,6 +13,7 @@ import Apropos from '../Apropos/Apropos';
 import Error from '../Error/Error';
 import VoteResults from '../VoteResults/VoteResults';
 import VotingStep from '../VotingStep/VotingStep';
+import VerificationCode from '../Login/VerificationCode';
 
 function App() {
   // Darkmode / Lightmode en standby pour le moment
@@ -49,6 +50,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login/verification" element={<VerificationCode />} />
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/surveys/create"

@@ -161,7 +161,7 @@ function VoteStep() {
             <FormLabel
               component="legend"
               sx={{
-                fontSize: '2.5rem',
+                fontSize: '2rem',
                 marginBottom: '2rem',
                 color: 'primary.main',
               }}
@@ -206,6 +206,7 @@ function VoteStep() {
             color="primary"
             type="submit"
             size="large"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleSubmit}
             sx={{ marginTop: '1rem' }}
           >
