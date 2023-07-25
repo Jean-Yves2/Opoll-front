@@ -264,6 +264,7 @@ function CreateSurvey() {
           />
           {surveyData.responses.map((response, index) => (
             <TextField
+              key={index}
               error={!!errors.responses[index]}
               helperText={errors.responses[index]}
               label={`Réponse ${index + 1}`}

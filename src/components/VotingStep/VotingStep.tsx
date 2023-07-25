@@ -6,13 +6,15 @@ import {
   FormGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
   styled,
   Button,
   Checkbox,
+  FormLabel,
+  Typography,
 } from '@mui/material';
 
 interface SurveyResponse {
+  id: string;
   title: string;
 }
 
@@ -29,32 +31,51 @@ const WrapperVotingStep = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
+  alignItems: 'start',
   minHeight: '100dvh',
 }));
 
 const VotingStepContainer = styled('div')(({ theme }) => ({
   display: 'flex',
-  flexDirection: 'column',
   justifyContent: 'start',
-  alignItems: 'start',
-  padding: '1.5rem 2rem',
+  alignItems: 'center',
+  flexDirection: 'column',
+  marginTop: '4rem',
+  padding: '2rem',
   backgroundColor: theme.palette.secondary.main,
   height: 'auto',
-  borderRadius: '0.5rem',
-  margin: '2rem',
-  width: '60%',
+  borderRadius: '1rem',
+  width: '50%',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
+  [theme.breakpoints.down('md')]: {
+    width: '75%',
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '100vh',
+    width: '100%',
+    marginTop: '0rem',
+    borderRadius: '0rem',
+  },
 }));
+
+const VoteContainer = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
+  width: '100%',
+  height: 'auto',
+  maxWidth: '500px',
+});
 
 const ResponsiveTitle = styled('h1')(({ theme }) => ({
   fontSize: '3rem',
   color: theme.palette.primary.main,
   margin: '2rem 0rem',
   [theme.breakpoints.down('md')]: {
-    fontSize: '2rem',
+    fontSize: '2.5rem',
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '1.5rem',
+    fontSize: '2rem',
   },
 }));
 
@@ -80,86 +101,117 @@ function VoteStep() {
           }
         );
         setSurvey(response.data);
+        console.log('Sondage récupéré :');
         console.log(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération du sondage', error);
-        // Gérez ici les erreurs
       }
     };
-
     fetchSurvey().catch((error) => {
       console.error('Erreur lors de la récupération du sondage', error);
     });
-  }, [token, id]); // Exécutez l'effet chaque fois que l'ID change
+  }, [token, id]);
 
-  if (!survey) {
-    return <div>Loading...</div>; // Introduire skeleton loader pour le sondage
-  }
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = (event.target as HTMLInputElement).value;
-    if (selectedOptions.includes(value)) {
-      setSelectedOptions(selectedOptions.filter((option) => option !== value));
-    } else {
-      setSelectedOptions([...selectedOptions, value]);
-    }
+  const handleOptionChange = (responseId: string, value: boolean) => {
+    setSelectedOptions((prevOptions) => {
+      if (value) {
+        // Si multiple_responses est false et qu'il y a déjà une réponse sélectionnée, ne rien faire
+        if (!survey?.multiple_responses && prevOptions.length > 0) {
+          return prevOptions;
+        }
+        // Sinon, ajoutez l'ID de la réponse au tableau
+        return [...prevOptions, responseId];
+      } else {
+        // Si la case est décochée, retirez l'ID de la réponse du tableau
+        return prevOptions.filter((id) => id !== responseId);
+      }
+    });
   };
 
-  const handleSubmit = () => {
-    // Logique de soumission du vote
+  const handleSubmit = async () => {
     if (!id) {
       console.error('ID is undefined');
       return;
     }
-    (async () => {
-      console.log(selectedOptions);
-      try {
-        const response = await axios.post(
-          `http://localhost:3000/@me/survey/${id}/respond`,
-          { responses: selectedOptions },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log('Vote soumis avec succès');
-        console.log(response.data);
-      } catch (error) {
-        console.error('Erreur lors de la soumission du vote', error);
-      }
-    })().catch((error) => {
+
+    try {
+      const response = await axios.post(
+        // Envoie des réponse(s) du sondage sélectionnées au serveur
+        `http://localhost:3000/@me/survey/${id}/respond`,
+        { responses: selectedOptions },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log('Réponse envoyée :');
+      console.log(response.data);
+    } catch (error) {
       console.error('Erreur lors de la soumission du vote', error);
-    });
+    }
   };
 
   return (
     <WrapperVotingStep>
       <VotingStepContainer>
-        <ResponsiveTitle>{survey.title}</ResponsiveTitle>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Choissisez une réponse : </FormLabel>
-          <FormGroup>
-            {' '}
-            {/* Use FormGroup instead of RadioGroup */}
-            {survey.responses.map((response, index) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={selectedOptions.includes(response.title)}
-                    onChange={handleChange}
-                    value={response.title}
-                  />
-                }
-                label={response.title}
-                key={index}
-              />
-            ))}
-          </FormGroup>
-        </FormControl>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Soumettre
-        </Button>
+        <ResponsiveTitle>Test</ResponsiveTitle>
+        <VoteContainer>
+          <FormControl component="fieldset">
+            <FormLabel
+              component="legend"
+              sx={{
+                fontSize: '2.5rem',
+                marginBottom: '2rem',
+                color: 'primary.main',
+              }}
+            >
+              Choissisez une réponse :{' '}
+            </FormLabel>
+            <FormGroup>
+              {survey?.responses.map((response, index) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedOptions.includes(response.id)}
+                      onChange={(e) =>
+                        handleOptionChange(response.id, e.target.checked)
+                      }
+                      sx={{
+                        color: 'primary.main',
+                        transform: 'scale(1.5)',
+                        marginRight: '1rem',
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography
+                      sx={{
+                        fontSize: '1.8rem',
+                        color: 'info.main',
+                      }}
+                    >
+                      {response.title}
+                    </Typography>
+                  }
+                  key={index}
+                  sx={{ color: 'info.main', marginBottom: '1rem' }}
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
+
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            size="large"
+            onClick={handleSubmit}
+            sx={{ marginTop: '1rem' }}
+          >
+            Soumettre
+          </Button>
+        </VoteContainer>
       </VotingStepContainer>
     </WrapperVotingStep>
   );

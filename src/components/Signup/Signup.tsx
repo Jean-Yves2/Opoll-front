@@ -15,7 +15,7 @@ const WrapperSignupContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
+  minHeight: '100dvh',
 }));
 
 const SignUpContainer = styled('div')(({ theme }) => ({
