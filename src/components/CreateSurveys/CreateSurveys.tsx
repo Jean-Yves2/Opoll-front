@@ -74,8 +74,9 @@ const CreateSurveyContainer = styled('div')(({ theme }) => ({
   },
   [theme.breakpoints.down('sm')]: {
     marginTop: '0rem',
-    width: '100%',
     height: '100vh',
+    width: '100%',
+
     borderRadius: '0rem',
   },
 }));
@@ -154,9 +155,9 @@ function CreateSurvey() {
     setSurveyData((prevData) => ({ ...prevData, responses: responses }));
   };
 
-  // Ajout d'une option au sondage (max 6)
+  // Ajout d'une option au sondage (max 4)
   const handleAddOption = () => {
-    if (surveyData.responses.length < 6) {
+    if (surveyData.responses.length < 4) {
       setSurveyData((prevData) => ({
         ...prevData,
         responses: [...prevData.responses, ''],
@@ -173,7 +174,9 @@ function CreateSurvey() {
     }
   };
 
-  const MAX_TITLE_LENGTH = 100;
+  // J'ai une erreur 500 au dessus de 30 caractères pourtant j'ai check les validations côté back
+  // Update: Ca vient du model sequelize
+  const MAX_TITLE_LENGTH = 30;
   const MAX_OPTION_LENGTH = 50;
 
   const validateInput = () => {
@@ -225,7 +228,7 @@ function CreateSurvey() {
     };
     const token = Cookies.get('token') as string;
 
-    setIsLoading(true); // Début du chargement
+    setIsLoading(true);
 
     try {
       // On envoie les données du sondage au serveur
@@ -257,7 +260,7 @@ function CreateSurvey() {
         }
       }
     }
-    setIsLoading(false); // Fin du chargement
+    setIsLoading(false);
   };
 
   return (
@@ -298,7 +301,7 @@ function CreateSurvey() {
               }}
             />
           ))}
-          {surveyData.responses.length < 6 && (
+          {surveyData.responses.length < 4 && (
             <Button
               variant="contained"
               color="success"
@@ -375,7 +378,7 @@ function CreateSurvey() {
             variant="contained"
             color="primary"
             type="submit"
-            disabled={isLoading} // Désactiver le bouton pendant le chargement
+            disabled={isLoading}
           >
             {isLoading ? <CircularProgress size={24} /> : 'Créer'}
           </Button>

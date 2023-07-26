@@ -9,7 +9,6 @@ import {
   styled,
   Button,
   Checkbox,
-  FormLabel,
   Typography,
 } from '@mui/material';
 
@@ -67,15 +66,31 @@ const VoteContainer = styled('div')({
   maxWidth: '500px',
 });
 
-const ResponsiveTitle = styled('h1')(({ theme }) => ({
-  fontSize: '3rem',
+const ChooseTypography = styled('div')(({ theme }) => ({
   color: theme.palette.primary.main,
-  margin: '2rem 0rem',
+  fontSize: '1.8rem',
+  marginBottom: '1rem',
   [theme.breakpoints.down('md')]: {
-    fontSize: '2.5rem',
+    fontSize: '1.5rem',
   },
   [theme.breakpoints.down('sm')]: {
-    fontSize: '2rem',
+    fontSize: '1.3rem',
+  },
+}));
+
+const ResponsiveTitle = styled('h1')(({ theme }) => ({
+  fontSize: '2.4rem',
+  color: theme.palette.primary.main,
+  margin: '2rem 0rem',
+  wordBreak: 'break-word',
+  overflowWrap: 'break-word',
+  whiteSpace: 'normal',
+
+  [theme.breakpoints.down('md')]: {
+    fontSize: '1.9rem',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.5rem',
   },
 }));
 
@@ -159,16 +174,7 @@ function VoteStep() {
         <ResponsiveTitle>{survey?.title}</ResponsiveTitle>
         <VoteContainer>
           <FormControl component="fieldset">
-            <FormLabel
-              component="legend"
-              sx={{
-                fontSize: '2rem',
-                marginBottom: '2rem',
-                color: 'primary.main',
-              }}
-            >
-              Choissisez une réponse :{' '}
-            </FormLabel>
+            <ChooseTypography>Choissisez une réponse : </ChooseTypography>
             <FormGroup>
               {survey?.responses.map((response, index) => (
                 <FormControlLabel
@@ -188,8 +194,11 @@ function VoteStep() {
                   label={
                     <Typography
                       sx={{
-                        fontSize: '1.8rem',
+                        fontSize: { sm: '1.4rem', md: '1.6rem' },
                         color: 'info.main',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'normal',
                       }}
                     >
                       {response.title}
