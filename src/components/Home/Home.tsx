@@ -128,6 +128,7 @@ function Home() {
   const snackbarSucessSignup = useAppSelector(
     (state) => state.signup.snackbarSucess
   );
+
   const snackbarIsExpired = useAppSelector((state) => state.snackbar.isExpired);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -173,7 +174,7 @@ function Home() {
       <Snackbar
         open={openSnackbar}
         // Durée d'affichage du snackbar en ms
-        autoHideDuration={2000}
+        autoHideDuration={4000}
         onClose={handleSnackbarClose}
       >
         {/* Type du snacker ainsi que son message */}

@@ -6,6 +6,10 @@ import {
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+interface ResponseData {
+  message: string;
+}
+
 interface CookieAttributes {
   expires?: number | Date;
   path?: string;
@@ -32,6 +36,7 @@ interface LoginState {
   verificationCode: string;
   isVerified: boolean;
   verificationError: string | null;
+  snackbarVerified?: boolean;
 }
 
 const initialValue: LoginState = {
@@ -47,6 +52,7 @@ const initialValue: LoginState = {
   verificationCode: '',
   isVerified: false,
   verificationError: null,
+  snackbarVerified: false,
 };
 
 const TypedCookies: CookiesType = Cookies;
@@ -70,22 +76,26 @@ export const changeVerificationCode = createAction<string>(
   'login/CHANGE_VERIFICATION_CODE'
 );
 
+export const resetVerificationError = createAction(
+  'login/resetVerificationError'
+);
+
 export const handleVerification = createAsyncThunk(
   'login/VERIFY',
   async (verificationCode: string, { rejectWithValue }) => {
     try {
       const token = Cookies.get('token');
       if (!token) throw new Error('Token not found');
-      const { data } = await axios.post<{ message: string }>(
-        'http://localhost:3000/@me/verify',
-        { code: verificationCode },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return { message: data.message };
+      const VerifCodeConfig = {
+        method: 'post',
+        url: 'http://localhost:3000/@me/verify',
+        headers: {
+          Authorization: token,
+        },
+        data: { code: verificationCode },
+      };
+      const response = await axios<ResponseData>(VerifCodeConfig);
+      return { message: response.data.message };
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la vérification:",
@@ -139,6 +149,7 @@ const loginReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;
+      state.isVerified = false;
     })
     .addCase(resetLoginState, (state) => {
       state.credentials.email = '';
@@ -147,6 +158,7 @@ const loginReducer = createReducer(initialValue, (builder) => {
     })
     .addCase(resetSnackbarStatusLogin, (state) => {
       state.snackbarSucess = false;
+      state.snackbarVerified = false;
     })
     .addCase(changeVerificationCode, (state, action) => {
       state.verificationCode = action.payload;
@@ -163,10 +175,15 @@ const loginReducer = createReducer(initialValue, (builder) => {
     .addCase(handleVerification.fulfilled, (state, action) => {
       if (action.payload.message === 'User verified') {
         state.isVerified = true;
+        state.snackbarVerified = true;
       } else {
         state.verificationError = action.payload.message;
       }
       state.isLoading = false;
+    })
+    .addCase(resetVerificationError, (state) => {
+      state.verificationError = null;
+      state.verificationCode = '';
     });
 });
 

@@ -1,54 +1,78 @@
 import { useEffect, FormEvent, ChangeEvent } from 'react';
-import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { TextField, Button, Typography, styled } from '@mui/material';
+
+import {
+  TextField,
+  Button,
+  Typography,
+  styled,
+  CircularProgress,
+  Dialog,
+} from '@mui/material';
 import {
   changeVerificationCode,
   handleVerification,
+  resetVerificationError,
 } from '../../store/reducers/login';
 
-const VerificationLoginWrapper = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'start',
-  minHeight: '100vh',
-}));
+interface VerificationCodeProps {
+  onClose: () => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onVerified: () => void;
+}
 
 const VerificationLoginContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
   alignItems: 'center',
   flexDirection: 'column',
-  height: 'auto',
   padding: '2rem',
-  marginTop: '4rem',
-  borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
-  width: '30%',
-  boxSizing: 'border-box',
-  [theme.breakpoints.down('md')]: {
-    width: '70%',
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: '100vh',
-    width: '100%',
-    borderRadius: '0rem',
-    marginTop: '0rem',
-  },
 }));
 
-function VerificationCode() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+const TitleTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  marginBottom: '1rem',
+  fontSize: '1.5rem',
+}));
 
+const ParagraphTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.info.main,
+  textAlign: 'center',
+  marginBottom: '1rem',
+  fontSize: '0.8rem',
+}));
+
+function VerificationCode({
+  onClose,
+  open,
+  setOpen,
+  onVerified,
+}: VerificationCodeProps) {
+  const dispatch = useAppDispatch();
+
+  const isLoading = useAppSelector((state) => state.login.isLoading);
+  const isVerified = useAppSelector((state) => state.login.isVerified);
   const verificationCode = useAppSelector(
     (state) => state.login.verificationCode
   );
-  const isVerified = useAppSelector((state) => state.login.isVerified);
   const verificationError = useAppSelector(
     (state) => state.login.verificationError
   );
+
+  const handleClose = () => {
+    dispatch(resetVerificationError());
+    setOpen(false);
+    onClose();
+  };
+
+  useEffect(() => {
+    if (isVerified) {
+      handleClose();
+      onVerified();
+    }
+  }, [isVerified]);
 
   const handleChangeVerificationCode = (
     event: ChangeEvent<HTMLInputElement>
@@ -61,28 +85,34 @@ function VerificationCode() {
     void dispatch(handleVerification(verificationCode));
   };
 
-  useEffect(() => {
-    if (isVerified) {
-      navigate('/');
-    }
-  }, [isVerified, navigate]);
-
   return (
-    <VerificationLoginWrapper>
+    <Dialog open={open} onClose={handleClose}>
       <VerificationLoginContainer>
-        <Typography variant="h4" sx={{ marginBottom: '1rem' }}>
-          Vérification
-        </Typography>
+        <TitleTypography>Vérification</TitleTypography>
+
+        <ParagraphTypography>
+          Afin de finaliser votre inscription, nous devons vérifier votre
+          e-mail. Veuillez entrer le code de vérification que vous avez reçu par
+          mail.
+        </ParagraphTypography>
+
         <form onSubmit={handleSubmit}>
           <TextField
             label="Code de vérification"
             required
             fullWidth
+            type="number"
             margin="normal"
             variant="outlined"
             value={verificationCode}
             onChange={handleChangeVerificationCode}
-            sx={{ marginBottom: '1rem' }}
+            sx={{ marginBottom: '0.5rem' }}
+            error={verificationCode.length > 5}
+            helperText={
+              verificationCode.length > 5
+                ? 'Le code ne peut excéder 5 caractères'
+                : ' '
+            }
           />
           <Typography color="error">{verificationError}</Typography>
           <Button
@@ -90,13 +120,18 @@ function VerificationCode() {
             color="primary"
             size="large"
             type="submit"
+            disabled={isLoading}
             sx={{ width: '100%' }}
           >
-            Vérifier
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Vérifier'
+            )}
           </Button>
         </form>
       </VerificationLoginContainer>
-    </VerificationLoginWrapper>
+    </Dialog>
   );
 }
 

@@ -37,6 +37,7 @@ const initialValue: SignUpState = {
 
 export const resetSnackbarStatusSignup = createAction('signup/RESET_SNACKBAR');
 export const resetSignupSuccess = createAction('signup/RESET_SUCCESS');
+export const resetSignupState = createAction('signup/RESET_STATE');
 
 export const handleSignup = createAsyncThunk(
   'signup/HANDLE_SIGNUP',
@@ -71,6 +72,9 @@ const signupReducer = createReducer(initialValue, (builder) => {
     .addCase(handleSignup.fulfilled, (state) => {
       state.isLoading = false;
       state.snackbarSucess = true;
+      state.error = null;
+    })
+    .addCase(resetSignupSuccess, (state) => {
       state.error = null;
     })
     .addCase(resetSnackbarStatusSignup, (state) => {

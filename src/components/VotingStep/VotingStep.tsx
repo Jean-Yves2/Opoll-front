@@ -98,8 +98,10 @@ function VoteStep() {
           headers: {
             Authorization: token,
           },
-        }
-        const GetSurvey = await axios(GetSurveyConfig)
+        };
+        const GetSurvey = await axios.get<Survey>(GetSurveyConfig.url, {
+          headers: GetSurveyConfig.headers,
+        });
         setSurvey(GetSurvey.data);
         console.log('Sondage récupéré :');
         console.log(GetSurvey.data);
@@ -142,8 +144,8 @@ function VoteStep() {
           Authorization: token,
         },
         data: { responses: selectedOptions },
-      }
-      const VoteSurvey = await axios(VoteSurveyConfig)
+      };
+      const VoteSurvey = await axios(VoteSurveyConfig);
       // Gérer la logique de redirection vers les résultats en temps réel
       console.log(VoteSurvey.data);
     } catch (error) {
@@ -154,7 +156,7 @@ function VoteStep() {
   return (
     <WrapperVotingStep>
       <VotingStepContainer>
-        <ResponsiveTitle>Test</ResponsiveTitle>
+        <ResponsiveTitle>{survey?.title}</ResponsiveTitle>
         <VoteContainer>
           <FormControl component="fieldset">
             <FormLabel

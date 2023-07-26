@@ -4,6 +4,7 @@ import { handleLogout } from '../../store/reducers/login';
 import { expiredToken } from '../../store/reducers/snackbar';
 import { useAppDispatch } from '../../hooks/redux';
 import { useNavigate } from 'react-router';
+import VerificationCode from '../Login/VerificationCode';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import {
@@ -18,12 +19,17 @@ import {
   InputAdornment,
   IconButton,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface AxiosError {
   response?: {
     status?: number;
+    data?: {
+      message: string;
+    };
   };
 }
 
@@ -48,8 +54,9 @@ const WrapperCreateSurvey = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'start',
+  alignItems: 'center',
   minHeight: '100vh',
+  overflowY: 'auto',
 }));
 
 const CreateSurveyContainer = styled('div')(({ theme }) => ({
@@ -58,7 +65,6 @@ const CreateSurveyContainer = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   padding: '1.5rem 2rem',
-  marginTop: '4rem',
   height: 'auto',
   borderRadius: '1rem',
   width: '60%',
@@ -121,6 +127,8 @@ function CreateSurvey() {
   // State contenant les données du sondage
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [surveyData, setSurveyData] = useState<SurveyData>({
     title: '',
@@ -165,7 +173,7 @@ function CreateSurvey() {
     }
   };
 
-  const MAX_TITLE_LENGTH = 30;
+  const MAX_TITLE_LENGTH = 100;
   const MAX_OPTION_LENGTH = 50;
 
   const validateInput = () => {
@@ -228,21 +236,25 @@ function CreateSurvey() {
           Authorization: token,
         },
         data: transformedSurveyData,
-      }
-      const CreateSurvey = await axios(CreateSurveyConfig)
+      };
+      const CreateSurvey = await axios<SurveyResponse>(CreateSurveyConfig);
 
       navigate(`/surveys/${CreateSurvey.data.id}/vote`);
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error(
-        "Erreur lors de l'envoi du sondage, token probablement invalide ou expiré",
-        axiosError
-      );
-      // Si le token est invalide ou expiré, on déconnecte l'utilisateur
       if (axiosError.response && axiosError.response.status === 401) {
-        dispatch(handleLogout());
-        dispatch(expiredToken());
-        navigate('/');
+        // Si l'utilisateur n'a pas vérifié son compte on le redirige vers la page de vérification
+        if (
+          axiosError.response.data?.message ===
+          'User not verified, please verify your account'
+        ) {
+          setModalOpen(true);
+        } else {
+          // Sinon c'est que le token est expiré ou invalide on déconnecte l'utilisateur
+          dispatch(handleLogout());
+          dispatch(expiredToken());
+          navigate('/');
+        }
       }
     }
     setIsLoading(false); // Fin du chargement
@@ -368,6 +380,23 @@ function CreateSurvey() {
             {isLoading ? <CircularProgress size={24} /> : 'Créer'}
           </Button>
         </Form>
+        {isModalOpen && (
+          <VerificationCode
+            onClose={() => setModalOpen(false)}
+            open={isModalOpen}
+            setOpen={setModalOpen}
+            onVerified={() => setSnackbarOpen(true)}
+          />
+        )}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000}
+          onClose={() => setSnackbarOpen(false)}
+        >
+          <Alert severity="success">
+            Votre compte à été vérifié avec succés !
+          </Alert>
+        </Snackbar>
       </CreateSurveyContainer>
     </WrapperCreateSurvey>
   );

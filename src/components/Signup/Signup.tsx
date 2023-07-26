@@ -1,7 +1,7 @@
 import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { handleSignup } from '../../store/reducers/signup';
+import { handleSignup, resetSignupSuccess } from '../../store/reducers/signup';
 import {
   TextField,
   Button,
@@ -35,6 +35,7 @@ const SignUpContainer = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     height: '100vh',
     width: '100%',
+    padding: '0.5rem 0.75rem',
     marginTop: '0rem',
     borderRadius: '0rem',
   },
@@ -69,6 +70,12 @@ function Signup() {
       navigate('/');
     }
   }, [isLogged, navigate]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetSignupSuccess());
+    };
+  }, [dispatch]);
 
   const [errors, setErrors] = useState({
     email: '',
