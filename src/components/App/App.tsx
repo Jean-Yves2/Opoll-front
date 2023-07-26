@@ -59,8 +59,10 @@ function App() {
             path="/surveys/:id/vote"
             element={<ProtectedRoutes element={VotingStep} />}
           />
-          {/* Composant pour présenter les résultats du sondage pas encore implémenté */}
-          <Route path="/test" element={<VoteResults />} />
+          <Route
+            path="/surveys/:id/results"
+            element={<ProtectedRoutes element={VoteResults} />}
+          />
           <Route path="/contact" element={<Contact />} />
           <Route path="/mentions-legales" element={<MentionLegale />} />
           <Route path="/a-propos" element={<Apropos />} />

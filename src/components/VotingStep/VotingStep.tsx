@@ -1,5 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ShareIcon from '@mui/icons-material/Share';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {
@@ -10,6 +12,7 @@ import {
   Button,
   Checkbox,
   Typography,
+  Snackbar,
 } from '@mui/material';
 
 interface SurveyResponse {
@@ -96,8 +99,12 @@ const ResponsiveTitle = styled('h1')(({ theme }) => ({
 
 function VoteStep() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [survey, setSurvey] = useState<Survey | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const token = Cookies.get('token') as string;
 
   useEffect(() => {
@@ -128,6 +135,29 @@ function VoteStep() {
       console.error('Erreur lors de la récupération du sondage', error);
     });
   }, [token, id]);
+
+  const handleBackClick = () => {
+    if (!id) {
+      console.error('ID is undefined');
+      return;
+    }
+    navigate(`/surveys/${id}/results`);
+  };
+
+  const handleShareClick = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        setSnackbarMessage('URL copiée dans le presse-papiers!');
+        setSnackbarOpen(true);
+      })
+      .catch(() => {
+        setSnackbarMessage(
+          "Échec de la copie de l'URL dans le presse-papiers."
+        );
+        setSnackbarOpen(true);
+      });
+  };
 
   const handleOptionChange = (responseId: string, value: boolean) => {
     setSelectedOptions((prevOptions) => {
@@ -163,8 +193,10 @@ function VoteStep() {
       const VoteSurvey = await axios(VoteSurveyConfig);
       // Gérer la logique de redirection vers les résultats en temps réel
       console.log(VoteSurvey.data);
+      navigate(`/surveys/${id}/results`);
     } catch (error) {
       console.error('Erreur lors de la soumission du vote', error);
+      setError('Vous avez déjà voté pour ce sondage');
     }
   };
 
@@ -210,7 +242,11 @@ function VoteStep() {
               ))}
             </FormGroup>
           </FormControl>
-
+          {error && (
+            <Typography color="error" variant="body1">
+              {error}
+            </Typography>
+          )}
           <Button
             variant="contained"
             color="primary"
@@ -222,6 +258,32 @@ function VoteStep() {
           >
             Soumettre
           </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<ArrowForwardIcon />}
+            size="large"
+            onClick={handleBackClick}
+            sx={{ marginTop: '1rem' }}
+          >
+            Voir les résultats
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<ShareIcon />}
+            size="large"
+            onClick={handleShareClick}
+            sx={{ marginTop: '1rem' }}
+          >
+            Partager
+          </Button>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={1000}
+            message={snackbarMessage}
+            onClose={() => setSnackbarOpen(false)}
+          />
         </VoteContainer>
       </VotingStepContainer>
     </WrapperVotingStep>
