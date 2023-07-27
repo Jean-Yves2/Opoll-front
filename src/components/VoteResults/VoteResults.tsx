@@ -1,6 +1,9 @@
-// Composant pour présenter les résultats du sondage pas encore implémenté
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import VerificationCode from '../Login/VerificationCode';
+import { useAppDispatch } from '../../hooks/redux';
+import { handleLogout } from '../../store/reducers/login';
+import { expiredToken } from '../../store/reducers/snackbar';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -14,6 +17,15 @@ import {
 import ShareIcon from '@mui/icons-material/Share';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { PieChart } from '@mui/x-charts/PieChart';
+
+interface AxiosError {
+  response?: {
+    status?: number;
+    data?: {
+      message: string;
+    };
+  };
+}
 
 interface SurveyResponse {
   id: number;
@@ -55,8 +67,12 @@ const VoteResultContainer = styled('div')(({ theme }) => ({
   alignItems: 'center',
   flexDirection: 'column',
   borderRadius: '1rem',
-  width: '80%',
+  width: '70%',
+  height: 'auto',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
+  [theme.breakpoints.up('md')]: {
+    transform: 'scale(0.9)',
+  },
   [theme.breakpoints.down('md')]: {
     width: '90%',
   },
@@ -122,6 +138,17 @@ const TotalVotesContainer = styled('div')(({ theme }) => ({
   },
 }));
 
+const CountVoteContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  width: '100%',
+  marginBottom: '0.5rem',
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: '0.3rem',
+  },
+}));
+
 const PieContainer = styled('div')(({ theme }) => ({
   width: '50%',
   display: 'flex',
@@ -134,31 +161,50 @@ const PieContainer = styled('div')(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '80%',
   },
-}));
-
-const ResponsiveH3 = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
-    fontSize: '2.2rem',
+    marginTop: '2rem',
   },
 }));
 
-const ResponsiveH5 = styled(Typography)(({ theme }) => ({
+const ResponsiveChoose = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  textAlign: 'start',
+  marginBottom: '2rem',
+  fontSize: '2.5rem',
   [theme.breakpoints.down('sm')]: {
-    fontSize: '1.4rem',
+    fontSize: '2.1rem',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.8rem',
+  },
+}));
+
+const ResponsiveTitle = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  textAlign: 'start',
+  marginBottom: '2rem',
+  fontSize: '2rem',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.6rem',
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.3rem',
   },
 }));
 
 function VoteResults() {
   const pieParams = { height: 350, margin: { right: 5 } };
   const colors = [
-    '#F44336',
-    '#E91E63',
-    '#9C27B0',
-    '#673AB7',
-    '#3F51B5',
-    '#2196F3',
+    '#FF0000', // Rouge
+    '#FFFF00', // Jaune
+    '#00FF00', // Vert
+    '#00FFFF', // Cyan
+    '#0000FF', // Bleu
+    '#FF00FF', // Magenta
   ];
+  const dispatch = useAppDispatch();
   const { id } = useParams();
+  const [modalOpen, setModalOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [survey, setSurvey] = useState<Survey | null>(null);
@@ -208,6 +254,21 @@ function VoteResults() {
           console.error('No data fetched');
         }
       } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response && axiosError.response.status === 401) {
+          // Si l'utilisateur n'a pas vérifié son compte, ouvrez la fenêtre modale de vérification
+          if (
+            axiosError.response.data?.message ===
+            'User not verified, please verify your account'
+          ) {
+            setModalOpen(true); // Assurez-vous d'avoir une variable d'état appelée isModalOpen pour gérer cela.
+          } else {
+            // Sinon, déconnectez l'utilisateur, car le token est expiré ou invalide.
+            dispatch(handleLogout());
+            dispatch(expiredToken());
+            navigate('/'); // Redirigez vers la page de connexion ou une autre page de votre choix.
+          }
+        }
         console.error('Erreur lors de la récupération des résultats', error);
       }
     };
@@ -215,7 +276,6 @@ function VoteResults() {
     void fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, id]);
-
   const handleBackClick = () => {
     if (!id) {
       console.error('ID is undefined');
@@ -244,34 +304,29 @@ function VoteResults() {
       <VoteResultContainer>
         <TopContainer>
           <LinearContainer>
-            <ResponsiveH3
-              variant="h3"
-              sx={{
-                color: 'info.main',
-                textAlign: 'start',
-                marginBottom: '2rem',
-              }}
-            >
-              Résultats du sondage :
-            </ResponsiveH3>
-            <ResponsiveH5
-              variant="h5"
-              sx={{
-                color: 'info.main',
-                textAlign: 'start',
-                marginBottom: '2rem',
-              }}
-            >
+            <ResponsiveChoose>Résultats du sondage :</ResponsiveChoose>
+            <ResponsiveTitle>
               {survey ? survey.title : 'Loading...'}
-            </ResponsiveH5>
+            </ResponsiveTitle>
             {info.map((item: ChartData) => (
               <Box key={item.id} sx={{ width: '100%', marginBottom: '2rem' }}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: 'info.main', fontSize: '1rem' }}
-                >
-                  {item.textLeft} ({item.value} Votes)
-                </Typography>
+                <CountVoteContainer>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'info.main', fontSize: '1.1rem' }}
+                  >
+                    {item.textLeft}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'info.main',
+                      fontSize: '1.1rem',
+                    }}
+                  >
+                    {item.percentage} % ({item.value} Votes)
+                  </Typography>
+                </CountVoteContainer>
                 <LinearProgress
                   variant="determinate"
                   value={item.percentage}
@@ -327,14 +382,26 @@ function VoteResults() {
           >
             Partager
           </Button>
-          <Snackbar
-            open={snackbarOpen}
-            autoHideDuration={1000}
-            message={snackbarMessage}
-            onClose={() => setSnackbarOpen(false)}
-          />
         </BottomContainer>
       </VoteResultContainer>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1000}
+        message={snackbarMessage}
+        onClose={() => setSnackbarOpen(false)}
+      />
+      {modalOpen && (
+        <VerificationCode
+          onClose={() => setModalOpen(false)}
+          open={modalOpen}
+          setOpen={setModalOpen}
+          onVerified={() => {
+            setSnackbarMessage('Code vérifié avec succès!');
+            setSnackbarOpen(true);
+            window.location.reload();
+          }}
+        />
+      )}
     </VoteResultWrapper>
   );
 }

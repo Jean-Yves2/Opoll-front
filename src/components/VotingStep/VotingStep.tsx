@@ -1,9 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ShareIcon from '@mui/icons-material/Share';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import VerificationCode from '../Login/VerificationCode';
+import { useAppDispatch } from '../../hooks/redux';
+import { handleLogout } from '../../store/reducers/login';
+import { expiredToken } from '../../store/reducers/snackbar';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ShareIcon from '@mui/icons-material/Share';
 import {
   FormGroup,
   FormControlLabel,
@@ -14,6 +18,15 @@ import {
   Typography,
   Snackbar,
 } from '@mui/material';
+
+interface AxiosError {
+  response?: {
+    status?: number;
+    data?: {
+      message: string;
+    };
+  };
+}
 
 interface SurveyResponse {
   id: string;
@@ -69,6 +82,20 @@ const VoteContainer = styled('div')({
   maxWidth: '500px',
 });
 
+const ButtonContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  flexDirection: 'row',
+  width: '100%',
+  gap: '1rem',
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: '0rem',
+  },
+}));
+
 const ChooseTypography = styled('div')(({ theme }) => ({
   color: theme.palette.primary.main,
   fontSize: '1.8rem',
@@ -100,12 +127,14 @@ const ResponsiveTitle = styled('h1')(({ theme }) => ({
 function VoteStep() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isModalOpen, setModalOpen] = useState(false);
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const token = Cookies.get('token') as string;
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchSurvey = async () => {
@@ -128,12 +157,25 @@ function VoteStep() {
         console.log('Sondage récupéré :');
         console.log(GetSurvey.data);
       } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response && axiosError.response.status === 401) {
+          // Si l'utilisateur n'a pas vérifié son compte on le redirige vers la page de vérification
+          if (
+            axiosError.response.data?.message ===
+            'User not verified, please verify your account'
+          ) {
+            setModalOpen(true);
+          } else {
+            // Sinon c'est que le token est expiré ou invalide on déconnecte l'utilisateur
+            dispatch(handleLogout());
+            dispatch(expiredToken());
+            navigate('/');
+          }
+        }
         console.error('Erreur lors de la récupération du sondage', error);
       }
     };
-    fetchSurvey().catch((error) => {
-      console.error('Erreur lors de la récupération du sondage', error);
-    });
+    void fetchSurvey();
   }, [token, id]);
 
   const handleBackClick = () => {
@@ -258,32 +300,46 @@ function VoteStep() {
           >
             Soumettre
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<ArrowForwardIcon />}
-            size="large"
-            onClick={handleBackClick}
-            sx={{ marginTop: '1rem' }}
-          >
-            Voir les résultats
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<ShareIcon />}
-            size="large"
-            onClick={handleShareClick}
-            sx={{ marginTop: '1rem' }}
-          >
-            Partager
-          </Button>
+          <ButtonContainer>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<ArrowForwardIcon />}
+              size="large"
+              onClick={handleBackClick}
+              sx={{ marginTop: '1rem', width: '100%' }}
+            >
+              Résultats
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ShareIcon />}
+              size="large"
+              onClick={handleShareClick}
+              sx={{ marginTop: '1rem', width: '100%' }}
+            >
+              Partager
+            </Button>
+          </ButtonContainer>
           <Snackbar
             open={snackbarOpen}
             autoHideDuration={1000}
             message={snackbarMessage}
             onClose={() => setSnackbarOpen(false)}
           />
+          {isModalOpen && (
+            <VerificationCode
+              onClose={() => setModalOpen(false)}
+              open={isModalOpen}
+              setOpen={setModalOpen}
+              onVerified={() => {
+                setSnackbarMessage('Code vérifié avec succès!');
+                setSnackbarOpen(true);
+                window.location.reload();
+              }}
+            />
+          )}
         </VoteContainer>
       </VotingStepContainer>
     </WrapperVotingStep>
