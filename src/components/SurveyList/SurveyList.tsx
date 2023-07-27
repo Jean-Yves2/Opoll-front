@@ -161,33 +161,31 @@ function SurveyList() {
 
   return (
     <div className="containerSurveyList">
-      <h1>
-        
-        Liste des enquêtes
-      </h1>
+      <h1>Liste des enquêtes</h1>
 
       <ul>
         {surveys.data.map((survey) => (
           <li key={survey.id}>
-            <a href={`http://localhost:5173/survey/${survey.id}`}><p className='surveyTitle'>{survey.title}</p></a>
-            
-            {
-                admin && isLogged ? (
-                  <div className="iconItem">
-                    <Button className='buttonIcon'><DriveFileRenameOutlineRoundedIcon
-                      className="renameIcon"
-                      onClick={() => handleOpen(survey.id)}
-                  
-                    /></Button>
-                    <Button className='buttonIcon'><DeleteIcon
-                      className="deleteIcon"
-                      onClick={() => deleteSurvey(survey.id)}
-                      
-                    /></Button>
-                    
-                  </div>
-                ) : null
-              }
+            <a href={`http://localhost:5173/surveys/${survey.id}/results`}>
+              <p className="surveyTitle">{survey.title}</p>
+            </a>
+
+            {admin && isLogged ? (
+              <div className="iconItem">
+                <Button className="buttonIcon">
+                  <DriveFileRenameOutlineRoundedIcon
+                    className="renameIcon"
+                    onClick={() => handleOpen(survey.id)}
+                  />
+                </Button>
+                <Button className="buttonIcon">
+                  <DeleteIcon
+                    className="deleteIcon"
+                    onClick={() => deleteSurvey(survey.id)}
+                  />
+                </Button>
+              </div>
+            ) : null}
           </li>
         ))}
       </ul>

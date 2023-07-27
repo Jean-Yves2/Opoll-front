@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import VerificationCode from '../Login/VerificationCode';
-import { useAppDispatch } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleLogout } from '../../store/reducers/login';
 import { expiredToken } from '../../store/reducers/snackbar';
 import { useEffect, useState } from 'react';
@@ -31,7 +31,9 @@ interface SurveyResponse {
   id: number;
   survey_id: string;
   title: string;
-  users: unknown[];
+  users: {
+    id: number;
+  }[];
 }
 
 interface Survey {
@@ -204,11 +206,13 @@ function VoteResults() {
   ];
   const dispatch = useAppDispatch();
   const { id } = useParams();
+  const [hasVoted, setHasVoted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [info, setInfo] = useState<ChartData[]>([]);
+  const currentUserId = useAppSelector((state) => state.login.id);
   const token = Cookies.get('token');
   const navigate = useNavigate();
 
@@ -230,10 +234,7 @@ function VoteResults() {
           headers: GetSurveyConfig.headers,
         });
         setSurvey(GetSurvey.data);
-        console.log('Results fetched :');
-        console.log(GetSurvey.data);
 
-        // Transformer les données ici
         if (GetSurvey.data) {
           const totalVotes = GetSurvey.data.responses.reduce(
             (total, response) => total + response.users.length,
@@ -248,6 +249,12 @@ function VoteResults() {
               percentage: (response.users.length / totalVotes) * 100,
             })
           );
+
+          const currentUser = GetSurvey.data.responses.find((response) => {
+            return response.users.some((user) => user.id === currentUserId);
+          });
+
+          setHasVoted(!!currentUser);
           setSurvey({ ...GetSurvey.data, totalVotes });
           setInfo(transformedData);
         } else {
@@ -275,7 +282,8 @@ function VoteResults() {
 
     void fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, id]);
+  }, [currentUserId, token, id]);
+
   const handleBackClick = () => {
     if (!id) {
       console.error('ID is undefined');
@@ -305,6 +313,11 @@ function VoteResults() {
         <TopContainer>
           <LinearContainer>
             <ResponsiveChoose>Résultats du sondage :</ResponsiveChoose>
+            {hasVoted && (
+              <Typography variant="body2" color="error">
+                Vous avez voté pour ce sondage
+              </Typography>
+            )}
             <ResponsiveTitle>
               {survey ? survey.title : 'Loading...'}
             </ResponsiveTitle>

@@ -9,7 +9,7 @@ import snackbarReducer from './reducers/snackbar';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['isLogged'], // Inclure seulement le state isLogged pour des raisons de sécurité
+  whitelist: ['isLogged', 'username', 'id'], // Inclure seulement le state isLogged pour des raisons de sécurité
 };
 
 // Création des reducers persistants

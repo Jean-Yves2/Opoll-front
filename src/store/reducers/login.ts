@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { act } from 'react-dom/test-utils';
 
 interface ResponseData {
   message: string;
@@ -29,6 +30,7 @@ interface LoginState {
     password: string;
   };
   username: string;
+  id: number;
   isLogged: boolean;
   error: string | null;
   isLoading: boolean;
@@ -45,6 +47,7 @@ const initialValue: LoginState = {
     password: '',
   },
   username: '',
+  id: 0,
   isLogged: false,
   error: null,
   isLoading: false,
@@ -110,12 +113,13 @@ export const handleLogin = createAsyncThunk(
   'settings/LOGIN',
   async (credentials: LoginState['credentials'], { rejectWithValue }) => {
     try {
-      const { data } = await axios.post<{ token: string; username: string }>(
-        'http://localhost:3000/auth/login',
-        credentials
-      );
+      const { data } = await axios.post<{
+        token: string;
+        user: { username: string; id: number };
+      }>('http://localhost:3000/auth/login', credentials);
+      console.log(data);
       TypedCookies.set('token', data.token);
-      return { username: data.username };
+      return { username: data.user.username, id: data.user.id };
     } catch (error) {
       console.error("Une erreur s'est produite lors de la connexion:", error);
       return rejectWithValue('Email ou mot de passe incorrect');
@@ -139,17 +143,21 @@ const loginReducer = createReducer(initialValue, (builder) => {
       state.isLogged = false;
       state.isLoading = false;
     })
-    .addCase(handleLogin.fulfilled, (state) => {
+    .addCase(handleLogin.fulfilled, (state, action) => {
       state.isLogged = true;
       state.snackbarSucess = true;
       state.isLoading = false;
       state.credentials.email = '';
       state.credentials.password = '';
       state.error = null;
+      state.username = action.payload.username;
+      state.id = action.payload.id;
     })
     .addCase(handleLogout, (state) => {
       state.isLogged = false;
       state.isVerified = false;
+      state.id = 0;
+      state.username = '';
     })
     .addCase(resetLoginState, (state) => {
       state.credentials.email = '';

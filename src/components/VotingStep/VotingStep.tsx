@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import VerificationCode from '../Login/VerificationCode';
-import { useAppDispatch } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { handleLogout } from '../../store/reducers/login';
 import { expiredToken } from '../../store/reducers/snackbar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -31,6 +31,9 @@ interface AxiosError {
 interface SurveyResponse {
   id: string;
   title: string;
+  users: {
+    id: number;
+  }[];
 }
 
 interface Survey {
@@ -127,12 +130,14 @@ const ResponsiveTitle = styled('h1')(({ theme }) => ({
 function VoteStep() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [hasVoted, setHasVoted] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [survey, setSurvey] = useState<Survey | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const currentUserId = useAppSelector((state) => state.login.id);
   const token = Cookies.get('token') as string;
   const dispatch = useAppDispatch();
 
@@ -154,10 +159,18 @@ function VoteStep() {
           headers: GetSurveyConfig.headers,
         });
         setSurvey(GetSurvey.data);
-        console.log('Sondage récupéré :');
-        console.log(GetSurvey.data);
+
+        if (GetSurvey.data) {
+          const currentUser = GetSurvey.data.responses.find((response) => {
+            return response.users.some((user) => user.id === currentUserId);
+          });
+          setHasVoted(!!currentUser);
+        } else {
+          console.error('No data fetched');
+        }
       } catch (error) {
         const axiosError = error as AxiosError;
+
         if (axiosError.response && axiosError.response.status === 401) {
           // Si l'utilisateur n'a pas vérifié son compte on le redirige vers la page de vérification
           if (
@@ -175,8 +188,9 @@ function VoteStep() {
         console.error('Erreur lors de la récupération du sondage', error);
       }
     };
+
     void fetchSurvey();
-  }, [token, id]);
+  }, [currentUserId, token, id, navigate, dispatch]);
 
   const handleBackClick = () => {
     if (!id) {
@@ -234,6 +248,7 @@ function VoteStep() {
       };
       const VoteSurvey = await axios(VoteSurveyConfig);
       // Gérer la logique de redirection vers les résultats en temps réel
+      setHasVoted(true);
       console.log(VoteSurvey.data);
       navigate(`/surveys/${id}/results`);
     } catch (error) {
@@ -245,6 +260,11 @@ function VoteStep() {
   return (
     <WrapperVotingStep>
       <VotingStepContainer>
+        {hasVoted && (
+          <Typography variant="body2" color="error">
+            Vous avez déjà voté pour ce sondage
+          </Typography>
+        )}
         <ResponsiveTitle>{survey?.title}</ResponsiveTitle>
         <VoteContainer>
           <FormControl component="fieldset">

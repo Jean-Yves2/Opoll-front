@@ -29,6 +29,7 @@ function Navbar() {
   const isMaxMdScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const isLogged = useAppSelector((state) => state.login.isLogged);
+  const pseudo = useAppSelector((state) => state.login.username);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Gestion de la couleur du background de la navbar
@@ -55,10 +56,21 @@ function Navbar() {
     </Box>
   );
 
-  const NavbarContainer = styled('div')(({ theme }) => ({
+  const NavbarContainer = styled('div')({
     position: 'relative',
     paddingTop: '4rem',
-  }));
+  });
+
+  const LoginStateContainer = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+  });
+
+  const PseudoTypography = styled(Typography)({
+    display: 'flex',
+    alignItems: 'center',
+    margin: '0 0.5rem',
+  });
 
   // Fonction qui gère la déconnexion
   const handleLogoutClick = () => {
@@ -127,7 +139,8 @@ function Navbar() {
               <Grid item>
                 {isLogged ? (
                   // SI l'utilisateur est connecté alors bouton déconnexion affiché
-                  <>
+                  <LoginStateContainer>
+                    <PseudoTypography>Hello {pseudo}</PseudoTypography>
                     <Button
                       color="error"
                       variant="contained"
@@ -136,7 +149,7 @@ function Navbar() {
                     >
                       Déconnexion
                     </Button>
-                  </>
+                  </LoginStateContainer>
                 ) : (
                   // Sinon on l'invite à se créer un compte ou se connecter
                   <>
