@@ -289,7 +289,7 @@ function VoteResults() {
       console.error('ID is undefined');
       return;
     }
-    navigate(`/surveys/${id}/vote`);
+    navigate(`/survey/${id}/vote`);
   };
 
   const handleShareClick = () => {

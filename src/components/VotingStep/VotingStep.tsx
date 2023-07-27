@@ -197,7 +197,7 @@ function VoteStep() {
       console.error('ID is undefined');
       return;
     }
-    navigate(`/surveys/${id}/results`);
+    navigate(`/survey/${id}/results`);
   };
 
   const handleShareClick = () => {

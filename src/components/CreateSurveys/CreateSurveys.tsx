@@ -242,7 +242,7 @@ function CreateSurvey() {
       };
       const CreateSurvey = await axios<SurveyResponse>(CreateSurveyConfig);
 
-      navigate(`/surveys/${CreateSurvey.data.id}/vote`);
+      navigate(`/survey/${CreateSurvey.data.id}/vote`);
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response && axiosError.response.status === 401) {

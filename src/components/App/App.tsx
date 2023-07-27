@@ -52,21 +52,21 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
-            path="/surveys/create"
+            path="/survey/create"
             element={<ProtectedRoutes element={CreateSurveys} />}
           />
           <Route
-            path="/surveys/:id/vote"
+            path="/survey/:id/vote"
             element={<ProtectedRoutes element={VotingStep} />}
           />
           <Route
-            path="/surveys/:id/results"
+            path="/survey/:id/results"
             element={<ProtectedRoutes element={VoteResults} />}
           />
           <Route path="/contact" element={<Contact />} />
           <Route path="/mentions-legales" element={<MentionLegale />} />
           <Route path="/a-propos" element={<Apropos />} />
-          <Route path="/survey" element={<SurveyList />} />
+          <Route path="/surveys" element={<SurveyList />} />
 
           <Route path="*" element={<Error />} />
         </Routes>

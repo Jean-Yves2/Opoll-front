@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { act } from 'react-dom/test-utils';
+// import { act } from 'react-dom/test-utils';
 
 interface ResponseData {
   message: string;

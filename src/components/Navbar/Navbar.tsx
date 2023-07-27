@@ -123,12 +123,8 @@ function Navbar() {
             {/* Gestion des boutons de la navbar en mode Desktop  (900px+) */}
             {isMinMdScreen && (
               <Grid item>
-                <Button
-                  color="info"
-                  component={RouterLink}
-                  to="/surveys/create"
-                >
-                  Créer un sondage
+                <Button color="info" component={RouterLink} to="/surveys">
+                  Consulter les sondages
                 </Button>
               </Grid>
             )}

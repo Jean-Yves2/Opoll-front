@@ -166,7 +166,7 @@ function SurveyList() {
       <ul>
         {surveys.data.map((survey) => (
           <li key={survey.id}>
-            <a href={`http://localhost:5173/surveys/${survey.id}/results`}>
+            <a href={`http://localhost:5173/survey/${survey.id}/results`}>
               <p className="surveyTitle">{survey.title}</p>
             </a>
 
