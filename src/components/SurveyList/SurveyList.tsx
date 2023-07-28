@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Chip, Typography } from '@mui/material';
 import './SurveyList.scss';
 import Cookies from 'js-cookie';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -55,6 +55,9 @@ function SurveyList() {
   const isLogged = useAppSelector((state) => state.login.isLogged);
   const navigate = useNavigate();
 
+  const handleNavClick = (id: string) => {
+    navigate(`/survey/${id}/results`);
+  };
   const getProfile = () => {
     const data = '';
 
@@ -160,9 +163,6 @@ function SurveyList() {
     boxShadow: 24,
     p: 4,
   };
-  const handleNavClick = (id:string) => {
-    navigate(`/survey/${id}/results`)
-  }
 
   return (
     <div className="containerSurveyList">
@@ -171,9 +171,26 @@ function SurveyList() {
       <ul>
         {surveys.data.map((survey) => (
           <li key={survey.id}>
-            <a onClick={()=>handleNavClick(survey.id)}>
-              <p className="surveyTitle">{survey.title}</p>
-            </a>
+            <div
+              className="surveyBox"
+              onClick={() => handleNavClick(survey.id)}
+            >
+              <div className="surveyTitle">
+                <p>{survey.title}</p>
+                <div className="test">
+                  <Chip
+                    className="surveyAuthor"
+                    label={`Nom de l'auteur`}
+                    color="secondary"
+                  />
+                  <span
+                    className="circleCheck"
+                    // le style est à changer si l'utilisateur a répondu ou non
+                    style={{ backgroundColor: 'green' }}
+                  ></span>
+                </div>
+              </div>
+            </div>
 
             {admin && isLogged ? (
               <div className="iconItem">
