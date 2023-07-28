@@ -10,6 +10,14 @@ import React from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 
+export interface Author {
+  id: number
+  username: string
+  avatar_url: string
+  admin: boolean
+  created_at: string
+  updated_at: string
+}
 interface Survey {
   data: Array<{
     author_id: number;
@@ -21,6 +29,7 @@ interface Survey {
     start_at: string;
     title: string;
     updated_at: string;
+    author: Author;
   }>;
 }
 export interface userProfile {
@@ -43,6 +52,14 @@ function SurveyList() {
         start_at: '',
         title: '',
         updated_at: '',
+        author: {
+          id: 0,
+          username: '',
+          avatar_url: '',
+          admin: false,
+          created_at: '',
+          updated_at: '',
+        },
       },
     ],
   });
@@ -180,7 +197,7 @@ function SurveyList() {
                 <div className="test">
                   <Chip
                     className="surveyAuthor"
-                    label={`Nom de l'auteur`}
+                    label={survey.author.username.toString()}
                     color="secondary"
                   />
                   <span
