@@ -250,7 +250,7 @@ function VoteStep() {
       // Gérer la logique de redirection vers les résultats en temps réel
       setHasVoted(true);
       console.log(VoteSurvey.data);
-      navigate(`/surveys/${id}/results`);
+      navigate(`/survey/${id}/results`);
     } catch (error) {
       console.error('Erreur lors de la soumission du vote', error);
       setError('Vous avez déjà voté pour ce sondage');

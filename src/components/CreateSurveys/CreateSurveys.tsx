@@ -174,9 +174,7 @@ function CreateSurvey() {
     }
   };
 
-  // J'ai une erreur 500 au dessus de 30 caractères pourtant j'ai check les validations côté back
-  // Update: Ca vient du model sequelize
-  const MAX_TITLE_LENGTH = 30;
+  const MAX_TITLE_LENGTH = 50;
   const MAX_OPTION_LENGTH = 50;
 
   const validateInput = () => {
