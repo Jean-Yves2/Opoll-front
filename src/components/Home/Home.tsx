@@ -191,7 +191,7 @@ function Home() {
           size="large"
           color="primary"
           component={RouterLink}
-          to="/surveys/create"
+          to="/survey/create"
           sx={{ margin: '2rem 0 2rem 0' }}
         >
           Créer un sondage
