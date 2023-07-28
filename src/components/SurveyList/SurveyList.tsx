@@ -8,6 +8,7 @@ import DriveFileRenameOutlineRoundedIcon from '@mui/icons-material/DriveFileRena
 import Modal from '@mui/material/Modal';
 import React from 'react';
 import { useAppSelector } from '../../hooks/redux';
+import { useNavigate } from 'react-router-dom';
 
 interface Survey {
   data: Array<{
@@ -52,6 +53,7 @@ function SurveyList() {
   const token = Cookies.get('token');
   const [newName, setNewName] = useState('');
   const isLogged = useAppSelector((state) => state.login.isLogged);
+  const navigate = useNavigate();
 
   const getProfile = () => {
     const data = '';
@@ -158,6 +160,9 @@ function SurveyList() {
     boxShadow: 24,
     p: 4,
   };
+  const handleNavClick = (id:string) => {
+    navigate(`/survey/${id}/results`)
+  }
 
   return (
     <div className="containerSurveyList">
@@ -166,7 +171,7 @@ function SurveyList() {
       <ul>
         {surveys.data.map((survey) => (
           <li key={survey.id}>
-            <a href={`http://localhost:5173/survey/${survey.id}/results`}>
+            <a onClick={()=>handleNavClick(survey.id)}>
               <p className="surveyTitle">{survey.title}</p>
             </a>
 
