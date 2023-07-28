@@ -37,7 +37,8 @@ function Navbar() {
 
   const menuItems = isLogged
     ? [
-        { name: 'Créer un sondage', path: '/surveys/create' },
+        { name: 'Créer un sondage', path: '/survey/create' },
+        { name: 'Voir les sondages', path: '/surveys' },
         { name: 'Déconnexion', path: '/logout' },
       ]
     : [
