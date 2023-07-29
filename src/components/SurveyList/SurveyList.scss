@@ -5,10 +5,15 @@
   justify-content: center;
   gap: 1rem;
   padding: 10px;
+  background-color: RGB(62, 50, 116);
+  flex-grow: 1;
 
   h1 {
-    padding-top: 70PX;
+    display: flex;
     height: 100px;
+    color: aliceblue;
+    align-items: center;
+    justify-content: center;
   }
 
   ul {

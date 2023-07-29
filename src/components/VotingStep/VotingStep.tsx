@@ -49,16 +49,15 @@ const WrapperVotingStep = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'start',
-  minHeight: '100dvh',
+  alignItems: 'center',
+  flexGrow: 1,
 }));
 
 const VotingStepContainer = styled('div')(({ theme }) => ({
   display: 'flex',
-  justifyContent: 'start',
-  alignItems: 'center',
   flexDirection: 'column',
-  marginTop: '4rem',
+  justifyContent: 'center',
+  alignItems: 'center',
   padding: '2rem',
   backgroundColor: theme.palette.secondary.main,
   height: 'auto',
@@ -69,9 +68,7 @@ const VotingStepContainer = styled('div')(({ theme }) => ({
     width: '75%',
   },
   [theme.breakpoints.down('sm')]: {
-    height: '100vh',
     width: '100%',
-    marginTop: '0rem',
     borderRadius: '0rem',
   },
 }));
