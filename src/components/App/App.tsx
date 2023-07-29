@@ -14,6 +14,7 @@ import SurveyList from '../SurveyList/SurveyList';
 import Error from '../Error/Error';
 import VoteResults from '../VoteResults/VoteResults';
 import VotingStep from '../VotingStep/VotingStep';
+import './App.scss';
 
 function App() {
   // Darkmode / Lightmode en standby pour le moment
@@ -46,31 +47,33 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/survey/create"
-            element={<ProtectedRoutes element={CreateSurveys} />}
-          />
-          <Route
-            path="/survey/:id/vote"
-            element={<ProtectedRoutes element={VotingStep} />}
-          />
-          <Route
-            path="/survey/:id/results"
-            element={<ProtectedRoutes element={VoteResults} />}
-          />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/mentions-legales" element={<MentionLegale />} />
-          <Route path="/a-propos" element={<Apropos />} />
-          <Route path="/surveys" element={<SurveyList />} />
+        <div className='containerAll'>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/survey/create"
+              element={<ProtectedRoutes element={CreateSurveys} />}
+            />
+            <Route
+              path="/survey/:id/vote"
+              element={<ProtectedRoutes element={VotingStep} />}
+            />
+            <Route
+              path="/survey/:id/results"
+              element={<ProtectedRoutes element={VoteResults} />}
+            />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/mentions-legales" element={<MentionLegale />} />
+            <Route path="/a-propos" element={<Apropos />} />
+            <Route path="/surveys" element={<SurveyList />} />
 
-          <Route path="*" element={<Error />} />
-        </Routes>
-        <Footer />
+            <Route path="*" element={<Error />} />
+          </Routes>
+          <Footer />
+        </div>
       </Router>
     </ThemeProvider>
   );

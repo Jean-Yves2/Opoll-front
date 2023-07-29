@@ -3,6 +3,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import './Contact.scss';
 import {
   Button,
   CardContent,
@@ -13,18 +14,6 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-const WrapperContact = styled('div')(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'start',
-  minHeight: '80.20vh',
-  overflow: 'auto',
-  [theme.breakpoints.down('sm')]: {
-    minHeight: '10vh',
-  }
-}));
-
 const ContactContainer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.secondary.main,
   display: 'flex',
@@ -32,7 +21,6 @@ const ContactContainer = styled('div')(({ theme }) => ({
   alignItems: 'center',
   flexDirection: 'column',
   height: 'auto',
-  marginTop: '4rem',
   padding: '2rem',
   borderRadius: '1rem',
   boxShadow: '10px 20px 15px rgba(0, 0, 0, 0.4)',
@@ -45,7 +33,6 @@ const ContactContainer = styled('div')(({ theme }) => ({
     width: '80%',
   },
   [theme.breakpoints.down('sm')]: {
-    height: '78vh',
     width: '100%',
     marginTop: '0rem',
     borderRadius: '0rem',
@@ -110,57 +97,59 @@ function Contact() {
   };
 
   return (
-    <WrapperContact>
-      <ContactContainer>
-        <CardContent>
-          <TitleContainer>
-            <Typography color="primary" gutterBottom variant="h5">
-              Contactez-nous
-            </Typography>
-          </TitleContainer>
-          <Form onSubmit={handleSubmit}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <TextField
-                  type="email"
-                  placeholder="Entrez votre email"
-                  label="Email"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  value={email}
-                  onChange={handleEmailChange}
-                />
+    <div className='contactContainer'>
+      
+        <ContactContainer>
+          <CardContent>
+            <TitleContainer>
+              <Typography color="primary" gutterBottom variant="h5">
+                Contactez-nous
+              </Typography>
+            </TitleContainer>
+            <Form onSubmit={handleSubmit}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <TextField
+                    type="email"
+                    placeholder="Entrez votre email"
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Message"
+                    multiline
+                    rows={4}
+                    placeholder="Renseignez votre message"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={message}
+                    onChange={handleMessageChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={24} /> : 'Envoyez'}
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Message"
-                  multiline
-                  rows={4}
-                  placeholder="Renseignez votre message"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  value={message}
-                  onChange={handleMessageChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  disabled={loading}
-                >
-                  {loading ? <CircularProgress size={24} /> : 'Envoyez'}
-                </Button>
-              </Grid>
-            </Grid>
-          </Form>
-        </CardContent>
-      </ContactContainer>
-    </WrapperContact>
+            </Form>
+          </CardContent>
+        </ContactContainer>
+      
+    </div>
   );
 }
 
