@@ -59,7 +59,7 @@ const VoteResultWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
+  flexGrow: 1,
 }));
 
 const VoteResultContainer = styled('div')(({ theme }) => ({
