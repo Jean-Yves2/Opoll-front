@@ -1,0 +1,33 @@
+.liBox {
+    display: flex;
+    width: 100%;
+
+    .userBox {
+        display: flex;
+        align-items: center;
+        width: 65%;
+        height: 100%;
+        width: 100%;
+        justify-content: space-around;
+
+    }
+
+    .buttonBox {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 35%;
+        height: 100%;
+        gap: 1rem;
+
+        .sondage {
+            color: RGB(242, 40, 224);
+        }
+
+        .bannir {
+            color: #F31260
+        }
+    }
+
+}

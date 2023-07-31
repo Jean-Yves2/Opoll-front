@@ -15,6 +15,9 @@ import Error from '../Error/Error';
 import VoteResults from '../VoteResults/VoteResults';
 import VotingStep from '../VotingStep/VotingStep';
 import './App.scss';
+import AdminPage from '../AdminPage/AdminPage';
+import UserSurvey from '../UserSurvey/UserSurvey';
+
 
 function App() {
   // Darkmode / Lightmode en standby pour le moment
@@ -65,6 +68,10 @@ function App() {
               path="/survey/:id/results"
               element={<ProtectedRoutes element={VoteResults} />}
             />
+            <Route
+              path="/user"
+              element={<ProtectedRoutes element={AdminPage} />}/>
+            <Route path="/user/:id" element={<UserSurvey />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/mentions-legales" element={<MentionLegale />} />
             <Route path="/a-propos" element={<Apropos />} />

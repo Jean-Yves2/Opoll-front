@@ -18,35 +18,8 @@ import React from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
+import { Survey } from '../../Interfaces/Survey';
 
-export interface Author {
-  id: number;
-  username: string;
-  avatar_url: string;
-  admin: boolean;
-  created_at: string;
-  updated_at: string;
-}
-interface Survey {
-  data: Array<{
-    author_id: number;
-    created_at: string;
-    end_at: string | null;
-    id: string;
-    multiple_responses: boolean;
-    public: boolean;
-    start_at: string;
-    title: string;
-    updated_at: string;
-    author: Author;
-  }>;
-}
-export interface userProfile {
-  username: string;
-  email: string;
-  avatar: string;
-  isAdmin: boolean;
-}
 
 function SurveyList() {
   const [surveys, setSurveys] = useState<Survey>({
@@ -200,7 +173,7 @@ function SurveyList() {
       >
         <InputBase
           sx={{ ml: 1, flex: 1 }}
-          placeholder="Survey name"
+          placeholder="Nom de l'enquête"
           inputProps={{ 'aria-label': 'search google maps' }}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
