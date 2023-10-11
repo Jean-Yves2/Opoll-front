@@ -89,7 +89,7 @@ function AdminPage() {
   useEffect(() => {
     getProfile();
     getAllUsers();
-  }, []);
+  });
 
   if (!admin) {
     return <Error />;
