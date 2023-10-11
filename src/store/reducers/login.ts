@@ -117,7 +117,7 @@ export const handleLogin = createAsyncThunk(
       const { data } = await axios.post<{
         token: string;
         user: { username: string; id: number };
-      }>(`${apiUrl}/@me/auth/login`, credentials);
+      }>(`${apiUrl}/auth/login`, credentials);
       console.log(data);
       TypedCookies.set('token', data.token);
       return { username: data.user.username, id: data.user.id };
