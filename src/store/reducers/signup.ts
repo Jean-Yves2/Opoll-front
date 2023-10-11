@@ -1,3 +1,5 @@
+import { apiUrl } from '../../config';
+
 import {
   createReducer,
   createAction,
@@ -44,7 +46,7 @@ export const handleSignup = createAsyncThunk(
   async (credentials: SignUpState['credentials']) => {
     try {
       const response = await axios.post<User>(
-        'http://localhost:3000/auth/register',
+        `${apiUrl}/auth/register`,
         credentials
       );
       return response.data;

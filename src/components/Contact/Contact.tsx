@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 // Formulaire de contact fonctionne OK, manque juste snackbar pour afficher message de confirmation
+import { apiUrl } from '../../config';
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
@@ -81,7 +82,7 @@ function Contact() {
     event.preventDefault();
     setLoading(true);
     try {
-      await axios.post('http://localhost:3000/contact', { email, message });
+      await axios.post(`${apiUrl}/contact`, { email, message });
       setEmail('');
       setMessage('');
       navigate('/');

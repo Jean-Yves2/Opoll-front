@@ -1,3 +1,4 @@
+import { apiUrl } from '../../config';
 import {
   createReducer,
   createAction,
@@ -91,7 +92,7 @@ export const handleVerification = createAsyncThunk(
       if (!token) throw new Error('Token not found');
       const VerifCodeConfig = {
         method: 'post',
-        url: 'http://localhost:3000/@me/verify',
+        url: `${apiUrl}/@me/verify`,
         headers: {
           Authorization: token,
         },
@@ -116,7 +117,7 @@ export const handleLogin = createAsyncThunk(
       const { data } = await axios.post<{
         token: string;
         user: { username: string; id: number };
-      }>('http://localhost:3000/auth/login', credentials);
+      }>(`${apiUrl}/@me/auth/login`, credentials);
       console.log(data);
       TypedCookies.set('token', data.token);
       return { username: data.user.username, id: data.user.id };
