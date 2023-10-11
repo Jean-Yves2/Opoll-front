@@ -40,8 +40,7 @@ function AdminPage() {
         void error;
       });
   };
-  getProfile();
-
+  
   const getAllUsers = () => {
     const data = '';
 
@@ -57,7 +56,6 @@ function AdminPage() {
     axios
       .request(config)
       .then((response) => {
-        console.log(response);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setUsers(response.data);
       })
@@ -89,6 +87,7 @@ function AdminPage() {
       });
   };
   useEffect(() => {
+    getProfile();
     getAllUsers();
   }, []);
 
