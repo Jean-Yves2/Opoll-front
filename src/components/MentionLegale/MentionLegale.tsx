@@ -6,19 +6,16 @@ function MentionLegale() {
         <h1>Mention Légales</h1>
         <section>
           <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente
-            dolor cum quam, fugit animi maiores exercitationem impedit, neque
-            accusantium optio, odit quas nihil! Tempora sed tempore in animi
-            quae repellat.Lorem ipsum dolor, sit amet consectetur adipisicing
-            elit. Sapiente dolor cum quam, fugit animi maiores exercitationem
-            impedit, neque accusantium optio, odit quas nihil! Tempora sed
-            tempore in animi quae repellat.Lorem ipsum dolor, sit amet
-            consectetur adipisicing elit. Sapiente dolor cum quam, fugit animi
-            maiores exercitationem impedit, neque accusantium optio, odit quas
-            nihil! Tempora sed tempore in animi quae repellat.Lorem ipsum dolor,
-            sit amet consectetur adipisicing elit. Sapiente dolor cum quam,
-            fugit animi maiores exercitationem impedit, neque accusantium optio,
-            odit quas nihil! Tempora sed tempore in animi quae repellat.
+            Disclaimer : Nous vous promettons que notre équipe a consommé des
+            quantités raisonnables de café et de pizzas pour créer ce site.
+            Cependant, en cas d'éventuelles fautes de frappe, de bugs inattendus
+            ou de messages égarés par des extraterrestres, veuillez nous
+            pardonner. Notre clavier a tendance à avoir un esprit propre, mais
+            de temps en temps, il se rebelle et invente des mots. Si vous
+            trouvez un pingouin tapant du code, ne soyez pas surpris, c'est
+            notre mascotte. En fin de compte, nous faisons de notre mieux pour
+            vous offrir une expérience agréable. Merci de votre compréhension et
+            n'oubliez pas, même les licornes ont des jours off ! 🦄🚀
           </p>
         </section>
       </div>
