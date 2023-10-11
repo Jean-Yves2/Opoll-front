@@ -1,3 +1,4 @@
+import { apiUrl } from '../../config';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -147,7 +148,7 @@ function VoteStep() {
       try {
         const GetSurveyConfig = {
           method: 'get',
-          url: `http://localhost:3000/@me/survey/${id}`,
+          url: `${apiUrl}/@me/survey/${id}`,
           headers: {
             Authorization: token,
           },
@@ -237,7 +238,7 @@ function VoteStep() {
     try {
       const VoteSurveyConfig = {
         method: 'post',
-        url: `http://localhost:3000/@me/survey/${id}/respond`,
+        url: `${apiUrl}/@me/survey/${id}/respond`,
         headers: {
           Authorization: token,
         },

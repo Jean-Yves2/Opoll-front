@@ -1,3 +1,4 @@
+import { apiUrl } from '../../config';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import VerificationCode from '../Login/VerificationCode';
@@ -225,7 +226,7 @@ function VoteResults() {
       try {
         const GetSurveyConfig = {
           method: 'get',
-          url: `http://localhost:3000/@me/survey/${id}`,
+          url: `${apiUrl}/@me/survey/${id}`,
           headers: {
             Authorization: token,
           },
