@@ -23,7 +23,7 @@ function MentionLegale() {
       <div className="card-container">
         <article>
           <div className="circular-image">
-            <img src="src\assets\cat.jpg" alt="Cat devLead" />
+            <img src="./cat.jpg" alt="Cat devLead" />
           </div>
 
           <h3>Cat Lead dev</h3>
@@ -31,7 +31,8 @@ function MentionLegale() {
         </article>
         <article>
           <div className="circular-image">
-            <img src="src\assets\agrou.jpg" alt="Cat devLead" />
+            <img src="./agrou.jpg" alt="Cat devLead" />
+
           </div>
 
           <h3>Scrum Master</h3>
@@ -39,7 +40,7 @@ function MentionLegale() {
         </article>
         <article>
           <div className="circular-image">
-            <img src="src\assets\doggy.avif" alt="Git Master" />
+            <img src="./doggy.avif" alt="Git Master" />
           </div>
 
           <h3>Git Master</h3>
@@ -47,7 +48,7 @@ function MentionLegale() {
         </article>
         <article>
           <div className="circular-image">
-            <img src="src\assets\cat-side.jpg" alt="Référent Techno" />
+            <img src="./cat-side.jpg" alt="Référent Techno" />
           </div>
 
           <h3>Référent Techno</h3>
