@@ -59,7 +59,7 @@ function UserSurvey() {
 
   useEffect(() => {
     getUserSurveys(Number(id));
-  }, []);
+  });
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

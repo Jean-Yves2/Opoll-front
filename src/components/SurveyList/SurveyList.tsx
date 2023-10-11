@@ -96,7 +96,7 @@ function SurveyList() {
   useEffect(() => {
     getProfile();
     getSurveys();
-  }, []);
+  });
 
   const deleteSurvey = (id: string) => {
     const config = {
