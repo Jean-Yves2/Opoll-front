@@ -4,6 +4,7 @@ import { handleLogout } from '../../store/reducers/login';
 import { expiredToken } from '../../store/reducers/snackbar';
 import { useAppDispatch } from '../../hooks/redux';
 import { useNavigate } from 'react-router';
+import { apiUrl } from '../../config';
 import VerificationCode from '../Login/VerificationCode';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -232,7 +233,7 @@ function CreateSurvey() {
       // On envoie les données du sondage au serveur
       const CreateSurveyConfig = {
         method: 'post',
-        url: 'http://localhost:3000/@me/survey',
+        url: `${apiUrl}/@me/survey`,
         headers: {
           Authorization: token,
         },

@@ -1,3 +1,4 @@
+import { apiUrl } from '../../config';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
@@ -39,7 +40,7 @@ function UserSurvey() {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `http://localhost:3000/user/${id}`,
+      url: `${apiUrl}/user/${id}`,
       headers: {
         Authorization: token,
       },

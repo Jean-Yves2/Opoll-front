@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import './SurveyList.scss';
+import { apiUrl } from '../../config';
 import Cookies from 'js-cookie';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DriveFileRenameOutlineRoundedIcon from '@mui/icons-material/DriveFileRenameOutlineRounded';
@@ -64,7 +65,7 @@ function SurveyList() {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:3000/@me',
+      url: `${apiUrl}/@me`,
       headers: {
         Authorization: token,
       },
@@ -80,11 +81,10 @@ function SurveyList() {
         void error;
       });
   };
-  getProfile();
-
+  
   const getSurveys = () => {
     axios
-      .get('http://localhost:3000/survey')
+      .get(`${apiUrl}/survey`)
       .then((response) => {
         setSurveys(response);
       })
@@ -94,6 +94,7 @@ function SurveyList() {
   };
 
   useEffect(() => {
+    getProfile();
     getSurveys();
   }, []);
 
@@ -101,7 +102,7 @@ function SurveyList() {
     const config = {
       method: 'delete',
       maxBodyLength: Infinity,
-      url: 'http://localhost:3000/survey/' + id,
+      url: `${apiUrl}/survey/${id}` ,
       headers: {
         Authorization: token,
       },
@@ -125,7 +126,7 @@ function SurveyList() {
     const config = {
       method: 'patch',
       maxBodyLength: Infinity,
-      url: 'http://localhost:3000/survey/' + id,
+      url: `${apiUrl}/survey/${id}`,
       headers: {
         Authorization: token,
       },
