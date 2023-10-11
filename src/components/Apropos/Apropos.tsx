@@ -21,7 +21,7 @@ function Apropos() {
         </section>
       </div>
       <div className="cover">
-        <img src="src\assets\Apropos.jpg" alt="Photo de Statistic" />
+        <img src="./Apropos.jpg" alt="Photo de Statistic" />
       </div>
     </div>
   );
