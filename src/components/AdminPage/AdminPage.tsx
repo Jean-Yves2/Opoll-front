@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { apiUrl } from '../../config';
 import { userProfil } from '../../Interfaces/UserProfil';
 import Error from '../Error/Error';
 import { Avatar, Button, IconButton, InputBase, Paper } from '@mui/material';
@@ -20,7 +21,7 @@ function AdminPage() {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:3000/@me',
+      url: `${apiUrl}/@me`,
       headers: {
         Authorization: token,
       },
@@ -47,7 +48,7 @@ function AdminPage() {
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:3000/user',
+      url: `${apiUrl}/user`,
       headers: {
         Authorization: token,
       },
@@ -71,7 +72,7 @@ function AdminPage() {
     const config = {
       method: 'delete',
       maxBodyLength: Infinity,
-      url: `http://localhost:3000/user/${id}`,
+      url: `${apiUrl}/user/${id}`,
       headers: {
         Authorization: token,
       },
