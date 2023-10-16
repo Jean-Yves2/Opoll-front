@@ -31,11 +31,11 @@ const Title = styled('div')(({ theme }) => ({
 }));
 
 const ImageContainer = styled('div')({
-  height: '100dvh',
+  height: '100vh',
   width: '100%',
   // Image de background, un peu flou coté desktop,sujet a changement
   backgroundImage:
-    "url('https://images.pexels.com/photos/6476260/pexels-photo-6476260.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
+    "url('./pexels-photo.jpg')",
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
   backgroundPosition: 'center',
@@ -287,5 +287,11 @@ function Home() {
     </HomepageContainer>
   );
 }
+// Préchargement de l'image de background
+const imagePreloadLink = document.createElement('link');
+imagePreloadLink.rel = 'preload';
+imagePreloadLink.as = 'image';
+imagePreloadLink.href = './pexels-photo.jpg';
+document.head.appendChild(imagePreloadLink);
 
 export default Home;
