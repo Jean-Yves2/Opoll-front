@@ -16,6 +16,7 @@
     align-items: center;
     padding-bottom: 1rem;
     h1 {
+      color: white;
       text-decoration: underline;
       text-decoration-color: #6959af;
     }
@@ -28,6 +29,7 @@
       background-color: RGB(242, 190, 34);
       border-radius: 10px;
       p {
+        font-size: larger;
         margin: 10px;
       }
     }
@@ -48,6 +50,7 @@
       justify-content: center;
       padding-top: 15px;
       padding-bottom: 15px;
+      color: white;
 
       h3 {
         padding: 5px;
