@@ -15,6 +15,7 @@ const FooterContainer = styled('div')({
 const StyledLink = styled(RouterLink)(({ theme }) => ({
   color: theme.palette.info.main,
   textDecoration: 'none',
+  fontSize: '1.2rem',
   '&:hover': {
     textDecoration: 'underline',
   },
@@ -52,8 +53,8 @@ function Footer() {
 
         <Toolbar>
           <LinkContainer>
-            <StyledLink to="/contact">Contactez nous</StyledLink>
-            <StyledLink to="/a-propos">A propos de nous</StyledLink>
+            <StyledLink to="/contact">Contacte</StyledLink>
+            <StyledLink to="/a-propos">A propos</StyledLink>
             <StyledLink to="/mentions-legales">Mentions légales</StyledLink>
           </LinkContainer>
         </Toolbar>
