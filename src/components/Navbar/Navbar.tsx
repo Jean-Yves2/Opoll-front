@@ -44,6 +44,7 @@ function Navbar() {
     : [
         { name: "S'inscrire", path: '/signup' },
         { name: 'Se connecter', path: '/login' },
+        { name: 'Sondages', path: '/surveys' },
       ];
 
   // Fonction qui gère le contenu du menu dropdown à partir du composant DrawerList
