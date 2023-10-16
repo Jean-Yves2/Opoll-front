@@ -276,7 +276,7 @@ function Home() {
           size="large"
           color="primary"
           component={RouterLink}
-          to="/surveys/create"
+          to="/survey/create"
           sx={{
             padding: '1rem 2rem',
           }}
